@@ -12,8 +12,25 @@ var UserSchema = new mongoose.Schema({
     google_id: {type: String}
 });
 
-var User = mongoose.model('User', UserSchema);
+var ProjectSchema = new mongoose.Schema({
+    name: {type: String, trim: true},
+    users: [{type: String, ref: 'User'}],
+    created: {type: Date, required: true, 'default': Date.now}
+});
+
+var PeriodSchema = new mongoose.Schema({
+    user: {type: String, ref: 'User'}, // TODO: Required true
+    project: {type: String, ref: 'Project'},
+    start: {type: Date}, // use this for date
+    end: {type: Date},
+    duration: {type: Number},
+    comment: {type: String, trim: true},
+    created: {type: Date, required: true, 'default': Date.now}
+    // TODO: tags
+});
 
 module.exports = {
-    User: User
+    User: mongoose.model('User', UserSchema),
+    Project: mongoose.model('Project', ProjectSchema),
+    Perod: mongoose.model('Period', PeriodSchema)
 };

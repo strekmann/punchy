@@ -65,6 +65,8 @@ module.exports = function(grunt) {
         concat: {
             css: {
                 src: [
+                    'bower_components/pickadate/lib/themes/default.css',
+                    'bower_components/pickadate/lib/themes/default.time.css',
                     'client/vendor/css/**/*.css',
                     '/tmp/styles.css'
                 ],
@@ -86,6 +88,8 @@ module.exports = function(grunt) {
                     'bower_components/ractive-decorators-sortable/Ractive-decorators-sortable.js',
                     'bower_components/ractive-transitions-fade/ractive-transitions-fade.js',
                     'bower_components/ractive-transitions-slide/ractive-transitions-slide.js',
+                    'bower_components/pickadate/lib/picker.js',
+                    'bower_components/pickadate/lib/picker.time.js',
                     'client/vendor/js/*.js'
                 ],
                 dest: 'public/js/vendor.js'

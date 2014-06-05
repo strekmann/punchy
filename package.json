@@ -1,6 +1,6 @@
 {
   "author": "strekmann",
-  "name": "boilerplate",
+  "name": "timetracker",
   "description": "project",
   "version": "0.1.0",
   "homepage": "",
@@ -16,6 +16,7 @@
     "start": "node cluster.js",
     "test": "NODE_ENV=test ./node_modules/.bin/mocha"
   },
+  "main": "cluster.js",
   "dependencies": {
     "async": "0.2.x",
     "connect-redis": "1.x",

@@ -38,7 +38,6 @@ module.exports.simple = function (projects, active) {
     startpicker = $('#start.timepicker').pickatime({
         format: 'H:i',
         interval: 15,
-        max: moment().add('minutes', 7),
         onClose: function () {
             var endp = endpicker.pickatime('picker');
             var end = endp.get();

@@ -1,28 +1,37 @@
-// compute duration from start time and end time strings
-var compute_duration = function (start, end) {
-    if (start && end) {
-        var startarr = start.split(":");
-        var endarr = end.split(":");
-        var duration = moment.duration({
-            hours: endarr[0] - startarr[0],
-            minutes: endarr[1] - startarr[1]
-        });
-        return duration.as('hours');
-    }
-};
-
 var Tracker = Ractive.extend({
     data: {
         list: [],
+        projects: [],
+        active: null,
+        duration: 0,
         date: moment().format("YYYY-MM-DD")
+    },
+
+    createProject: function(project){
+        return $.ajax({
+            type: 'POST',
+            url: window.location.href,
+            data: project
+        });
     }
 });
 
-module.exports.simple = function () {
+module.exports.simple = function (projects, active) {
     var tracker = new Tracker({
         el: '#simple',
         template: '#template',
-        duration: 0
+        data: {
+            projects: projects,
+            has_project: function (wants) {
+                var u = URI(window.location.href);
+                if (u.search(true).project) {
+                    return wants;
+                }
+                else {
+                    return !wants;
+                }
+            }
+        }
     });
 
     var startpicker, endpicker;
@@ -81,6 +90,38 @@ module.exports.simple = function () {
                 }
             }
         }
+    });
+
+    return tracker;
+};
+
+module.exports.projects = function (projects) {
+    var tracker = new Tracker({
+        el: '#projects',
+        template: '#template',
+        data: {
+            projects: projects
+        }
+    });
+
+    tracker.on('createProject', function (event) {
+        event.original.preventDefault();
+
+        var node = $(event.node),
+            project = {
+                name: node.find('#name').val(),
+                client: node.find('#client').val()
+            };
+
+        tracker.createProject(project)
+            .then(function(data){
+                // everything ok
+                tracker.toggle('expanded');
+                tracker.get('projects').unshift(data);
+            }, function(xhr, status, err){
+                tracker.get('error').push(err);
+            });
+        //$('body').animate({scrollTop: 0}, 'fast');
     });
 
     return tracker;

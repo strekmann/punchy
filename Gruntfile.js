@@ -90,6 +90,7 @@ module.exports = function(grunt) {
                     'bower_components/ractive-transitions-slide/ractive-transitions-slide.js',
                     'bower_components/pickadate/lib/picker.js',
                     'bower_components/pickadate/lib/picker.time.js',
+                    'bower_components/URIjs/src/URI.js',
                     'client/vendor/js/*.js'
                 ],
                 dest: 'public/js/vendor.js'

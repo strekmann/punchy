@@ -11,6 +11,7 @@
     "ractive-transitions-fade": "",
     "ractive-transitions-slide": "",
     "underscore": "",
-    "pickadate": "~3.5.2"
+    "pickadate": "~3.5.2",
+    "URIjs": "~1.13.2"
   }
 }

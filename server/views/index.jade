@@ -12,24 +12,30 @@ block content
       .row
         .columns
           label Prosjekt
-          select
-            option Prosjekt1
-            option Prosjekt2
+          select(autofocus="{{has_project(false)}}" disabled="{{has_project(true)}}")
+            | {{#projects}}
+            | {{#.active}}
+            option(value="{{._id}}" selected) {{.name}} ({{.client}})
+            | {{/.active}}
+            | {{^.active}}
+            option(value="{{._id}}") {{.name}} ({{.client}})
+            | {{/.active}}
+            | {{/projects}}
       .row
         .columns.medium-3
-          label Dato
-          input#date(type="date" value="{{date}}")
+          label(for="date") Dato
+          input#date(type="date" value="{{date}}" autofocus="{{has_project(true)}}")
         .columns.medium-3.small-4
-          label Start
+          label(for="start") Start
           input#start.timepicker(type="time" step="900")
         .columns.medium-3.small-4
-          label End
+          label(for="end") End
           input#end.timepicker(type="time" step="900")
         .columns.medium-3.small-4
-          label Duration
+          label(for="duration") Duration
           input#duration(type="number" step="0.25" value="{{duration}}")
         .columns
-          label Kommentar
+          label(for="comment") Kommentar
           textarea#comment
       .row
         .columns
@@ -37,4 +43,6 @@ block content
 
 block javascript
   script
-    | require('s7n').tracker.simple();
+    | require('s7n').tracker.simple(
+    != JSON.stringify(projects)
+    | );

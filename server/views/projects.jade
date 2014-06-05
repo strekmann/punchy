@@ -1,0 +1,38 @@
+extends layout
+
+block content
+  section#projects
+
+  script#template(type="text/ractive")
+    .row
+      .columns.medium-6
+        ul
+          | {{#projects}}
+          li
+            a(href="/?project={{._id}}") {{name}} ({{client}})
+          | {{/projects}}
+
+    .row
+      .columns.medium-6
+        .row
+          .columns
+            h1 Nytt prosjekt
+
+        form(on-submit="createProject")
+          .row
+            .columns
+              label Prosjektnavn
+              input#name(type="text" name="name")
+          .row
+            .columns
+              label Kunde
+              input#client(type="text" name="client")
+          .row
+            .columns
+              button Lagre
+
+block javascript
+  script
+    | require('s7n').tracker.projects(
+    != JSON.stringify(projects)
+    | );

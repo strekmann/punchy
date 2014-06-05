@@ -1,10 +1,47 @@
 var express = require('express'),
+    _ = require('underscore'),
     router = express.Router(),
     User = require('../models').User,
+    Project = require('../models').Project,
     ensureAuthenticated = require('../lib/middleware').ensureAuthenticated;
 
 router.get('/', function(req, res, next){
-    res.render('index');
+    Project.find().sort('-created').lean().exec(function (err, projects) {
+        _.each(projects, function(project) {
+            if (project._id.toString() === req.query.project) {
+                project.active = true;
+            }
+            else {
+                project.active = false;
+            }
+        });
+        res.render('index', {
+            projects: projects
+        });
+    });
+});
+
+router.get('/projects', function(req, res, next){
+    Project.find().sort('-created').exec(function (err, projects) {
+        res.render('projects', {projects: projects});
+    });
+});
+
+router.post('/projects', function(req, res, next) {
+    if (req.user) {
+        var project = new Project();
+
+        project.name = req.body.name;
+        project.client = req.body.client;
+        project.users.push(req.user._id);
+
+        project.save(function (err) {
+            res.json(project);
+        });
+    }
+    else {
+        res.status(403);
+    }
 });
 
 router.get('/login', function(req, res, next){

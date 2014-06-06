@@ -8,11 +8,11 @@ block content
       .columns
         h1 Ny tid
 
-    form
+    form(on-submit="createHours")
       .row
         .columns
           label Prosjekt
-          select(autofocus="{{has_project(false)}}" disabled="{{has_project(true)}}")
+          select#project(name="project" autofocus="{{has_project(false)}}" disabled="{{has_project(true)}}")
             | {{#projects}}
             | {{#.active}}
             option(value="{{._id}}" selected) {{.name}} ({{.client}})
@@ -35,14 +35,37 @@ block content
           label(for="duration") Duration
           input#duration(type="number" step="0.25" value="{{duration}}")
         .columns
-          label(for="comment") Kommentar
-          textarea#comment
+          label(for="comments") Kommentarer
+          textarea#comments(name="comments")
       .row
         .columns
           button Lagre
+
+    .row
+      .columns
+        table
+          thead
+            tr
+              th Project
+              th Date
+              th Start
+              th End
+              th Duration
+              th Registered
+          | {{#hours}}
+          tr
+            td {{project.name}}
+            td {{date}}
+            td {{timeformat(start)}}
+            td {{timeformat(end)}}
+            td {{duration}}
+            td {{datetimeformat(created)}}
+          | {{/hours}}
 
 block javascript
   script
     | require('s7n').tracker.simple(
     != JSON.stringify(projects)
+    | ,
+    != JSON.stringify(hours)
     | );

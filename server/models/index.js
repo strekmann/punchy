@@ -13,25 +13,24 @@ var UserSchema = new mongoose.Schema({
 });
 
 var ProjectSchema = new mongoose.Schema({
-    name: {type: String, trim: true},
+    name: {type: String, trim: true, required: true},
     client: {type: String, trim: true},
     users: [{type: String, ref: 'User'}],
     created: {type: Date, required: true, 'default': Date.now}
 });
 
-var PeriodSchema = new mongoose.Schema({
-    user: {type: String, ref: 'User'}, // TODO: Required true
-    project: {type: String, ref: 'Project'},
+var HoursSchema = new mongoose.Schema({
+    user: {type: String, ref: 'User', required: true},
+    project: {type: String, ref: 'Project', required: true},
     start: {type: Date}, // use this for date
     end: {type: Date},
-    duration: {type: Number},
+    duration: {type: Number, required: true},
     comment: {type: String, trim: true},
     created: {type: Date, required: true, 'default': Date.now}
-    // TODO: tags
 });
 
 module.exports = {
     User: mongoose.model('User', UserSchema),
     Project: mongoose.model('Project', ProjectSchema),
-    Perod: mongoose.model('Period', PeriodSchema)
+    Hours: mongoose.model('Hours', HoursSchema)
 };

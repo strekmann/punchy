@@ -1,6 +1,7 @@
 var express     = require('express'),
     path        = require('path'),
     settings    = require('./settings'),
+    moment      = require('moment'),
     app         = require('libby')(express, settings);
 
 // # Application setup

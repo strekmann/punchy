@@ -1,10 +1,26 @@
 var express = require('express'),
     _ = require('underscore'),
+    moment= require('moment'),
     router = express.Router(),
     User = require('../models').User,
     Project = require('../models').Project,
+    Hours = require('../models').Hours,
     ensureAuthenticated = require('../lib/middleware').ensureAuthenticated;
 
+// Util functions
+var add_time = function (date, timestring) {
+    if (date && timestring) {
+        var mdate = moment(date);
+        var timearr = _.map(timestring.split(":"), function (item) {
+            return parseInt(item, 10);
+        });
+        mdate.hours(timearr[0]);
+        mdate.minutes(timearr[1]);
+        return mdate;
+    }
+};
+
+// Routes
 router.get('/', function(req, res, next){
     Project.find().sort('-created').lean().exec(function (err, projects) {
         _.each(projects, function(project) {
@@ -15,10 +31,38 @@ router.get('/', function(req, res, next){
                 project.active = false;
             }
         });
-        res.render('index', {
-            projects: projects
+        Hours.find({user:req.user}).populate('project').sort('-created').exec(function(err, hours) {
+            console.log(hours);
+            res.render('index', {
+                projects: projects,
+                hours: hours
+            });
         });
     });
+});
+
+router.post('/', function(req, res, next) {
+    console.log(req.body);
+    if (req.user) {
+
+        var start = req.body.start;
+
+        var hours = new Hours();
+
+        hours.user = req.user;
+        hours.project = req.body.project;
+        hours.date = req.body.date;
+        hours.start = add_time(req.body.date, req.body.start);
+        hours.end = add_time(req.body.date, req.body.end);
+        hours.duration = req.body.duration;
+        hours.comments = req.body.comments;
+
+        hours.save(function (err) {
+            hours.populate('project', 'name', function(err, hours) {
+                res.json(hours);
+            });
+        });
+    }
 });
 
 router.get('/projects', function(req, res, next){

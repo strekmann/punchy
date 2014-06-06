@@ -1,10 +1,18 @@
 var Tracker = Ractive.extend({
     data: {
+        error: [],
         list: [],
         projects: [],
+        hours: [],
         active: null,
         duration: 0,
-        date: moment().format("YYYY-MM-DD")
+        date: moment().format("YYYY-MM-DD"),
+        datetimeformat: function (datetime) {
+            return moment(datetime).format('LLL');
+        },
+        timeformat: function (datetime) {
+            return moment(datetime).format('HH:mm');
+        }
     },
 
     createProject: function(project){
@@ -13,15 +21,24 @@ var Tracker = Ractive.extend({
             url: window.location.href,
             data: project
         });
+    },
+
+    createHours: function (hours) {
+        return $.ajax({
+            type: 'POST',
+            url: window.location.href,
+            data: hours
+        });
     }
 });
 
-module.exports.simple = function (projects, active) {
+module.exports.simple = function (projects, hours) {
     var tracker = new Tracker({
         el: '#simple',
         template: '#template',
         data: {
             projects: projects,
+            hours: hours,
             has_project: function (wants) {
                 var u = URI(window.location.href);
                 if (u.search(true).project) {
@@ -89,6 +106,29 @@ module.exports.simple = function (projects, active) {
                 }
             }
         }
+    });
+
+    tracker.on('createHours', function (event) {
+        event.original.preventDefault();
+
+        var node = $(event.node),
+            hours = {
+                project: node.find('#project').val(),
+                date: node.find('#date').val(),
+                start: node.find('#start').val(),
+                end: node.find('#end').val(),
+                duration: node.find('#duration').val(),
+                comments: node.find('#comments').val()
+            };
+
+        tracker.createHours(hours)
+            .then(function(data){
+                // everything ok
+                tracker.get('hours').unshift(data);
+            }, function(xhr, status, err){
+                tracker.get('error').push(err);
+            });
+        //$('body').animate({scrollTop: 0}, 'fast');
     });
 
     return tracker;

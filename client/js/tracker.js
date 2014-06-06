@@ -7,9 +7,12 @@ var Tracker = Ractive.extend({
         hours: [],
         active: null,
         duration: 0,
-        date: moment().format("YYYY-MM-DD"),
+        date: moment().format("YYYY-MM-DD"), // needed for default value - a nice trick by accident
         datetimeformat: function (datetime) {
             return moment(datetime).format('LLL');
+        },
+        dateformat: function (datetime) {
+            return moment(datetime).format('LL');
         },
         timeformat: function (datetime) {
             return moment(datetime).format('HH:mm');

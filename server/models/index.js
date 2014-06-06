@@ -22,6 +22,7 @@ var ProjectSchema = new mongoose.Schema({
 var HoursSchema = new mongoose.Schema({
     user: {type: String, ref: 'User', required: true},
     project: {type: String, ref: 'Project', required: true},
+    date: {type: Date, required: true},
     start: {type: Date}, // use this for date
     end: {type: Date},
     duration: {type: Number, required: true},

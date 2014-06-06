@@ -55,7 +55,7 @@ block content
           | {{#hours}}
           tr
             td {{project.name}}
-            td {{date}}
+            td {{dateformat(date)}}
             td {{timeformat(start)}}
             td {{timeformat(end)}}
             td {{duration}}

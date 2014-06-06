@@ -91,7 +91,7 @@ router.get('/projects/:id', function (req, res, next) {
         if (project) {
             Hours.find({project: project._id})
             .populate('user', 'name username')
-            .sort('-created')
+            .sort('date start')
             .exec(function (err, hours) {
                 res.render('project', {project: project, hours: hours});
             });

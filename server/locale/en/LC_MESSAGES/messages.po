@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2014-06-06 16:47+0000\n"
+"POT-Creation-Date: 2014-06-06 23:15+0000\n"
 "PO-Revision-Date: 2014-05-21 10:35+0100\n"
 "Last-Translator: bergquis <jorgen.bergquist@ntnu.no>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,7 +65,8 @@ msgid "Google data"
 msgstr ""
 
 #: server/views/account.jade:67 server/views/index.jade:42
-#: server/views/projects.jade:32
+#: server/views/projects.jade:32 server/views/project.jade:23
+#: server/views/projects.jade:37
 msgid "Save"
 msgstr ""
 
@@ -74,18 +75,22 @@ msgid "Project"
 msgstr ""
 
 #: server/views/index.jade:26 server/views/index.jade:50
+#: server/views/project.jade:42
 msgid "Date"
 msgstr ""
 
 #: server/views/index.jade:29 server/views/index.jade:51
+#: server/views/project.jade:43
 msgid "Start"
 msgstr ""
 
 #: server/views/index.jade:32 server/views/index.jade:52
+#: server/views/project.jade:44
 msgid "End"
 msgstr ""
 
 #: server/views/index.jade:35 server/views/index.jade:53
+#: server/views/project.jade:45
 msgid "Duration"
 msgstr ""
 
@@ -97,18 +102,44 @@ msgstr ""
 msgid "Projects"
 msgstr ""
 
-#: server/views/index.jade:54
+#: server/views/index.jade:54 server/views/project.jade:46
 msgid "Registered"
 msgstr ""
 
-#: server/views/projects.jade:19
+#: server/views/projects.jade:19 server/views/projects.jade:24
 msgid "New project"
 msgstr ""
 
-#: server/views/projects.jade:24
+#: server/views/projects.jade:24 server/views/project.jade:15
+#: server/views/projects.jade:29
 msgid "Project name"
 msgstr ""
 
-#: server/views/projects.jade:28
+#: server/views/projects.jade:28 server/views/project.jade:19
+#: server/views/projects.jade:33
 msgid "Client"
+msgstr ""
+
+#: server/views/project.jade:11 server/views/project.jade:36
+msgid "Edit project"
+msgstr ""
+
+#: server/views/project.jade:32
+msgid "Register hours"
+msgstr ""
+
+#: server/views/project.jade:38
+msgid "All hours"
+msgstr ""
+
+#: server/views/project.jade:47
+msgid "By"
+msgstr ""
+
+#: server/views/projects.jade:9
+msgid "Your projects"
+msgstr ""
+
+#: server/views/index.jade:9
+msgid "Add working hours"
 msgstr ""

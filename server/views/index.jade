@@ -11,7 +11,7 @@ block content
     form(on-submit="createHours")
       .row
         .columns
-          label Prosjekt
+          label= __('Project')
           select#project(name="project" autofocus="{{has_project(false)}}" disabled="{{has_project(true)}}")
             | {{#projects}}
             | {{#.active}}
@@ -23,35 +23,35 @@ block content
             | {{/projects}}
       .row
         .columns.medium-3
-          label(for="date") Dato
+          label(for="date")= __('Date')
           input#date(type="date" value="{{date}}" autofocus="{{has_project(true)}}")
         .columns.medium-3.small-4
-          label(for="start") Start
+          label(for="start")= __('Start')
           input#start.timepicker(type="time" step="900")
         .columns.medium-3.small-4
-          label(for="end") End
+          label(for="end")= __('End')
           input#end.timepicker(type="time" step="900")
         .columns.medium-3.small-4
-          label(for="duration") Duration
+          label(for="duration")= __('Duration')
           input#duration(type="number" step="0.25" value="{{duration}}")
         .columns
-          label(for="comments") Kommentarer
+          label(for="comments")= __('Comments')
           textarea#comments(name="comments")
       .row
         .columns
-          button Lagre
+          button= __('Save')
 
     .row
       .columns
         table
           thead
             tr
-              th Project
-              th Date
-              th Start
-              th End
-              th Duration
-              th Registered
+              th= __('Project')
+              th= __('Date')
+              th= __('Start')
+              th= __('End')
+              th= __('Duration')
+              th= __('Registered')
           | {{#hours}}
           tr
             td {{project.name}}

@@ -16,20 +16,20 @@ block content
       .columns.medium-6
         .row
           .columns
-            h1 Nytt prosjekt
+            h1= __('New project')
 
         form(on-submit="createProject")
           .row
             .columns
-              label Prosjektnavn
+              label= __('Project name')
               input#name(type="text" name="name")
           .row
             .columns
-              label Kunde
+              label= __('Client')
               input#client(type="text" name="client")
           .row
             .columns
-              button Lagre
+              button= __('Save')
 
 block javascript
   script

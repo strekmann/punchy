@@ -47,6 +47,12 @@ html {
     padding: 0.625em 0;
 }
 
-li {
-    list-style: none;
+.project {
+    margin-bottom: rem-calc(10px);
+    h2 {
+        font-size: $h2-font-size - rem-calc(12px);
+    }
+    i {
+        font-size: $base-font-size * 2;
+    }
 }

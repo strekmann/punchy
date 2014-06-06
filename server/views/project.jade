@@ -1,0 +1,75 @@
+extends layout
+
+block content
+  section#project
+
+  script#template(type="text/ractive")
+    .row
+      .columns
+        | {{#project}}
+        | {{#expanded}}
+        h1= __('Edit project')
+        form(on-submit="updateProject")
+          .row
+            .columns
+              label= __('Project name')
+              input#name(type="text" name="name" value="{{name}}")
+          .row
+            .columns
+              label= __('Client')
+              input#client(type="text" name="client" value="{{client}}")
+          .row
+            .columns
+              button= __('Save')
+        | {{/expanded}}
+        | {{^expanded}}
+        h1 {{.name}}
+          | &nbsp;
+          small {{.client}}
+        a.button(href="/?project={{_id}}")
+          i.fa.fa-dashboard
+          | &nbsp;
+          = __('Register hours')
+        a.button.secondary(on-click="editToggle")
+          i.fa.fa-edit
+          | &nbsp;
+          = __('Edit project')
+
+        h2= __('Last registered hours')
+        table#hours
+          thead
+            tr
+              th= __('Date')
+              th= __('Start')
+              th= __('End')
+              th= __('Duration')
+              th= __('Registered')
+              th= __('By')
+          tfoot
+            tr
+              td
+              td
+              td
+              td#sum
+              td
+              td
+          tbody
+            | {{#hours}}
+            tr
+              td {{date}}
+              td {{timeformat(start)}}
+              td {{timeformat(end)}}
+              td {{duration}}
+              td {{datetimeformat(created)}}
+              td {{user.name}}
+            | {{/hours}}
+        | {{/expanded}}
+        | {{/project}}
+
+block javascript
+  script
+    | require('s7n').tracker.project(
+    != JSON.stringify(project)
+    | ,
+    != JSON.stringify(hours)
+    | );

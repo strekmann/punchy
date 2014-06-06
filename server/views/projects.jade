@@ -6,13 +6,18 @@ block content
   script#template(type="text/ractive")
     .row
       .columns.medium-6
-        ul
-          | {{#projects}}
-          li
-            a(href="/?project={{._id}}") {{name}} ({{client}})
-          | {{/projects}}
+        h1= __('Your projects')
+        | {{#projects}}
+        .project
+          .right
+            a.button.tiny(href="/?project={{._id}}")
+              i.fa.fa-dashboard
+          h2
+            a(href="/projects/{{_id}}") {{name}}
+          .client {{client}}
 
-    .row
+        | {{/projects}}
+
       .columns.medium-6
         .row
           .columns

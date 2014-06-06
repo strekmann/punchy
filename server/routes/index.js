@@ -86,6 +86,40 @@ router.post('/projects', function(req, res, next) {
     }
 });
 
+router.get('/projects/:id', function (req, res, next) {
+    Project.findOne({_id: req.params.id, users:req.user}, function (err, project) {
+        if (project) {
+            Hours.find({project: project._id})
+            .populate('user', 'name username')
+            .sort('-created')
+            .exec(function (err, hours) {
+                res.render('project', {project: project, hours: hours});
+            });
+        }
+        else {
+            res.status(404);
+        }
+    });
+});
+
+router.put('/projects/:id', function (req, res, next) {
+    Project.findOne({_id: req.params.id, users:req.user}, function (err, project) {
+        if (err) {
+            res.json(500, err);
+        }
+        if (project) {
+            project.name = req.body.name;
+            project.client = req.body.client;
+            project.save(function (err) {
+                res.json(project);
+            });
+        }
+        else {
+            res.status(403);
+        }
+    });
+});
+
 router.get('/login', function(req, res, next){
     res.render('login');
 });

@@ -3,6 +3,7 @@ var Tracker = Ractive.extend({
         error: [],
         list: [],
         projects: [],
+        project: null,
         hours: [],
         active: null,
         duration: 0,
@@ -18,6 +19,14 @@ var Tracker = Ractive.extend({
     createProject: function(project){
         return $.ajax({
             type: 'POST',
+            url: window.location.href,
+            data: project
+        });
+    },
+
+    updateProject: function (project) {
+        return $.ajax({
+            type: 'PUT',
             url: window.location.href,
             data: project
         });
@@ -165,3 +174,49 @@ module.exports.projects = function (projects) {
 
     return tracker;
 };
+
+module.exports.project = function (project, hours) {
+    var tracker = new Tracker({
+        el: '#project',
+        template: '#template',
+        data: {
+            project: project,
+            hours: hours
+        }
+    });
+
+    tracker.on('editToggle', function () {
+        tracker.toggle('expanded');
+    });
+
+    tracker.on('updateProject', function (event) {
+        event.original.preventDefault();
+
+        var node = $(event.node),
+            project = {
+                name: node.find('#name').val(),
+                client: node.find('#client').val()
+            };
+        tracker.updateProject(project)
+            .then(function(data){
+                // everything ok
+                tracker.toggle('expanded');
+                tracker.set('project', data);
+            }, function(xhr, status, err){
+                tracker.get('error').push(err);
+            });
+        //$('body').animate({scrollTop: 0}, 'fast');
+    });
+
+    // sum all durations for this project
+    $('#sum').text(function () {
+        var sum = 0;
+        $('#hours tbody td:nth-child(4)').each(function (el, cell) {
+            sum += parseFloat(cell.innerText);
+        });
+        return sum;
+    });
+
+    return tracker;
+};
+

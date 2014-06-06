@@ -32,7 +32,6 @@ router.get('/', function(req, res, next){
             }
         });
         Hours.find({user:req.user}).populate('project').sort('-created').exec(function(err, hours) {
-            console.log(hours);
             res.render('index', {
                 projects: projects,
                 hours: hours
@@ -42,7 +41,6 @@ router.get('/', function(req, res, next){
 });
 
 router.post('/', function(req, res, next) {
-    console.log(req.body);
     if (req.user) {
 
         var start = req.body.start;

@@ -31,7 +31,12 @@ router.get('/', function(req, res, next){
                 project.active = false;
             }
         });
-        Hours.find({user:req.user}).populate('project').sort('-created').exec(function(err, hours) {
+        Hours
+        .find({user:req.user})
+        .populate('project')
+        .sort('-created')
+        .limit(10)
+        .exec(function(err, hours) {
             res.render('index', {
                 projects: projects,
                 hours: hours

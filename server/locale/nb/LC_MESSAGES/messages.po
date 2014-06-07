@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Punchcard\n"
-"POT-Creation-Date: 2014-06-07 16:12+0000\n"
-"PO-Revision-Date: 2014-06-07 18:13+0200\n"
+"POT-Creation-Date: 2014-06-07 16:27+0000\n"
+"PO-Revision-Date: 2014-06-07 18:27+0200\n"
 "Last-Translator: Sigurd Gartmann <sigurdga-translate@sigurdga.no>\n"
 "Language-Team: Norsk, bokmål <>\n"
 "Language: nb\n"
@@ -14,10 +14,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Gtranslator 2.91.6\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#: server/views/layout.jade:22
-msgid "Boilerplate"
-msgstr "Støpeform"
 
 #: server/views/layout.jade:28 server/views/layout.jade:37
 msgid "Account"
@@ -74,30 +70,31 @@ msgid "Save"
 msgstr "Lagre"
 
 #: server/views/index.jade:14 server/views/index.jade:49
+#: server/views/index.jade:50
 msgid "Project"
 msgstr "Prosjekt"
 
 #: server/views/index.jade:26 server/views/index.jade:50
 #: server/views/project.jade:42 server/views/project.jade:49
-#: server/views/project.jade:80
+#: server/views/project.jade:80 server/views/index.jade:51
 msgid "Date"
 msgstr "Dato"
 
 #: server/views/index.jade:29 server/views/index.jade:51
 #: server/views/project.jade:43 server/views/project.jade:50
-#: server/views/project.jade:81
+#: server/views/project.jade:81 server/views/index.jade:52
 msgid "Start"
 msgstr "Start"
 
 #: server/views/index.jade:32 server/views/index.jade:52
 #: server/views/project.jade:44 server/views/project.jade:51
-#: server/views/project.jade:82
+#: server/views/project.jade:82 server/views/index.jade:53
 msgid "End"
 msgstr "Slutt"
 
 #: server/views/index.jade:35 server/views/index.jade:53
 #: server/views/project.jade:45 server/views/project.jade:52
-#: server/views/project.jade:83
+#: server/views/project.jade:83 server/views/index.jade:54
 msgid "Duration"
 msgstr "Varighet"
 
@@ -111,6 +108,7 @@ msgstr "Prosjekter"
 
 #: server/views/index.jade:54 server/views/project.jade:46
 #: server/views/project.jade:53 server/views/project.jade:84
+#: server/views/index.jade:55
 msgid "Registered"
 msgstr "Registrert"
 
@@ -156,3 +154,10 @@ msgstr "Legg inn arbeidstid"
 #: server/views/project.jade:42
 msgid "Your hours"
 msgstr "Din arbeidstid"
+
+#: server/views/index.jade:46
+msgid "Your ten last registrations across all projects"
+msgstr "Dine siste ti registreringer på tvers av alle prosjekter"
+
+#~ msgid "Boilerplate"
+#~ msgstr "Støpeform"

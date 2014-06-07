@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2014-06-07 16:12+0000\n"
+"POT-Creation-Date: 2014-06-07 16:27+0000\n"
 "PO-Revision-Date: 2014-05-21 10:35+0100\n"
 "Last-Translator: bergquis <jorgen.bergquist@ntnu.no>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,10 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.6.5\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#: server/views/layout.jade:22
-msgid "Boilerplate"
-msgstr ""
 
 #: server/views/layout.jade:28 server/views/layout.jade:37
 msgid "Account"
@@ -71,30 +67,31 @@ msgid "Save"
 msgstr ""
 
 #: server/views/index.jade:14 server/views/index.jade:49
+#: server/views/index.jade:50
 msgid "Project"
 msgstr ""
 
 #: server/views/index.jade:26 server/views/index.jade:50
 #: server/views/project.jade:42 server/views/project.jade:49
-#: server/views/project.jade:80
+#: server/views/project.jade:80 server/views/index.jade:51
 msgid "Date"
 msgstr ""
 
 #: server/views/index.jade:29 server/views/index.jade:51
 #: server/views/project.jade:43 server/views/project.jade:50
-#: server/views/project.jade:81
+#: server/views/project.jade:81 server/views/index.jade:52
 msgid "Start"
 msgstr ""
 
 #: server/views/index.jade:32 server/views/index.jade:52
 #: server/views/project.jade:44 server/views/project.jade:51
-#: server/views/project.jade:82
+#: server/views/project.jade:82 server/views/index.jade:53
 msgid "End"
 msgstr ""
 
 #: server/views/index.jade:35 server/views/index.jade:53
 #: server/views/project.jade:45 server/views/project.jade:52
-#: server/views/project.jade:83
+#: server/views/project.jade:83 server/views/index.jade:54
 msgid "Duration"
 msgstr ""
 
@@ -108,6 +105,7 @@ msgstr ""
 
 #: server/views/index.jade:54 server/views/project.jade:46
 #: server/views/project.jade:53 server/views/project.jade:84
+#: server/views/index.jade:55
 msgid "Registered"
 msgstr ""
 
@@ -152,4 +150,8 @@ msgstr ""
 
 #: server/views/project.jade:42
 msgid "Your hours"
+msgstr ""
+
+#: server/views/index.jade:46
+msgid "Your ten last registrations across all projects"
 msgstr ""

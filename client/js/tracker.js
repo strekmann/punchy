@@ -22,13 +22,19 @@ var Tracker = Ractive.extend({
         duration: 0,
         date: moment().format("YYYY-MM-DD"), // needed for default value - a nice trick by accident
         datetimeformat: function (datetime) {
-            return moment(datetime).format('LLL');
+            if (datetime) {
+                return moment(datetime).format('LLL');
+            }
         },
         dateformat: function (datetime) {
-            return moment(datetime).format('LL');
+            if (datetime) {
+                return moment(datetime).format('LL');
+            }
         },
         timeformat: function (datetime) {
-            return moment(datetime).format('HH:mm');
+            if (datetime) {
+                return moment(datetime).format('HH:mm');
+            }
         }
     },
 

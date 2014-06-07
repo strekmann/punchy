@@ -54,7 +54,8 @@ block content
               th= __('Registered')
           | {{#hours}}
           tr
-            td {{project.name}}
+            td
+              a(href="/projects/{{project._id}}") {{project.name}}
             td {{dateformat(date)}}
             td {{timeformat(start)}}
             td {{timeformat(end)}}

@@ -35,34 +35,73 @@ block content
           | &nbsp;
           = __('Edit project')
 
-        h2= __('All hours')
-        table#hours
-          thead
-            tr
-              th= __('Date')
-              th= __('Start')
-              th= __('End')
-              th= __('Duration')
-              th= __('Registered')
-              th= __('By')
-          tfoot
-            tr
-              td
-              td
-              td
-              td#sum
-              td
-              td
-          tbody
-            | {{#hours}}
-            tr
-              td {{dateformat(date)}}
-              td {{timeformat(start)}}
-              td {{timeformat(end)}}
-              td {{duration}}
-              td {{datetimeformat(created)}}
-              td {{user.name}}
-            | {{/hours}}
+        ul.tabs(data-tab data-options="deep_linking:true")
+          li.tab-title(class="{{#all}}active{{/all}}")
+            a(href="#all" on-click="toggleAll")= __('All hours')
+          li.tab-title(class="{{#own}}active{{/own}}")
+            a(href="#own" on-click="toggleAll")= __('Your hours')
+
+        {{#all}}
+        #all
+          table.hours
+            thead
+              tr
+                th= __('Date')
+                th= __('Start')
+                th= __('End')
+                th= __('Duration')
+                th= __('Registered')
+                th= __('By')
+            tfoot
+              tr
+                td
+                td
+                td
+                td.sum
+                td
+                td
+            tbody
+              | {{#hours}}
+              tr
+                td {{dateformat(date)}}
+                td {{timeformat(start)}}
+                td {{timeformat(end)}}
+                td {{duration}}
+                td {{datetimeformat(created)}}
+                td(data-userid="{{user._id}}") {{user.name}}
+              | {{/hours}}
+        {{/all}}
+
+        {{#own}}
+        #own
+          table.hours
+            thead
+              tr
+                th= __('Date')
+                th= __('Start')
+                th= __('End')
+                th= __('Duration')
+                th= __('Registered')
+                th= __('By')
+            tfoot
+              tr
+                td
+                td
+                td
+                td.sum
+                td
+                td
+            tbody
+              | {{#own_hours}}
+              tr
+                td {{dateformat(date)}}
+                td {{timeformat(start)}}
+                td {{timeformat(end)}}
+                td {{duration}}
+                td {{datetimeformat(created)}}
+                td(data-userid="{{user._id}}") {{user.name}}
+              | {{/own_hours}}
+        {{/own}}
         | {{/expanded}}
         | {{/project}}
 

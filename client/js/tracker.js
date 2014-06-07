@@ -1,3 +1,15 @@
+// sum durations
+var sum = function () {
+    $('.sum').text(function () {
+        var sum = 0;
+        var table = $(this).parents('table.hours');
+        table.find('tbody td:nth-child(4)').each(function (el, cell) {
+            sum += parseFloat(cell.innerText);
+        });
+        return sum;
+    });
+};
+
 var Tracker = Ractive.extend({
     data: {
         error: [],
@@ -5,6 +17,7 @@ var Tracker = Ractive.extend({
         projects: [],
         project: null,
         hours: [],
+        own_hours: [],
         active: null,
         duration: 0,
         date: moment().format("YYYY-MM-DD"), // needed for default value - a nice trick by accident
@@ -179,17 +192,38 @@ module.exports.projects = function (projects) {
 };
 
 module.exports.project = function (project, hours) {
+    var all, own;
+    var u = URI(window.location.href);
+    console.log(u, u.hash());
+    if (u.hash() === "#own") {
+        own = true;
+    }
+    else {
+        all = true;
+    }
+    var own_hours = _.filter(hours, function (h) {
+        return (h.user._id.match(/^gartmann/));
+    });
     var tracker = new Tracker({
         el: '#project',
         template: '#template',
         data: {
             project: project,
-            hours: hours
+            hours: hours,
+            own_hours: own_hours,
+            own: own,
+            all: all
         }
     });
 
     tracker.on('editToggle', function () {
         tracker.toggle('expanded');
+    });
+
+    tracker.on('toggleAll', function () {
+        tracker.toggle('own');
+        tracker.toggle('all');
+        sum();
     });
 
     tracker.on('updateProject', function (event) {
@@ -211,14 +245,7 @@ module.exports.project = function (project, hours) {
         //$('body').animate({scrollTop: 0}, 'fast');
     });
 
-    // sum all durations for this project
-    $('#sum').text(function () {
-        var sum = 0;
-        $('#hours tbody td:nth-child(4)').each(function (el, cell) {
-            sum += parseFloat(cell.innerText);
-        });
-        return sum;
-    });
+    sum();
 
     return tracker;
 };

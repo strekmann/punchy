@@ -22,27 +22,32 @@ var add_time = function (date, timestring) {
 
 // Routes
 router.get('/', function(req, res, next){
-    Project.find().sort('-created').lean().exec(function (err, projects) {
-        _.each(projects, function(project) {
-            if (project._id.toString() === req.query.project) {
-                project.active = true;
-            }
-            else {
-                project.active = false;
-            }
-        });
-        Hours
-        .find({user:req.user})
-        .populate('project')
-        .sort('-created')
-        .limit(10)
-        .exec(function(err, hours) {
-            res.render('index', {
-                projects: projects,
-                hours: hours
+    if (req.user) {
+        Project.find({users: req.user}).sort('-created').lean().exec(function (err, projects) {
+            _.each(projects, function(project) {
+                if (project._id.toString() === req.query.project) {
+                    project.active = true;
+                }
+                else {
+                    project.active = false;
+                }
+            });
+            Hours
+            .find({user:req.user})
+            .populate('project')
+            .sort('-created')
+            .limit(10)
+            .exec(function(err, hours) {
+                res.render('index', {
+                    projects: projects,
+                    hours: hours
+                });
             });
         });
-    });
+    }
+    else { // no user}
+        res.render('index');
+    }
 });
 
 router.post('/', function(req, res, next) {
@@ -69,7 +74,7 @@ router.post('/', function(req, res, next) {
 });
 
 router.get('/projects', function(req, res, next){
-    Project.find().sort('-created').exec(function (err, projects) {
+    Project.find({users: req.user}).sort('-created').exec(function (err, projects) {
         res.render('projects', {projects: projects});
     });
 });

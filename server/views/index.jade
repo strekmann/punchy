@@ -2,6 +2,26 @@ extends layout
 
 block content
   section#simple
+    .row
+      .colums
+        h1= __('Punchcard')
+
+        p= __('Punchcard is a service for tracking working hours. Either if you are a freelancer, or if you have to use a system that is unnecessary complicated elsewhere, this is a service that focuses on the core task: Tracking hours.')
+
+        h2= __('Simple to use')
+
+        p= __('Even though this is a webpage, and not a native mobile app, it should be fast and as few clicks as possible for you to register your time. When you log in, the main page is where you do the hours registration, and if you need to have a look at statistics for a project, you get there from the main page.')
+
+        h2= __('Reporting')
+
+        p= __('As this is a new service, there is only very simple reporting: You can get a list of registered hours per project in total and by yourself. What reporting would you need to start using this service?')
+
+        hr
+
+        p.text-center
+          = __('By')
+          | &nbsp;
+          a(href="http://strekmann.no") Strekmann
 
   script#template(type="text/ractive")
     .row

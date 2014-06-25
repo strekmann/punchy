@@ -2,12 +2,12 @@
 
 var http = require('http'),
     cluster = require('cluster'),
-    numCPU = Math.floor(require('os').cpus().length / 2),
+    numCPU = 1; //Math.floor(require('os').cpus().length / 2),
     env = process.env.NODE_ENV || 'development',
     i = 0;
 
 // Make sure we always have at least 2 workers.
-if (numCPU < 2) { numCPU = 2; }
+//if (numCPU < 2) { numCPU = 2; }
 
 // We only need 2 workers in development mode.
 if (env === 'development') { numCPU = 2; }

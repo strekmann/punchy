@@ -3,8 +3,8 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Punchcard\n"
-"POT-Creation-Date: 2014-06-07 16:27+0000\n"
+"Project-Id-Version: Punchy\n"
+"POT-Creation-Date: 2014-06-25 21:08+0000\n"
 "PO-Revision-Date: 2014-06-07 18:27+0200\n"
 "Last-Translator: Sigurd Gartmann <sigurdga-translate@sigurdga.no>\n"
 "Language-Team: Norsk, bokmål <>\n"
@@ -16,14 +16,17 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: server/views/layout.jade:28 server/views/layout.jade:37
+#: server/views/layout.jade:39
 msgid "Account"
 msgstr "Konto"
 
 #: server/views/layout.jade:30 server/views/layout.jade:39
+#: server/views/layout.jade:41
 msgid "Logout"
 msgstr "Logg ut"
 
 #: server/views/layout.jade:33 server/views/layout.jade:42
+#: server/views/layout.jade:44
 msgid "Login"
 msgstr "Logg inn"
 
@@ -65,50 +68,55 @@ msgstr "Google-data"
 
 #: server/views/account.jade:67 server/views/index.jade:42
 #: server/views/projects.jade:32 server/views/project.jade:23
-#: server/views/projects.jade:37
+#: server/views/projects.jade:37 server/views/index.jade:62
 msgid "Save"
 msgstr "Lagre"
 
 #: server/views/index.jade:14 server/views/index.jade:49
-#: server/views/index.jade:50
+#: server/views/index.jade:50 server/views/index.jade:34
+#: server/views/index.jade:70
 msgid "Project"
 msgstr "Prosjekt"
 
 #: server/views/index.jade:26 server/views/index.jade:50
 #: server/views/project.jade:42 server/views/project.jade:49
 #: server/views/project.jade:80 server/views/index.jade:51
+#: server/views/index.jade:46 server/views/index.jade:71
 msgid "Date"
 msgstr "Dato"
 
 #: server/views/index.jade:29 server/views/index.jade:51
 #: server/views/project.jade:43 server/views/project.jade:50
 #: server/views/project.jade:81 server/views/index.jade:52
+#: server/views/index.jade:49 server/views/index.jade:72
 msgid "Start"
 msgstr "Start"
 
 #: server/views/index.jade:32 server/views/index.jade:52
 #: server/views/project.jade:44 server/views/project.jade:51
 #: server/views/project.jade:82 server/views/index.jade:53
+#: server/views/index.jade:73
 msgid "End"
 msgstr "Slutt"
 
 #: server/views/index.jade:35 server/views/index.jade:53
 #: server/views/project.jade:45 server/views/project.jade:52
 #: server/views/project.jade:83 server/views/index.jade:54
+#: server/views/index.jade:55 server/views/index.jade:74
 msgid "Duration"
 msgstr "Varighet"
 
-#: server/views/index.jade:38
+#: server/views/index.jade:38 server/views/index.jade:58
 msgid "Comments"
 msgstr "Kommentarer"
 
-#: server/views/layout.jade:33
+#: server/views/layout.jade:33 server/views/layout.jade:35
 msgid "Projects"
 msgstr "Prosjekter"
 
 #: server/views/index.jade:54 server/views/project.jade:46
 #: server/views/project.jade:53 server/views/project.jade:84
-#: server/views/index.jade:55
+#: server/views/index.jade:55 server/views/index.jade:75
 msgid "Registered"
 msgstr "Registrert"
 
@@ -139,7 +147,7 @@ msgid "All hours"
 msgstr "All arbeidstid"
 
 #: server/views/project.jade:47 server/views/project.jade:54
-#: server/views/project.jade:85
+#: server/views/project.jade:85 server/views/index.jade:22
 msgid "By"
 msgstr "Av"
 
@@ -147,7 +155,7 @@ msgstr "Av"
 msgid "Your projects"
 msgstr "Dine prosjekter"
 
-#: server/views/index.jade:9
+#: server/views/index.jade:9 server/views/index.jade:29
 msgid "Add working hours"
 msgstr "Legg inn arbeidstid"
 
@@ -155,9 +163,42 @@ msgstr "Legg inn arbeidstid"
 msgid "Your hours"
 msgstr "Din arbeidstid"
 
-#: server/views/index.jade:46
+#: server/views/index.jade:46 server/views/index.jade:66
 msgid "Your ten last registrations across all projects"
 msgstr "Dine siste ti registreringer på tvers av alle prosjekter"
 
-#~ msgid "Boilerplate"
-#~ msgstr "Støpeform"
+#: server/views/index.jade:7 server/views/layout.jade:12
+#: server/views/layout.jade:30
+msgid "Punchy"
+msgstr "Punchy"
+
+#: server/views/index.jade:9
+msgid ""
+"Punchy is a service for tracking working hours. Either if you are a "
+"freelancer, or if you have to use a system that is unnecessary complicated "
+"elsewhere, this is a service that focuses on the core task: Tracking hours."
+msgstr ""
+
+#: server/views/index.jade:11
+msgid "Simple to use"
+msgstr ""
+
+#: server/views/index.jade:13
+msgid ""
+"Even though this is a webpage, and not a native mobile app, it should be "
+"fast and as few clicks as possible for you to register your time. When you "
+"log in, the main page is where you do the hours registration, and if you "
+"need to have a look at statistics for a project, you get there from the main "
+"page."
+msgstr ""
+
+#: server/views/index.jade:15
+msgid "Reporting"
+msgstr ""
+
+#: server/views/index.jade:17
+msgid ""
+"As this is a new service, there is only very simple reporting: You can get a "
+"list of registered hours per project in total and by yourself. What "
+"reporting would you need to start using this service?"
+msgstr ""

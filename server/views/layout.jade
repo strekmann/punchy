@@ -7,9 +7,11 @@ html(lang=lang dir=lang_dir)
       if title
         = title
         | &nbsp;
-        | - Punchcard
+        | -
+        | &nbsp;
+        = __('Punchy')
       else
-        | Punchcard
+        | Punchy
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     meta(name="author" content="Strekmann")
     link(href="/css/site.css" rel="stylesheet")
@@ -25,7 +27,7 @@ html(lang=lang dir=lang_dir)
       ul.title-area
         li.name
           h1
-            a(href="/") Punchcard
+            a(href="/")= __('Punchy')
 
       section.top-bar-section
         ul.left

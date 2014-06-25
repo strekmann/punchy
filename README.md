@@ -1,7 +1,7 @@
-Node Boilerplate
-================
+Punchy - the friendly time tracker
+==================================
 
-This is a boilerplate inteded to get you fast up to speed when developing node.js web applications.
+This is a very simple time tracker, that lacks most features you want
 
 Based on
 --------
@@ -9,14 +9,13 @@ Based on
 * node.js
 * express
 * mongoose
-* handlebars
 * passport
 
 Howto
 -----
 
-* Clone this repository: ``git clone git://github.com/strekmann/node-boilerplate.git``
-* Change directory: ``cd node-boilerplate``
+* Clone this repository: ``git clone git://github.com/strekmann/punchy.git``
+* Change directory: ``cd punchy``
 * Install dependencies: ``npm install``
 * Create a settings file, and remember to edit it: ``cp server/settings.example.js server/settings.js``
 * See that everything works on your side: ``make test``
@@ -37,4 +36,4 @@ Please use the issues and pull requests at Github.
 
 Copyright and license
 ---------------------
-Copyright © 2013 Jørgen Bergquist and Sigurd Gartmann, released under the [MIT license](https://github.com/strekmann/node-boilerplate/blob/master/LICENSE).
+Copyright © 2013 Jørgen Bergquist and Sigurd Gartmann, released under the [AGPL license](https://github.com/strekmann/punchy/blob/master/LICENSE).

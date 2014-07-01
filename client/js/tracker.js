@@ -66,11 +66,11 @@ var Tracker = Ractive.extend({
         });
     },
 
-    createHours: function (hours) {
+    createHours: function (data) {
         return $.ajax({
             type: 'POST',
             url: window.location.href,
-            data: hours
+            data: _.pick(data, 'project', 'date', 'start', 'end', 'duration', 'comment')
         });
     },
 
@@ -171,18 +171,9 @@ module.exports.simple = function (projects, hours) {
 
     tracker.on('createHours', function (event) {
         event.original.preventDefault();
+        event.context.project = $('#project').val();
 
-        var node = $(event.node),
-            hours = {
-                project: node.find('#project').val(),
-                date: node.find('#date').val(),
-                start: node.find('#start').val(),
-                end: node.find('#end').val(),
-                duration: node.find('#duration').val(),
-                comment: node.find('#comment').val()
-            };
-
-        tracker.createHours(hours)
+        tracker.createHours(event.context)
             .then(function(data){
                 // everything ok
                 tracker.get('hours').unshift(data);

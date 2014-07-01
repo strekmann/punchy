@@ -24,10 +24,29 @@ block content
           a(href="http://strekmann.no") Strekmann
 
   script#template(type="text/ractive")
+
+    {{^expanded}}
+    {{#projects.length}}
+    .row
+      .columns
+        .right
+          a.button(on-click="toggleNew")= __("Add working hours")
+    {{/projects.length}}
+    {{/expanded}}
+    {{^hours.length}}
+    .row
+      .columns.small-8.small-centered
+        {{#projects.length}}
+        p.help= __("You have no registered hours yet. Add one by clicking the big button above")
+        {{/projects.length}}
+        {{^projects.length}}
+        p.help= __("Before registering hours, you need to register at least one project from the projects page")
+        {{/projects.length}}
+    {{/hours.length}}
+    {{#expanded}}
     .row
       .columns
         h1= __('Add working hours')
-
     form(on-submit="createHours")
       .row
         .columns
@@ -55,11 +74,13 @@ block content
           label(for="duration")= __('Duration')
           input#duration(type="number" step="0.25" value="{{duration}}")
         .columns
-          label(for="comments")= __('Comments')
-          textarea#comments(name="comments")
+          label(for="comment")= __('Comments')
+          textarea#comment(name="comment")
       .row
         .columns
           button= __('Save')
+          button.secondary(type="reset" on-click="toggleNew")= __('Cancel')
+    {{/expanded}}
 
     .row
       .columns
@@ -73,15 +94,55 @@ block content
               th= __('End')
               th= __('Duration')
               th= __('Registered')
+              th
           | {{#hours}}
-          tr
+          | {{^.expanded}}
+          tr(data-comment="{{comment ? comment : ''}}")
             td
               a(href="/projects/{{project._id}}") {{project.name}}
-            td {{dateformat(date)}}
+            td(data-date="{{isoformat(date)}}") {{dateformat(date)}}
             td {{timeformat(start)}}
             td {{timeformat(end)}}
             td {{duration}}
             td {{datetimeformat(created)}}
+            td
+              a(href="/edit/{{._id}}" title=__('Edit') on-click="toggleEdit")
+                i.fa.fa-edit
+          | {{/.expanded}}
+          | {{#.expanded}}
+          tr
+            td(colspan="7")
+              .row
+                .columns
+                  h1
+                    | {{.project.name}}
+                    | &nbsp;
+                    small
+                      = __('registered')
+                      | &nbsp;
+                      | {{datetimeformat(created)}}
+              form(on-submit="updateHours")
+                .row
+                  .columns.medium-3
+                    label(for="date")= __('Date')
+                    input#date(type="date" value="{{isodateformat(date)}}")
+                  .columns.medium-3.small-4
+                    label(for="start")= __('Start')
+                    input#start.timepicker(type="time" step="900" value="{{timeformat(.start)}}")
+                  .columns.medium-3.small-4
+                    label(for="end")= __('End')
+                    input#end.timepicker(type="time" step="900" value="{{timeformat(.end)}}")
+                  .columns.medium-3.small-4
+                    label(for="duration")= __('Duration')
+                    input#duration(type="number" step="0.25" value="{{.duration}}")
+                  .columns
+                    label(for="comment")= __('Comments')
+                    textarea#comment(name="comment" value="{{.comment}}")
+                .row
+                  .columns
+                    button= __('Save')
+                    button.secondary(type="reset" on-click="toggleEdit")= __('Cancel')
+          | {{/.expanded}}
           | {{/hours}}
 
 block javascript

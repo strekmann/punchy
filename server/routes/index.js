@@ -63,11 +63,32 @@ router.post('/', function(req, res, next) {
         hours.start = add_time(req.body.date, req.body.start);
         hours.end = add_time(req.body.date, req.body.end);
         hours.duration = req.body.duration;
-        hours.comments = req.body.comments;
+        hours.comment = req.body.comment;
 
         hours.save(function (err) {
             hours.populate('project', 'name', function(err, hours) {
                 res.json(hours);
+            });
+        });
+    }
+});
+
+router.put('/:id', function (req, res, next) {
+    if (!req.user) {
+        res.json(403, 'Forbidden');
+    }
+    else {
+        Hours.findById(req.params.id, function (err, hours) {
+            hours.date = req.body.date;
+            hours.start = req.body.start;
+            hours.end = req.body.end;
+            hours.duration = req.body.duration;
+            hours.comment = req.body.comment;
+
+            hours.save(function (err) {
+                hours.populate('project', 'name', function (err, hours) {
+                    res.json(hours);
+                });
             });
         });
     }

@@ -21,6 +21,11 @@ var Tracker = Ractive.extend({
         active: null,
         duration: 0,
         date: moment().format("YYYY-MM-DD"), // needed for default value - a nice trick by accident
+        isodateformat: function (date) {
+            if (date) {
+                return moment(date).format("YYYY-MM-DD");
+            }
+        },
         datetimeformat: function (datetime) {
             if (datetime) {
                 return moment(datetime).format('LLL');
@@ -59,6 +64,14 @@ var Tracker = Ractive.extend({
             type: 'POST',
             url: window.location.href,
             data: hours
+        });
+    },
+
+    updateHours: function (data) {
+        return $.ajax({
+            type: 'PUT',
+            url: window.location.href + data._id,
+            data: _.pick(data, 'date', 'start', 'end', 'duration', 'comment')
         });
     }
 });
@@ -139,6 +152,16 @@ module.exports.simple = function (projects, hours) {
         }
     });
 
+    tracker.on('toggleNew', function (event) {
+        event.original.preventDefault();
+        tracker.toggle('expanded');
+    });
+
+    tracker.on('toggleEdit', function (event) {
+        event.original.preventDefault();
+        tracker.toggle(event.keypath + '.expanded');
+    });
+
     tracker.on('createHours', function (event) {
         event.original.preventDefault();
 
@@ -149,7 +172,7 @@ module.exports.simple = function (projects, hours) {
                 start: node.find('#start').val(),
                 end: node.find('#end').val(),
                 duration: node.find('#duration').val(),
-                comments: node.find('#comments').val()
+                comment: node.find('#comment').val()
             };
 
         tracker.createHours(hours)
@@ -160,6 +183,18 @@ module.exports.simple = function (projects, hours) {
                 tracker.get('error').push(err);
             });
         //$('body').animate({scrollTop: 0}, 'fast');
+    });
+
+    tracker.on('updateHours', function (event) {
+        event.original.preventDefault();
+
+        tracker.updateHours(event.context)
+            .then(function(data) {
+                console.log(data);
+                tracker.set(event.keypath, data);
+            }, function(xhr, status, err) {
+                tracker.get('error').push(err);
+            });
     });
 
     return tracker;

@@ -59,6 +59,13 @@ var Tracker = Ractive.extend({
         });
     },
 
+    deleteProject: function (project_id) {
+        return $.ajax({
+            type: 'DELETE',
+            url: window.location.href + '/' + project_id
+        });
+    },
+
     createHours: function (hours) {
         return $.ajax({
             type: 'POST',
@@ -227,6 +234,15 @@ module.exports.projects = function (projects) {
                 tracker.get('error').push(err);
             });
         //$('body').animate({scrollTop: 0}, 'fast');
+    });
+
+    tracker.on('deleteProject', function (event) {
+        tracker.deleteProject(event.context._id)
+            .then(function (data) {
+                tracker.get('projects').splice(event.keypath.split('.').pop());
+            }, function (xhr, status, err) {
+                tracker.get('error').push(xhr.responseText);
+            });
     });
 
     return tracker;

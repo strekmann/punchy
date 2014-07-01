@@ -12,6 +12,8 @@ block content
           .right
             a.button.tiny(href="/?project={{._id}}")
               i.fa.fa-dashboard
+            a.button.tiny.secondary(on-click="deleteProject")
+              i.fa.fa-trash-o
           h2
             a(href="/projects/{{_id}}") {{name}}
           .client {{client}}

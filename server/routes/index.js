@@ -151,6 +151,30 @@ router.put('/projects/:id', function (req, res, next) {
     });
 });
 
+router.delete('/projects/:id', function (req, res, next) {
+    Hours.find({'project': req.params.id}, function (err, hours) {
+        if (err) {
+            res.json(400, err);
+        }
+        if (hours.length) {
+            res.json(400, 'Project has to be empty');
+        }
+        else {
+            Project.findById(req.params.id, function (err, project) {
+                if (err) {
+                    res.json(400, err);
+                }
+                project.remove(function (err) {
+                    if (err) {
+                        res.json(500, err);
+                    }
+                    res.json(200, {});
+                });
+            });
+        }
+    });
+});
+
 router.get('/login', function(req, res, next){
     res.render('login');
 });

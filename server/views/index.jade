@@ -128,10 +128,10 @@ block content
                     input#date(type="date" value="{{isodateformat(date)}}")
                   .columns.medium-3.small-4
                     label(for="start")= __('Start')
-                    input#start.timepicker(type="time" step="900" value="{{timeformat(.start)}}")
+                    input#start.start.timepicker(type="time" name="start" step="900" value="{{timeformat(.start)}}" on-change="updateDuration")
                   .columns.medium-3.small-4
                     label(for="end")= __('End')
-                    input#end.timepicker(type="time" step="900" value="{{timeformat(.end)}}")
+                    input#end.end.timepicker(type="time" name="end" step="900" value="{{timeformat(.end)}}" on-change="updateDuration")
                   .columns.medium-3.small-4
                     label(for="duration")= __('Duration')
                     input#duration(type="number" step="0.25" value="{{.duration}}")

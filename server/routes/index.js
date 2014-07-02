@@ -80,8 +80,8 @@ router.put('/:id', function (req, res, next) {
     else {
         Hours.findById(req.params.id, function (err, hours) {
             hours.date = req.body.date;
-            hours.start = req.body.start;
-            hours.end = req.body.end;
+            hours.start = add_time(req.body.date, req.body.start);
+            hours.end = add_time(req.body.date, req.body.end);
             hours.duration = req.body.duration;
             hours.comment = req.body.comment;
 

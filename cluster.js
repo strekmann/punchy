@@ -2,7 +2,7 @@
 
 var http = require('http'),
     cluster = require('cluster'),
-    numCPU = 1; //Math.floor(require('os').cpus().length / 2),
+    numCPU = 1, //Math.floor(require('os').cpus().length / 2),
     env = process.env.NODE_ENV || 'development',
     i = 0;
 

@@ -167,6 +167,7 @@ module.exports.simple = function (projects, hours) {
         event.original.preventDefault();
         tracker.toggle('expanded');
         if (tracker.get('expanded')) {
+            $('#date').fdatepicker({language: 'nb', weekStart: 1, format: 'yyyy-mm-dd'});
             tracker.create_timepickers($('#start.timepicker'), $('#end.timepicker'));
         }
     });
@@ -182,6 +183,7 @@ module.exports.simple = function (projects, hours) {
     tracker.on('createHours', function (event) {
         event.original.preventDefault();
         event.context.project = $('#project').val();
+        event.context.date = $(event.node).find("#date").val();
         event.context.start = $(event.node).find("#start").val();
         event.context.end = $(event.node).find("#end").val();
 

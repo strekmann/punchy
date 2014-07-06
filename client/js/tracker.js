@@ -173,8 +173,12 @@ module.exports.simple = function (projects, hours) {
         event.original.preventDefault();
         tracker.toggle('expanded');
         if (tracker.get('expanded')) {
-            $('#date').fdatepicker({language: 'nb', weekStart: 1, format: 'yyyy-mm-dd'});
-            tracker.create_timepickers($('#start.timepicker'), $('#end.timepicker'));
+            if (!Modernizr.inputtypes.date) {
+                $('#date').fdatepicker({language: 'nb', weekStart: 1, format: 'yyyy-mm-dd'});
+            }
+            if (!Modernizr.touch || !Modernizr.inputtypes.time) {
+                tracker.create_timepickers($('#start.timepicker'), $('#end.timepicker'));
+            }
         }
     });
 

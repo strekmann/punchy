@@ -191,6 +191,13 @@ module.exports.simple = function (projects, hours) {
             .then(function(data){
                 // everything ok
                 tracker.get('hours').unshift(data);
+
+                // should not reset everything: date and project should stay
+                //$('form#createHours').trigger('reset');
+                $(event.node).find("#start").val('');
+                $(event.node).find("#end").val('');
+                $(event.node).find("#duration").val('');
+                $(event.node).find("#comment").val('');
             }, function(xhr, status, err){
                 tracker.get('error').push(err);
             });

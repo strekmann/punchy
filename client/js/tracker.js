@@ -74,7 +74,7 @@ var Tracker = Ractive.extend({
     createHours: function (data) {
         return $.ajax({
             type: 'POST',
-            url: window.location.href,
+            url: '/',
             data: _.pick(data, 'project', 'date', 'start', 'end', 'duration', 'comment')
         });
     },
@@ -82,7 +82,7 @@ var Tracker = Ractive.extend({
     updateHours: function (data) {
         return $.ajax({
             type: 'PUT',
-            url: window.location.href + data._id,
+            url: '/' + data._id,
             data: _.pick(data, 'date', 'start', 'end', 'duration', 'comment')
         });
     },
@@ -305,7 +305,6 @@ module.exports.projects = function (projects) {
 module.exports.project = function (project, hours) {
     var all, own;
     var u = URI(window.location.href);
-    console.log(u, u.hash());
     if (u.hash() === "#own") {
         own = true;
     }
@@ -327,6 +326,14 @@ module.exports.project = function (project, hours) {
         }
     });
 
+    tracker.on('toggleEdit', function (event) {
+        event.original.preventDefault();
+        tracker.toggle(event.keypath + '.expanded');
+        if (tracker.get(event.keypath + '.expanded')) {
+            //tracker.create_timepickers($(event.node).find('.start'), $(event.node).find('.end'));
+        }
+    });
+
     tracker.on('editToggle', function () {
         tracker.toggle('expanded');
     });
@@ -335,6 +342,19 @@ module.exports.project = function (project, hours) {
         tracker.toggle('own');
         tracker.toggle('all');
         sum();
+    });
+
+    tracker.on('updateHours', function (event) {
+        event.original.preventDefault();
+        event.context.start = $(event.node).find(".start").val();
+        event.context.end = $(event.node).find(".end").val();
+
+        tracker.updateHours(event.context)
+            .then(function(data) {
+                tracker.set(event.keypath, data);
+            }, function(xhr, status, err) {
+                tracker.get('error').push(err);
+            });
     });
 
     tracker.on('updateProject', function (event) {

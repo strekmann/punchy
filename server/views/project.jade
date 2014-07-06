@@ -6,27 +6,26 @@ block content
   script#template(type="text/ractive")
     .row
       .columns
-        | {{#project}}
         | {{#expanded}}
         h1= __('Edit project')
         form(on-submit="updateProject")
           .row
             .columns
               label= __('Project name')
-              input#name(type="text" name="name" value="{{name}}")
+              input#name(type="text" name="name" value="{{project.name}}")
           .row
             .columns
               label= __('Client')
-              input#client(type="text" name="client" value="{{client}}")
+              input#client(type="text" name="client" value="{{project.client}}")
           .row
             .columns
               button= __('Save')
         | {{/expanded}}
         | {{^expanded}}
-        h1 {{.name}}
+        h1 {{project.name}}
           | &nbsp;
           small {{.client}}
-        a.button(href="/?project={{_id}}")
+        a.button(href="/?project={{project._id}}")
           i.fa.fa-dashboard
           | &nbsp;
           = __('Register hours')
@@ -52,6 +51,7 @@ block content
                 th= __('Duration')
                 th= __('Registered')
                 th= __('By')
+                th
             tfoot
               tr
                 td
@@ -62,13 +62,52 @@ block content
                 td
             tbody
               | {{#hours}}
-              tr
-                td {{dateformat(date)}}
+              | {{^.expanded}}
+              tr(intro-outro="fade" data-comment="{{comment ? comment : ''}}")
+                td(data-date="{{isoformat(date)}}") {{dateformat(date)}}
                 td {{timeformat(start)}}
                 td {{timeformat(end)}}
                 td {{duration}}
-                td {{datetimeformat(created)}}
+                td {{humanformat(created)}}
                 td(data-userid="{{user._id}}") {{user.name}}
+                td
+                  a(href="/edit/{{._id}}" title=__('Edit') on-click="toggleEdit")
+                    i.fa.fa-edit
+              | {{/.expanded}}
+              | {{#.expanded}}
+              tr(intro-outro="fade")
+                td(colspan="7")
+                  .row
+                    .columns
+                      h1
+                        | {{../../project.name}}
+                        | &nbsp;
+                        small
+                          = __('registered')
+                          | &nbsp;
+                          | {{datetimeformat(created)}}
+                  form(on-submit="updateHours")
+                    .row
+                      .columns.medium-3
+                        label(for="date")= __('Date')
+                        input#date(type="date" value="{{isodateformat(.date)}}")
+                      .columns.medium-3.small-4
+                        label(for="start")= __('Start')
+                        input#start.start.timepicker(type="time" name="start" step="900" value="{{timeformat(.start)}}" on-change="updateDuration")
+                      .columns.medium-3.small-4
+                        label(for="end")= __('End')
+                        input#end.end.timepicker(type="time" name="end" step="900" value="{{timeformat(.end)}}" on-change="updateDuration")
+                      .columns.medium-3.small-4
+                        label(for="duration")= __('Duration')
+                        input#duration(type="number" step="0.25" value="{{.duration}}")
+                      .columns
+                        label(for="comment")= __('Comments')
+                        textarea#comment(name="comment" value="{{.comment}}")
+                    .row
+                      .columns
+                        button= __('Save')
+                        button.secondary(type="reset" on-click="toggleEdit")= __('Cancel')
+              | {{/.expanded}}
               | {{/hours}}
         {{/all}}
 
@@ -103,7 +142,6 @@ block content
               | {{/own_hours}}
         {{/own}}
         | {{/expanded}}
-        | {{/project}}
 
 block javascript
   script

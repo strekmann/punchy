@@ -86,9 +86,14 @@ router.put('/:id', function (req, res, next) {
             hours.comment = req.body.comment;
 
             hours.save(function (err) {
-                hours.populate('project', 'name', function (err, hours) {
-                    res.json(hours);
-                });
+                if (err) {
+                    res.json(500, err);
+                }
+                else {
+                    hours.populate('project', 'name').populate('user', 'name', function (err, hours) {
+                        res.json(hours);
+                    });
+                }
             });
         });
     }

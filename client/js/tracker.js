@@ -40,6 +40,11 @@ var Tracker = Ractive.extend({
             if (datetime) {
                 return moment(datetime).format('HH:mm');
             }
+        },
+        humanformat: function (datetime) {
+            if (datetime) {
+                return moment(datetime).fromNow();
+            }
         }
     },
 
@@ -148,6 +153,7 @@ module.exports.simple = function (projects, hours) {
     var tracker = new Tracker({
         el: '#simple',
         template: '#template',
+        noIntro: true,
         data: {
             projects: projects,
             hours: hours,

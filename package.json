@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "node cluster.js",
-    "test": "NODE_ENV=test ./node_modules/.bin/mocha"
+    "test": "NODE_ENV=test mocha"
   },
   "main": "cluster.js",
   "dependencies": {
@@ -35,23 +35,6 @@
     "uslug": "1.0.x"
   },
   "devDependencies": {
-    "bower": "",
-    "browserify": "",
-    "chai": "",
-    "cheerio": "",
-    "groc": "strekmann/groc",
-    "grunt-browserify": "",
-    "grunt-cli": "",
-    "grunt-contrib-concat": "",
-    "grunt-contrib-copy": "",
-    "grunt-contrib-jshint": "",
-    "grunt-contrib-uglify": "",
-    "grunt-contrib-watch": "",
-    "grunt-i18n-abide": "",
-    "grunt-sass": "",
-    "mocha": "",
-    "supertest": "",
-    "through": "",
-    "uglify-js": ""
+    "cheerio": ""
   }
 }

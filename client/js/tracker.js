@@ -208,6 +208,8 @@ module.exports.simple = function (projects, hours) {
                 $(event.node).find("#end").val('');
                 $(event.node).find("#duration").val('');
                 $(event.node).find("#comment").val('');
+                $(event.node).find("#date").focus();
+                alerts.get('success').push(data.project.name + ' ' + moment(data.date).format('LL') + ' ' + moment(data.created).fromNow());
             }, function(xhr, status, err){
                 tracker.get('error').push(err);
             });

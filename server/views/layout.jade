@@ -46,7 +46,53 @@ html(lang=lang dir=lang_dir)
             li
               a(href="/login")= __("Login")
 
+    .row
+      .columns
+        #alerts
+          if messages
+            if messages.error
+              each message in messages.error
+                .alert-box.alert(data-alert)= message
+                  a.close &times;
+            if messages.warning
+              each message in messages.warning
+                .alert-box.warning(data-alert)= message
+                  a.close &times;
+            if messages.success
+              each message in messages.success
+                .alert-box.success(data-alert)= message
+                  a.close &times;
+            if messages.info
+              each message in messages.info
+                .alert-box.info(data-alert)= message
+                  a.close &times;
+
     block content
+
+    script#alerttemplate(type="text/ractive")
+      | {{#error}}
+      .alert-box.alert(intro-outro="fade" on-click="closeMessage") {{.}}
+        a.close
+          i.fa.fa-times-circle-o
+      | {{/error}}
+
+      | {{#warning}}
+      .alert-box.warning(intro-outro="fade" on-click="closeMessage") {{.}}
+        a.close
+          i.fa.fa-times-circle-o
+      | {{/warning}}
+
+      | {{#success}}
+      .alert-box.success(intro-outro="fade" on-click="closeMessage") {{.}}
+        a.close
+          i.fa.fa-times-circle-o
+      | {{/success}}
+
+      | {{#info}}
+      .alert-box.info(intro-outro="fade" on-click="closeMessage") {{.}}
+        a.close
+          i.fa.fa-times-circle-o
+      | {{/info}}
 
     script(src="/js/vendor.js")
     script(src="/js/site.js")
@@ -67,5 +113,10 @@ html(lang=lang dir=lang_dir)
           scroll_added = false;
         }
       });
+
+    script
+      | var alerts = require('s7n').alerts(
+      != JSON.stringify(messages)
+      | );
 
     block javascript

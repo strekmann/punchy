@@ -73,32 +73,6 @@ router.post('/', function(req, res, next) {
     }
 });
 
-router.put('/:id', function (req, res, next) {
-    if (!req.user) {
-        res.json(403, 'Forbidden');
-    }
-    else {
-        Hours.findById(req.params.id, function (err, hours) {
-            hours.date = req.body.date;
-            hours.start = add_time(req.body.date, req.body.start);
-            hours.end = add_time(req.body.date, req.body.end);
-            hours.duration = req.body.duration;
-            hours.comment = req.body.comment;
-
-            hours.save(function (err) {
-                if (err) {
-                    res.json(500, err);
-                }
-                else {
-                    hours.populate('project', 'name').populate('user', 'name', function (err, hours) {
-                        res.json(hours);
-                    });
-                }
-            });
-        });
-    }
-});
-
 router.get('/projects', function(req, res, next){
     Project.find({users: req.user}).sort('-created').exec(function (err, projects) {
         res.render('projects', {projects: projects});
@@ -226,5 +200,31 @@ router.route('/account')
             });
         });
     });
+
+router.put('/:id', function (req, res, next) {
+    if (!req.user) {
+        res.json(403, 'Forbidden');
+    }
+    else {
+        Hours.findById(req.params.id, function (err, hours) {
+            hours.date = req.body.date;
+            hours.start = add_time(req.body.date, req.body.start);
+            hours.end = add_time(req.body.date, req.body.end);
+            hours.duration = req.body.duration;
+            hours.comment = req.body.comment;
+
+            hours.save(function (err) {
+                if (err) {
+                    res.json(500, err);
+                }
+                else {
+                    hours.populate('project', 'name').populate('user', 'name', function (err, hours) {
+                        res.json(hours);
+                    });
+                }
+            });
+        });
+    }
+});
 
 module.exports = router;

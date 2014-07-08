@@ -64,3 +64,28 @@ html {
 .datepicker-close {
     display: none;
 }
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#hours {
+    .hours {
+        margin-bottom: rem-calc(30px);
+        h2 {
+            font-size: $h2-font-size - rem-calc(12px);
+            line-height: 1;
+        }
+        .button {
+            margin-bottom: 2px;
+        }
+        .duration {
+            font-size: $h2-font-size - rem-calc(12px);
+            margin-top: 0.2rem;
+            margin-bottom: 0.5rem;
+            margin-right: 0.5rem;
+        }
+    }
+}

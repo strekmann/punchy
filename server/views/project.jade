@@ -50,7 +50,8 @@ block content
               th= __('Start')
               th= __('End')
               th= __('Duration')
-              th.hide-for-small-only= __('Registered')
+              th
+                .hide-for-small-only= __('Registered')
               th= __('By')
               th
           tfoot
@@ -59,7 +60,7 @@ block content
               td
               td
               td.sum
-              td.hide-for-small-only
+              td
               td
               td
           tbody
@@ -70,7 +71,8 @@ block content
               td {{timeformat(start)}}
               td {{timeformat(end)}}
               td {{duration}}
-              td.hide-for-small-only {{humanformat(created)}}
+              td
+                .hide-for-small-only {{humanformat(created)}}
               td(data-userid="{{user._id}}") {{user.name}}
               td
                 a(href="/edit/{{._id}}" title=__('Edit') on-click="toggleEdit")
@@ -78,7 +80,7 @@ block content
             | {{/.expanded}}
             | {{#.expanded}}
             tr(intro-outro="fade")
-              td(colspan="6")
+              td(colspan="7")
                 form(on-submit="updateHours")
                   fieldset
                     legend {{../../project.name}} {{datetimeformat(created)}}
@@ -114,7 +116,8 @@ block content
               th= __('Start')
               th= __('End')
               th= __('Duration')
-              th.hide-for-small-only= __('Registered')
+              th
+                .hide-for-small-only= __('Registered')
               th= __('By')
           tfoot
             tr
@@ -131,7 +134,8 @@ block content
               td {{timeformat(start)}}
               td {{timeformat(end)}}
               td {{duration}}
-              td.hide-for-small-only {{datetimeformat(created)}}
+              td
+                .hide-for-small-only {{datetimeformat(created)}}
               td(data-userid="{{user._id}}") {{user.name}}
             | {{/hours}}
         | {{/all}}

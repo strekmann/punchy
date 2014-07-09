@@ -35,58 +35,53 @@ block content
           = __('Edit project')
 
         ul.tabs(data-tab data-options="deep_linking:true")
-          li.tab-title(class="{{#all}}active{{/all}}")
-            a(href="#all" on-click="toggleAll")= __('All hours')
           li.tab-title(class="{{#own}}active{{/own}}")
             a(href="#own" on-click="toggleAll")= __('Your hours')
+          li.tab-title(class="{{#all}}active{{/all}}")
+            a(href="#all" on-click="toggleAll")= __('All hours')
 
-        {{#all}}
         #all
-          table.hours
-            thead
-              tr
-                th= __('Date')
-                th= __('Start')
-                th= __('End')
-                th= __('Duration')
-                th= __('Registered')
-                th= __('By')
-                th
-            tfoot
-              tr
-                td
-                td
-                td
-                td.sum
-                td
-                td
-            tbody
-              | {{#hours}}
-              | {{^.expanded}}
-              tr(intro-outro="fade" data-comment="{{comment ? comment : ''}}")
-                td(data-date="{{isoformat(date)}}") {{dateformat(date)}}
-                td {{timeformat(start)}}
-                td {{timeformat(end)}}
-                td {{duration}}
-                td {{humanformat(created)}}
-                td(data-userid="{{user._id}}") {{user.name}}
-                td
-                  a(href="/edit/{{._id}}" title=__('Edit') on-click="toggleEdit")
-                    i.fa.fa-edit
-              | {{/.expanded}}
-              | {{#.expanded}}
-              tr(intro-outro="fade")
-                td(colspan="7")
-                  .row
-                    .columns
-                      h1
-                        | {{../../project.name}}
-                        | &nbsp;
-                        small
-                          = __('registered')
-                          | &nbsp;
-                          | {{datetimeformat(created)}}
-                  form(on-submit="updateHours")
+        #own
+        | {{#own}}
+        table.hours
+          thead
+            tr
+              th= __('Date')
+              th= __('Start')
+              th= __('End')
+              th= __('Duration')
+              th.hide-for-small-only= __('Registered')
+              th= __('By')
+              th
+          tfoot
+            tr
+              td
+              td
+              td
+              td.sum
+              td.hide-for-small-only
+              td
+              td
+          tbody
+            | {{#own_hours}}
+            | {{^.expanded}}
+            tr(intro-outro="fade" data-comment="{{comment ? comment : ''}}")
+              td(data-date="{{isoformat(date)}}") {{dateformat(date)}}
+              td {{timeformat(start)}}
+              td {{timeformat(end)}}
+              td {{duration}}
+              td.hide-for-small-only {{humanformat(created)}}
+              td(data-userid="{{user._id}}") {{user.name}}
+              td
+                a(href="/edit/{{._id}}" title=__('Edit') on-click="toggleEdit")
+                  i.fa.fa-edit
+            | {{/.expanded}}
+            | {{#.expanded}}
+            tr(intro-outro="fade")
+              td(colspan="6")
+                form(on-submit="updateHours")
+                  fieldset
+                    legend {{../../project.name}} {{datetimeformat(created)}}
                     .row
                       .columns.medium-3
                         label(for="date")= __('Date')
@@ -105,42 +100,41 @@ block content
                         textarea#comment(name="comment" value="{{.comment}}")
                     .row
                       .columns
-                        button= __('Save')
-                        button.secondary(type="reset" on-click="toggleEdit")= __('Cancel')
-              | {{/.expanded}}
-              | {{/hours}}
-        {{/all}}
+                        button.small= __('Save')
+                        button.small.secondary(type="reset" on-click="toggleEdit")= __('Cancel')
+            | {{/.expanded}}
+            | {{/own_hours}}
+        | {{/own}}
 
-        {{#own}}
-        #own
-          table.hours
-            thead
-              tr
-                th= __('Date')
-                th= __('Start')
-                th= __('End')
-                th= __('Duration')
-                th= __('Registered')
-                th= __('By')
-            tfoot
-              tr
-                td
-                td
-                td
-                td.sum
-                td
-                td
-            tbody
-              | {{#own_hours}}
-              tr
-                td {{dateformat(date)}}
-                td {{timeformat(start)}}
-                td {{timeformat(end)}}
-                td {{duration}}
-                td {{datetimeformat(created)}}
-                td(data-userid="{{user._id}}") {{user.name}}
-              | {{/own_hours}}
-        {{/own}}
+        | {{#all}}
+        table.hours
+          thead
+            tr
+              th= __('Date')
+              th= __('Start')
+              th= __('End')
+              th= __('Duration')
+              th.hide-for-small-only= __('Registered')
+              th= __('By')
+          tfoot
+            tr
+              td
+              td
+              td
+              td.sum
+              td
+              td
+          tbody
+            | {{#hours}}
+            tr
+              td {{dateformat(date)}}
+              td {{timeformat(start)}}
+              td {{timeformat(end)}}
+              td {{duration}}
+              td.hide-for-small-only {{datetimeformat(created)}}
+              td(data-userid="{{user._id}}") {{user.name}}
+            | {{/hours}}
+        | {{/all}}
         | {{/expanded}}
 
 block javascript

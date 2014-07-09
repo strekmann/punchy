@@ -305,11 +305,11 @@ module.exports.projects = function (projects) {
 module.exports.project = function (project, hours) {
     var all, own;
     var u = URI(window.location.href);
-    if (u.hash() === "#own") {
-        own = true;
+    if (u.hash() === "#all") {
+        all = true;
     }
     else {
-        all = true;
+        own = true;
     }
     var own_hours = _.filter(hours, function (h) {
         return (h.user._id.match(/^gartmann/));
@@ -338,7 +338,7 @@ module.exports.project = function (project, hours) {
         tracker.toggle('expanded');
     });
 
-    tracker.on('toggleAll', function () {
+    tracker.on('toggleAll', function (event) {
         tracker.toggle('own');
         tracker.toggle('all');
         sum();

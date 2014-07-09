@@ -24,6 +24,7 @@ app.use(app.passport.session());
 // Make some variables always available in templates.
 app.use(function(req, res, next){
     res.locals.active_user = req.user;
+    res.locals.stamp = app.stamp;
     next();
 });
 
@@ -38,6 +39,11 @@ app.get('/auth/google/callback', app.passport.authenticate('google', { failureRe
 
 // Core routes like index, login, logout and account.
 app.use('/', require('./routes/index'));
+
+// Example index route, change me :D
+app.get('/', function(req, res, next){
+    res.render('foundation');
+});
 
 // Static file middleware serving static files.
 app.use(express.static(path.join(__dirname, '..', 'public')));

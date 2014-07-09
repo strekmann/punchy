@@ -20,7 +20,6 @@ var alerts = function (messages) {
     return ractive;
 };
 
-
 module.exports = {
     tracker: require('./tracker'),
     account: require('./account'),

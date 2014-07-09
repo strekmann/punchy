@@ -93,7 +93,8 @@ block content
           | {{#hours}}
           | {{#expanded}}
           form(on-submit="updateHours")
-            fieldset {{.project.name}} {{datetimeformat(created)}}
+            fieldset
+              legend {{.project.name}} {{datetimeformat(created)}}
               .row
                 .columns.medium-3
                   label(for="date")= __('Date')

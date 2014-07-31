@@ -4,7 +4,7 @@ var sum = function () {
         var sum = 0;
         var table = $(this).parents('table.hours');
         table.find('tbody td:nth-child(4)').each(function (el, cell) {
-            sum += parseFloat(cell.innerText);
+            sum += parseFloat($(cell).html());
         });
         return sum;
     });

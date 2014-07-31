@@ -16,7 +16,8 @@ var ProjectSchema = new mongoose.Schema({
     name: {type: String, trim: true, required: true},
     client: {type: String, trim: true},
     users: [{type: String, ref: 'User'}],
-    created: {type: Date, required: true, 'default': Date.now}
+    created: {type: Date, required: true, 'default': Date.now},
+    modified: {type: Date, required: true, 'default': Date.now}
 });
 
 var HoursSchema = new mongoose.Schema({

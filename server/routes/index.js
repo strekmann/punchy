@@ -23,7 +23,7 @@ var add_time = function (date, timestring) {
 // Routes
 router.get('/', function(req, res, next){
     if (req.user) {
-        Project.find({users: req.user}).sort('-created').lean().exec(function (err, projects) {
+        Project.find({users: req.user}).sort('-modified').lean().exec(function (err, projects) {
             _.each(projects, function(project) {
                 if (project._id.toString() === req.query.project) {
                     project.active = true;
@@ -66,6 +66,10 @@ router.post('/', function(req, res, next) {
         hours.comment = req.body.comment;
 
         hours.save(function (err) {
+            Project.findById(req.body.project, function (err, project) {
+                project.modified = moment();
+                project.save();
+            });
             hours.populate('project', 'name', function(err, hours) {
                 res.json(hours);
             });

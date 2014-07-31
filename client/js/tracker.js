@@ -347,6 +347,7 @@ module.exports.project = function (project, hours) {
 
     tracker.on('updateHours', function (event) {
         event.original.preventDefault();
+        event.context.date = $(event.node).find("#date").val();
         event.context.start = $(event.node).find(".start").val();
         event.context.end = $(event.node).find(".end").val();
 

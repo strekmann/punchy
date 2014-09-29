@@ -34,8 +34,19 @@ html(lang=lang dir=lang_dir)
 
       section.top-bar-section
         ul.left
-          li
-            a(href="/projects")= __("Projects")
+          if active_user
+            li
+              a(href="/projects")= __("Projects")
+          else
+            li
+              a(href="http://github.com/strekmann/punchy")
+                i.fa.fa-github.fa-lg
+                |  
+                = __("Github")
+            li
+              a(href="https://github.com/strekmann/punchy/issues")
+                = __("Support")
+
         ul.right
           if active_user
             li

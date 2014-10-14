@@ -1,19 +1,19 @@
 #! /bin/sh
 ### BEGIN INIT INFO
-# Provides:             boilerplate
+# Provides:             punchy
 # Required-Start:       $syslog $remote_fs
 # Required-Stop:        $syslog $remote_fs
 # Should-Start:         $local_fs
 # Should-Stop:          $local_fs
 # Default-Start:        2 3 4 5
 # Default-Stop:         0 1 6
-# Short-Description:    Strekmann boilerplate
-# Description:          Strekmann boilerplate
+# Short-Description:    Strekmann punchy
+# Description:          Strekmann punchy
 ### END INIT INFO
 
-NAME=boilerplate
-DESC=boilerplate
-PORT=12345
+NAME=punchy
+DESC=punchy
+PORT=3314
 
 # ========
 

@@ -208,6 +208,7 @@ router.route('/account')
         });
     });
 
+// hours routes: only for update: put
 router.put('/:id', function (req, res, next) {
     if (!req.user) {
         res.json(403, 'Forbidden');

@@ -34,7 +34,7 @@ router.get('/', function(req, res, next){
             });
             Hours
             .find({user:req.user})
-            .populate('project')
+            .populate('project', 'name')
             .sort('-created')
             .limit(10)
             .exec(function(err, hours) {
@@ -101,18 +101,21 @@ router.post('/projects', function(req, res, next) {
 });
 
 router.get('/projects/:id', function (req, res, next) {
-    Project.findOne({_id: req.params.id, users:req.user}, function (err, project) {
-        if (project) {
-            Hours.find({project: project._id})
-            .populate('user', 'name username')
-            .sort('date start')
-            .exec(function (err, hours) {
-                res.render('project', {project: project, hours: hours});
-            });
-        }
-        else {
-            res.status(404);
-        }
+    Project.find({users: req.user}).sort('-modified').lean().exec(function (err, projects) {
+        Project.findOne({_id: req.params.id, users:req.user}, function (err, project) {
+            if (project) {
+                Hours.find({project: project._id})
+                .populate('user', 'name username')
+                .populate('project', 'name')
+                .sort('date start')
+                .exec(function (err, hours) {
+                    res.render('project', {project: project, projects: projects, hours: hours});
+                });
+            }
+            else {
+                res.status(404);
+            }
+        });
     });
 });
 
@@ -211,6 +214,7 @@ router.put('/:id', function (req, res, next) {
     }
     else {
         Hours.findById(req.params.id, function (err, hours) {
+            hours.project = req.body.project;
             hours.date = req.body.date;
             hours.start = add_time(req.body.date, req.body.start);
             hours.end = add_time(req.body.date, req.body.end);

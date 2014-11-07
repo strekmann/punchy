@@ -85,7 +85,7 @@ block content
 
     .row
       .columns
-        h1= __('Your ten last registrations across all projects')
+        h1= __('Previous registrations')
         table
           thead
             tr
@@ -114,16 +114,13 @@ block content
             | {{#.expanded}}
             tr(intro-outro="fade")
               td(colspan="7")
-                .row
-                  .columns
-                    h1
-                      | {{.project.name}}
-                      | &nbsp;
-                      small
-                        = __('registered')
-                        | &nbsp;
-                        | {{datetimeformat(created)}}
                 form(on-submit="updateHours")
+                  .row
+                    .columns.medium-9
+                      select#project(name="project" value="{{.project._id}}")
+                        | {{#projects}}
+                        option(value="{{._id}}") {{.name}} ({{.client}})
+                        | {{/projects}}
                   .row
                     .columns.medium-3
                       label(for="date")= __('Date')

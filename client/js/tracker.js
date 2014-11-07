@@ -83,7 +83,7 @@ var Tracker = Ractive.extend({
         return $.ajax({
             type: 'PUT',
             url: '/' + data._id,
-            data: _.pick(data, 'date', 'start', 'end', 'duration', 'comment')
+            data: _.pick(data, 'project', 'date', 'start', 'end', 'duration', 'comment')
         });
     },
 
@@ -218,6 +218,7 @@ module.exports.simple = function (projects, hours) {
 
     tracker.on('updateHours', function (event) {
         event.original.preventDefault();
+
         event.context.date = $(event.node).find("#date").val();
         event.context.start = $(event.node).find(".start").val();
         event.context.end = $(event.node).find(".end").val();
@@ -303,7 +304,7 @@ module.exports.projects = function (projects) {
     return tracker;
 };
 
-module.exports.project = function (project, hours) {
+module.exports.project = function (project, projects, hours) {
     var all, own;
     var u = URI(window.location.href);
     if (u.hash() === "#all") {
@@ -320,6 +321,7 @@ module.exports.project = function (project, hours) {
         template: '#template',
         data: {
             project: project,
+            projects: projects,
             hours: hours,
             own_hours: own_hours,
             own: own,
@@ -329,6 +331,8 @@ module.exports.project = function (project, hours) {
 
     tracker.on('toggleEdit', function (event) {
         event.original.preventDefault();
+        event.context.old_project_id = event.context.project._id;
+
         tracker.toggle(event.keypath + '.expanded');
         if (tracker.get(event.keypath + '.expanded')) {
             //tracker.create_timepickers($(event.node).find('.start'), $(event.node).find('.end'));
@@ -347,12 +351,14 @@ module.exports.project = function (project, hours) {
 
     tracker.on('updateHours', function (event) {
         event.original.preventDefault();
+
         event.context.date = $(event.node).find("#date").val();
         event.context.start = $(event.node).find(".start").val();
         event.context.end = $(event.node).find(".end").val();
 
         tracker.updateHours(event.context)
             .then(function(data) {
+                data.moved = data.project._id !== event.context.old_project_id;
                 tracker.set(event.keypath, data);
             }, function(xhr, status, err) {
                 tracker.get('error').push(err);

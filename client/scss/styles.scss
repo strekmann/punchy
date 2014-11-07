@@ -51,6 +51,10 @@ html {
     padding: 0.625em 0;
 }
 
+tr.moved td {
+    color: lighten($body-font-color, 50%);
+}
+
 .project {
     margin-bottom: rem-calc(10px);
     h2 {

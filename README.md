@@ -10,6 +10,8 @@ Based on
 * express
 * mongoose
 * passport
+* jade
+* ractive
 
 Howto
 -----
@@ -36,4 +38,4 @@ Please use the issues and pull requests at Github.
 
 Copyright and license
 ---------------------
-Copyright © 2013 Jørgen Bergquist and Sigurd Gartmann, released under the [AGPL license](https://github.com/strekmann/punchy/blob/master/LICENSE).
+Copyright © 2013-2015 Jørgen Bergquist and Sigurd Gartmann, released under the [AGPL license](https://github.com/strekmann/punchy/blob/master/LICENSE).

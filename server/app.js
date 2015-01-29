@@ -1,10 +1,32 @@
-var express     = require('express'),
-    path        = require('path'),
-    settings    = require('./settings'),
+var express = require('express'),
+    path = require('path'),
+    fs = require('fs'),
+    db = require('./lib/db'),
     moment      = require('moment'),
-    app         = require('libby')(express, settings);
+    log = require('./lib/logger').getLogger(),
+    settings = {};
+
+try {
+    settings = require('./settings');
+} catch(e) {}
+
+var app = require('libby')(express, settings, db);
 
 // # Application setup
+
+// Set up bunyan logger
+if (settings.useBunyan){
+    var express_bunyan = require('express-bunyan-logger');
+    var bunyan_opts = {
+        logger: log,
+        excludes: ['req', 'res', 'req-headers', 'res-headers']
+    };
+    if (app.settings.env === 'development' || app.settings.env === 'production'){
+        app.use(express_bunyan(bunyan_opts));
+        app.use(express_bunyan.errorLogger(bunyan_opts));
+    }
+}
+
 // Add passport to application.
 app.passport = require('./lib/passport')(app);
 
@@ -50,8 +72,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Internal server error - 500 status
 app.use(function(err, req, res, next){
-    console.error("ERROR: %s [%s] %s", req.ip, new Date().toString(), err.message);
-    console.error(err.stack);
+    log.error(err);
 
     res.status(500);
     res.format({
@@ -63,7 +84,7 @@ app.use(function(err, req, res, next){
         },
 
         json: function(){
-            res.json(500, {
+            res.status(500).json({
                 error: err.message,
                 status: err.status || 500
             });
@@ -84,7 +105,7 @@ app.use(function(req, res, next){
         },
 
         json: function(){
-            res.json(404, {
+            res.status(404).json({
                 status: '404',
                 error: 'file not found',
                 url: req.url

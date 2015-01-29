@@ -1,8 +1,10 @@
+/* remember that file paths need to be full, or it will only work in dev, not in prod */
+
 module.exports = {
-    siteName: 'boilerplate',
     uri: 'http://localhost:3000/',
     sessionSecret: 'sessionSecretString',
     trust_proxy: false,
+    useBunyan: false,
     auth: {
         google: {
             clientId: 'googleClientId',

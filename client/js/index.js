@@ -1,4 +1,13 @@
-moment.lang($('html').attr('lang'));
+moment.locale($('html').attr('locale'));
+
+var helpers = Ractive.defaults.data;
+helpers.isodate = function(timestring){
+    return moment(timestring).format();
+};
+
+helpers.shortdate = function(timestring){
+    return moment(timestring).format('LL');
+};
 
 var alerts = function (messages) {
    var ractive = new Ractive({

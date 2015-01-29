@@ -1,11 +1,52 @@
 #!/usr/bin/env node
 
 var http = require('http'),
+    fs = require('fs'),
     cluster = require('cluster'),
     numCPU = 1, //Math.floor(require('os').cpus().length / 2),
+    util = require('util'),
+    _ = require('underscore'),
+    logger = require('./server/lib/logger'),
+    db = require('./server/lib/db'),
     env = process.env.NODE_ENV || 'development',
     i = 0,
-    stamp = new Date().getTime();
+    stamp = new Date().getTime(),
+    settings = {};
+
+try {
+    settings = require('./server/settings');
+} catch(ignore) {}
+
+if (settings.useBunyan){
+    var bunyan = require('bunyan');
+    var logOpts = {
+        name: require('./package').name,
+        overrideConsole: true,
+        serializers: {
+            res: function(res){
+                if (!_.isObject(res)) { return res; }
+                return {
+                    statusCode: res.statusCode,
+                    header: res._header
+                };
+            },
+            req: function(req){
+                if (!_.isObject(req)) { return req; }
+
+                var connection = req.connection || {};
+                return {
+                    method: req.method,
+                    url: req.url,
+                    headers: req.headers,
+                    remoteAdress: connection.remoteAddress,
+                    remotePort: connection.remotePort
+                };
+            }
+        }
+    };
+    if (env === 'development'){ logOpts.level = 'debug'; }
+}
+var log = logger(logOpts);
 
 // Make sure we always have at least 2 workers.
 //if (numCPU < 2) { numCPU = 2; }
@@ -19,31 +60,27 @@ if (cluster.isMaster){
     }
 
     cluster.on('fork', function(worker){
-        console.info('* forked worker %s', worker.process.pid);
+        log.info('* forked worker %s', worker.process.pid);
     });
 
     cluster.on('exit', function(worker, code, signal){
-        console.info('# worker %s died [%s]. Spawning new!', worker.process.pid, code);
+        log.info('# worker %s died [%s]. Spawning new!', worker.process.pid, code);
         cluster.fork();
     });
 } else {
-    // -- database
-    var mongoose = require('mongoose'),
-        settings = require('./server/settings'),
-        app = require('./server/app');
-
-    app.db = mongoose.connect(settings.mongo.servers.join(','), {replSet: {rs_name: settings.mongo.replset}});
+    var app = require('./server/app');
+    app.db = db;
     app.stamp = stamp;
 
     // -- handle node exceptions
     process.on('uncaughtException', function(err){
-        console.error(new Date().toString(), 'uncaughtException', err.message);
-        console.error(err.stack);
+        log.fatal(err.message);
+        log.fatal(err.stack);
         process.exit(1);
     });
 
     // -- start server
     http.createServer(app).listen(app.conf.port, function(){
-        console.log("Express server listening on port %d in %s mode", app.conf.port, app.settings.env);
+        log.info("Express server listening on port %d in %s mode", app.conf.port, app.settings.env);
     });
 }

@@ -1,7 +1,10 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+    shortid = require('shortid');
 
+// TODO
+// Enkeltbrukere opprettes med team. Dette kan man så endre navn på og evt. invitere flere til.
 var UserSchema = new mongoose.Schema({
-    _id: {type: String, lowercase: true, trim: true, required: true, unique: true},
+    _id: {type: String, required: true, unique: true, 'default': shortid.generate},
     username: {type: String, lowercase: true, trim: true, required: true, unique: true},
     name: {type: String, required: true},
     email: {type: String},
@@ -9,18 +12,21 @@ var UserSchema = new mongoose.Schema({
     is_active: {type: Boolean, 'default': true},
     is_admin: {type: Boolean, 'default': false},
     created: {type: Date, required: true, 'default': Date.now},
-    google_id: {type: String}
+    google_id: {type: String},
+    teams: [{type:String, ref: 'Team'}]
 });
 
 var ProjectSchema = new mongoose.Schema({
+    _id: {type: String, required: true, unique: true, 'default': shortid.generate},
     name: {type: String, trim: true, required: true},
     client: {type: String, trim: true},
-    users: [{type: String, ref: 'User'}],
+    team: {type: String, ref: 'Team'},
     created: {type: Date, required: true, 'default': Date.now},
     modified: {type: Date, required: true, 'default': Date.now}
 });
 
 var HoursSchema = new mongoose.Schema({
+    _id: {type: String, required: true, unique: true, 'default': shortid.generate},
     user: {type: String, ref: 'User', required: true},
     project: {type: String, ref: 'Project', required: true},
     date: {type: Date, required: true},
@@ -31,8 +37,34 @@ var HoursSchema = new mongoose.Schema({
     created: {type: Date, required: true, 'default': Date.now}
 });
 
+var TeamSchema = new mongoose.Schema({
+    _id: {type: String, required: true, unique: true, 'default': shortid.generate},
+    name: {type: String, required: true},
+    users: [{type: String, ref: 'User'}]
+});
+
+var ClientSchema = new mongoose.Schema({
+    _id: {type: String, required: true, unique: true, 'default': shortid.generate},
+    user: {type: String, ref: 'User', required: true}, // user who created client
+    team: {type: String, ref: 'Team'},
+    name: {type: String, required: true},
+    projects: [{type: String, ref: 'Project'}]
+});
+
+var InvoiceSchema = new mongoose.Schema({
+    _id: {type: String, required: true, unique: true, 'default': shortid.generate},
+    user: {type: String, ref: 'User', required: true}, // who made it
+    team: {type: String, ref: 'Team'},
+    created: {type: Date, required: true, 'default': Date.now},
+    hours: [{type: String, ref: 'Hours'}],
+    client: {type: String, ref: 'Client'}
+});
+
 module.exports = {
     User: mongoose.model('User', UserSchema),
     Project: mongoose.model('Project', ProjectSchema),
-    Hours: mongoose.model('Hours', HoursSchema)
+    Hours: mongoose.model('Hours', HoursSchema),
+    Team: mongoose.model('Team', TeamSchema),
+    Client: mongoose.model('Client', ClientSchema),
+    Invoice: mongoose.model('Invoice', InvoiceSchema)
 };

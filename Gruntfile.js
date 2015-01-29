@@ -40,9 +40,9 @@ module.exports = function(grunt) {
         browserify: {
             build: {
                 dest: 'public/js/site.js',
-                src: ['client/js/index.js'],
+                src: [],
                 options: {
-                    alias: ['client/js/index.js:s7n']
+                    alias: ['./client/js/index.js:s7n']
                 }
             }
         },

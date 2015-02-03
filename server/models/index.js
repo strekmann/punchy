@@ -20,6 +20,7 @@ var ProjectSchema = new mongoose.Schema({
     _id: {type: String, required: true, unique: true, 'default': shortid.generate},
     name: {type: String, trim: true, required: true},
     client: {type: String, trim: true},
+    user: {type: String, ref: 'User', required: true}, // user who created project
     team: {type: String, ref: 'Team'},
     created: {type: Date, required: true, 'default': Date.now},
     modified: {type: Date, required: true, 'default': Date.now}

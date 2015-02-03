@@ -47,7 +47,7 @@ var TeamSchema = new mongoose.Schema({
 var ClientSchema = new mongoose.Schema({
     _id: {type: String, required: true, unique: true, 'default': shortid.generate},
     user: {type: String, ref: 'User', required: true}, // user who created client
-    team: {type: String, ref: 'Team'},
+    teams: [{type: String, ref: 'Team'}],
     name: {type: String, required: true},
     projects: [{type: String, ref: 'Project'}]
 });

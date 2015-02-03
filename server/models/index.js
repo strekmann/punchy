@@ -34,7 +34,8 @@ var HoursSchema = new mongoose.Schema({
     end: {type: Date},
     duration: {type: Number, required: true},
     comment: {type: String, trim: true},
-    created: {type: Date, required: true, 'default': Date.now}
+    created: {type: Date, required: true, 'default': Date.now},
+    invoice: {type: String, ref: 'Invoice'}
 });
 
 var TeamSchema = new mongoose.Schema({

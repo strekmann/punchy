@@ -1,0 +1,34 @@
+extends layout
+
+block content
+
+  section#clients
+
+  script#template(type="text/ractive")
+    .row
+      .columns
+        h1= __("Clients")
+
+        ul
+          | {{#each clients}}
+          li {{.name}}
+          | {{/each}}
+
+    .row
+      .columns
+        h2= __("New client")
+        form#newClient(on-submit="createClient")
+          .row
+            .columns
+              label= __("Name")
+                input(type="text" name="name" value="{{.client.name}}")
+
+          .row
+            .columns
+              button= __("Save")
+
+block javascript
+  script
+    | require('s7n').tracker.clients(
+    != JSON.stringify(clients)
+    | );

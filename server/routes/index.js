@@ -3,8 +3,10 @@ var express = require('express'),
     moment= require('moment'),
     router = express.Router(),
     User = require('../models').User,
+    Team = require('../models').Team,
     Project = require('../models').Project,
     Hours = require('../models').Hours,
+    Client = require('../models').Client,
     ensureAuthenticated = require('../lib/middleware').ensureAuthenticated;
 
 // Util functions
@@ -158,6 +160,47 @@ router.delete('/projects/:id', function (req, res, next) {
                 });
             });
         }
+    });
+});
+
+router.route('/team')
+.all(ensureAuthenticated)
+.get(function (req, res, next) {
+    req.user.populate('teams', 'name', function (err, user) {
+        if (err) { return next (err); }
+        res.render('teams', {teams: user.teams});
+    });
+});
+
+router.route('/team/:id')
+.all(ensureAuthenticated)
+.get(function (req, res, next) {
+    Team
+    .findById(req.params.id)
+    .exec(function (err, team) {
+        if (err) { return next (err); }
+        res.render('team', {team: team});
+    });
+});
+
+router.route('/team/:id/clients')
+.all(ensureAuthenticated)
+.get(function (req, res, next) {
+    Client
+    .find({teams: req.params.id})
+    .exec(function (err, clients) {
+        if (err) { return next(err); }
+        res.render('clients', {clients: clients});
+    });
+})
+.post(function (req, res, next) {
+    var client = new Client();
+    client.name = req.body.name;
+    client.user = req.user._id;
+    client.teams.push(req.params.id);
+    client.save(function (err, client) {
+        if (err) { return next(err); }
+        res.json(client);
     });
 });
 

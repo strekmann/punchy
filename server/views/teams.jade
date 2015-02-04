@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  section#teams
+    .row
+      .columns
+        h1 Team
+
+        ul
+          each team in teams
+            li
+              a(href="/team/#{team._id}")= team.name
+

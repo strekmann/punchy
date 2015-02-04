@@ -394,3 +394,32 @@ module.exports.project = function (project, projects, hours) {
     return tracker;
 };
 
+module.exports.clients = function (c) {
+    var clients = new Ractive({
+        el: '#clients',
+        template: '#template',
+        data: {
+            clients: c || [],
+            client: {}
+        }
+    });
+
+    clients.on('createClient', function (event) {
+        event.original.preventDefault();
+
+        var client = event.context.client;
+
+        $.ajax({
+            dataType: 'json',
+            type: 'POST',
+            url: window.location.href,
+            data: client
+        })
+        .then(function (client) {
+            clients.push('clients', client);
+        })
+        .fail(function (err) {
+            alert(err.responseJSON.error);
+        });
+    });
+};

@@ -1,4 +1,5 @@
 var User = require('../models').User,
+    Team = require('../models').Team,
     passport = require('passport'),
     GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
@@ -42,11 +43,18 @@ module.exports = function(app){
                                 email: profile._json.email,
                                 google_id: profile.id
                             });
-                            user.save(function(err){
-                                if (err) {
-                                    return done("Could not create user", null);
-                                }
-                                return done(null, user);
+                            var team = Team();
+                            team.name = user.name;
+                            team.users.push(user);
+                            team.save(function (err, team) {
+                                if (err) { return done("Could not create team"); }
+                                user.teams.push(team);
+                                user.save(function(err){
+                                    if (err) {
+                                        return done("Could not create user", null);
+                                    }
+                                    return done(null, user);
+                                });
                             });
                         }
                     });

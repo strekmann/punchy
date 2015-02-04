@@ -5,15 +5,11 @@
     "foundation": "",
     "marked": "",
     "moment": "",
-    "ractive": "ractivejs/ractive#edge",
-    "ractive-decorators-sortable": "ractivejs/ractive-decorators-sortable",
+    "ractive": "^0.6.0",
     "ractive-transitions-fade": "",
     "ractive-transitions-slide": "",
     "underscore": "",
     "pickadate": "~3.5.2",
     "URIjs": "~1.13.2"
-  },
-  "resolutions": {
-    "ractive": "edge"
   }
 }

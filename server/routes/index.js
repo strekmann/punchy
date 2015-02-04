@@ -89,7 +89,7 @@ router.post('/projects', function(req, res, next) {
 
         project.name = req.body.name;
         project.client = req.body.client;
-        project.users.push(req.user._id);
+        project.user = req.user._id;
 
         project.save(function (err) {
             res.json(project);

@@ -51,6 +51,7 @@ var Tracker = Ractive.extend({
     createProject: function(project){
         return $.ajax({
             type: 'POST',
+            dataType: 'json',
             url: window.location.href,
             data: project
         });
@@ -59,6 +60,7 @@ var Tracker = Ractive.extend({
     updateProject: function (project) {
         return $.ajax({
             type: 'PUT',
+            dataType: 'json',
             url: window.location.href,
             data: project
         });
@@ -67,6 +69,7 @@ var Tracker = Ractive.extend({
     deleteProject: function (project_id) {
         return $.ajax({
             type: 'DELETE',
+            dataType: 'json',
             url: window.location.href + '/' + project_id
         });
     },
@@ -74,6 +77,7 @@ var Tracker = Ractive.extend({
     createHours: function (data) {
         return $.ajax({
             type: 'POST',
+            dataType: 'json',
             url: '/',
             data: _.pick(data, 'project', 'date', 'start', 'end', 'duration', 'comment')
         });
@@ -82,6 +86,7 @@ var Tracker = Ractive.extend({
     updateHours: function (data) {
         return $.ajax({
             type: 'PUT',
+            dataType: 'json',
             url: '/' + data._id,
             data: _.pick(data, 'project', 'date', 'start', 'end', 'duration', 'comment')
         });
@@ -268,7 +273,7 @@ module.exports.projects = function (projects) {
         el: '#projects',
         template: '#template',
         data: {
-            projects: projects
+            projects: projects || []
         }
     });
 

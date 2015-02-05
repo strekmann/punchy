@@ -37,8 +37,7 @@ module.exports = function(app){
                         }
                         else {
                             user = new User({
-                                _id: profile._json.family_name + "." + profile.id,
-                                username: profile._json.family_name + "." + profile.id,
+                                username: profile.displayName,
                                 name: profile.displayName,
                                 email: profile._json.email,
                                 google_id: profile.id

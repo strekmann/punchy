@@ -80,8 +80,12 @@ router.post('/', function(req, res, next) {
 });
 
 router.get('/projects', function(req, res, next){
-    Project.find({users: req.user}).sort('-created').exec(function (err, projects) {
-        res.render('projects', {projects: projects});
+    Project.find({team: {$in: req.user.teams}}).sort('-created').exec(function (err, projects) {
+        if (err) { return next(err); }
+        Client.find({teams: {$in: req.user.teams}}, function (err, clients) {
+            if (err) { return next(err); }
+            res.render('projects', {projects: projects, clients: clients});
+        });
     });
 });
 

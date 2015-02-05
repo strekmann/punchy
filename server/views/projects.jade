@@ -41,5 +41,7 @@ block content
 block javascript
   script
     | require('s7n').tracker.projects(
-    != JSON.stringify(projects)
+    != JSON.stringify(projects || [])
+    | ,
+    != JSON.stringify(clients || [])
     | );

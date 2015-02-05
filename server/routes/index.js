@@ -163,6 +163,15 @@ router.delete('/projects/:id', function (req, res, next) {
     });
 });
 
+router.route('/clients')
+.all(ensureAuthenticated)
+.get(function (req, res, next) {
+    Client.find({teams: {$in: req.user.teams}}, function (err, clients) {
+        if (err) { return next(err); }
+        res.render('clients', {clients: clients});
+    });
+});
+
 router.route('/team')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {

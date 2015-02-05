@@ -33,7 +33,11 @@ block content
           .row
             .columns
               label= __('Client')
-              input#client(type="text" name="client")
+              select(value='{{selectedClient}}' name="client")
+                option(selected disabled)= __('Select a client')
+                {{#each clients}}
+                  option(value="{{id}}") {{name}}
+                {{/each}}
           .row
             .columns
               button= __('Save')

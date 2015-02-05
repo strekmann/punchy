@@ -146,10 +146,10 @@ block content
               | {{/.expanded}}
               | {{/hours}}
 
-  block javascript
-    script
-      | require('s7n').tracker.simple(
-      != JSON.stringify(projects || [])
-      | ,
-      != JSON.stringify(hours || [])
-      | );
+block javascript
+  script
+    | require('s7n').tracker.simple(
+    != JSON.stringify(projects || [])
+    | ,
+    != JSON.stringify(hours || [])
+    | );

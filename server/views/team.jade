@@ -6,7 +6,7 @@ block content
   script#template(type="text/ractive")
     .row
       .columns.medium-6
-        h1= __('Your projects')
+        h1= __('Projects')
         | {{#projects}}
         .project
           .right
@@ -15,10 +15,13 @@ block content
             a.button.tiny.secondary(on-click="deleteProject")
               i.fa.fa-trash-o
           h2
-            a(href="/projects/{{_id}}") {{name}}
-          .client {{client}}
+            a(href="/teams/{{.team}}/projects/{{._id}}") {{.name}}
+          .client {{.client}}
 
         | {{/projects}}
+
+        a(href="/teams/#{team._id}/clients")
+          h2= __("Clients")
 
       .columns.medium-6
         .row
@@ -29,15 +32,15 @@ block content
           .row
             .columns
               label= __('Project name')
-              input#name(type="text" name="name")
+              input#name(type="text" name="name" value="{{.project.name}}")
           .row
             .columns
               label= __('Client')
-              select(value='{{selectedClient}}' name="client")
-                option(selected disabled)= __('Select a client')
-                {{#each clients}}
-                  option(value="{{id}}") {{name}}
-                {{/each}}
+              select(value='{{.project.client}}' name="client")
+                option(selected disabled)= __('No client')
+                | {{#each clients}}
+                option(value="{{._id}}") {{.name}}
+                | {{/each}}
           .row
             .columns
               button= __('Save')
@@ -45,7 +48,7 @@ block content
 block javascript
   script
     | require('s7n').tracker.projects(
-    != JSON.stringify(projects || [])
+    != JSON.stringify(projects)
     | ,
-    != JSON.stringify(clients || [])
+    != JSON.stringify(clients)
     | );

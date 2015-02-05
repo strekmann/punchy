@@ -15,10 +15,10 @@ var Tracker = Ractive.extend({
         error: [],
         list: [],
         projects: [],
-        project: null,
+        project: undefined,
         hours: [],
         own_hours: [],
-        active: null,
+        active: undefined,
         duration: 0,
         date: moment().format("YYYY-MM-DD"), // needed for default value - a nice trick by accident
         isodateformat: function (date) {
@@ -52,8 +52,8 @@ var Tracker = Ractive.extend({
         return $.ajax({
             type: 'POST',
             dataType: 'json',
-            url: window.location.href,
-            data: project
+            url: window.location.href + '/projects',
+            data: {project: project}
         });
     },
 
@@ -70,7 +70,7 @@ var Tracker = Ractive.extend({
         return $.ajax({
             type: 'DELETE',
             dataType: 'json',
-            url: window.location.href + '/' + project_id
+            url: window.location.href + '/projects/' + project_id
         });
     },
 
@@ -268,23 +268,21 @@ module.exports.simple = function (projects, hours) {
     return tracker;
 };
 
-module.exports.projects = function (projects) {
+module.exports.projects = function (_projects, _clients) {
     var tracker = new Tracker({
         el: '#projects',
         template: '#template',
         data: {
-            projects: projects || []
+            projects: _projects || [],
+            clients: _clients || []
         }
     });
 
     tracker.on('createProject', function (event) {
         event.original.preventDefault();
 
-        var node = $(event.node),
-            project = {
-                name: node.find('#name').val(),
-                client: node.find('#client').val()
-            };
+        var project = event.context.project;
+        console.log(project);
 
         tracker.createProject(project)
             .then(function(data){
@@ -300,7 +298,7 @@ module.exports.projects = function (projects) {
     tracker.on('deleteProject', function (event) {
         tracker.deleteProject(event.context._id)
             .then(function (data) {
-                tracker.get('projects').splice(event.keypath.split('.').pop());
+                tracker.get('projects').splice(event.keypath.split('.').pop(), 1);
             }, function (xhr, status, err) {
                 tracker.get('error').push(xhr.responseText);
             });

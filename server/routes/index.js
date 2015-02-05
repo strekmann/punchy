@@ -25,7 +25,7 @@ var add_time = function (date, timestring) {
 // Routes
 router.get('/', function(req, res, next){
     if (req.user) {
-        Project.find({users: req.user}).sort('-modified').lean().exec(function (err, projects) {
+        Project.find({team: {$in: req.user.teams}}).sort('-modified').lean().exec(function (err, projects) {
             _.each(projects, function(project) {
                 if (project._id.toString() === req.query.project) {
                     project.active = true;
@@ -79,33 +79,6 @@ router.post('/', function(req, res, next) {
     }
 });
 
-router.get('/projects', function(req, res, next){
-    Project.find({team: {$in: req.user.teams}}).sort('-created').exec(function (err, projects) {
-        if (err) { return next(err); }
-        Client.find({teams: {$in: req.user.teams}}, function (err, clients) {
-            if (err) { return next(err); }
-            res.render('projects', {projects: projects, clients: clients});
-        });
-    });
-});
-
-router.post('/projects', function(req, res, next) {
-    if (req.user) {
-        var project = new Project();
-
-        project.name = req.body.name;
-        project.client = req.body.client;
-        project.user = req.user._id;
-
-        project.save(function (err) {
-            res.json(project);
-        });
-    }
-    else {
-        res.status(403);
-    }
-});
-
 router.get('/projects/:id', function (req, res, next) {
     Project.find({users: req.user}).sort('-modified').lean().exec(function (err, projects) {
         Project.findOne({_id: req.params.id, users:req.user}, function (err, project) {
@@ -143,30 +116,6 @@ router.put('/projects/:id', function (req, res, next) {
     });
 });
 
-router.delete('/projects/:id', function (req, res, next) {
-    Hours.find({'project': req.params.id}, function (err, hours) {
-        if (err) {
-            res.json(400, err);
-        }
-        if (hours.length) {
-            res.json(400, 'Project has to be empty');
-        }
-        else {
-            Project.findById(req.params.id, function (err, project) {
-                if (err) {
-                    res.json(400, err);
-                }
-                project.remove(function (err) {
-                    if (err) {
-                        res.json(500, err);
-                    }
-                    res.json(200, {});
-                });
-            });
-        }
-    });
-});
-
 router.route('/clients')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
@@ -176,7 +125,7 @@ router.route('/clients')
     });
 });
 
-router.route('/team')
+router.route('/teams')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
     req.user.populate('teams', 'name', function (err, user) {
@@ -185,18 +134,78 @@ router.route('/team')
     });
 });
 
-router.route('/team/:id')
+router.route('/teams/:id')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
     Team
     .findById(req.params.id)
     .exec(function (err, team) {
         if (err) { return next (err); }
-        res.render('team', {team: team});
+        Project.find({team: {$in: req.user.teams}}).sort('-created').exec(function (err, projects) {
+            if (err) { return next(err); }
+            Client.find({teams: {$in: req.user.teams}}, function (err, clients) {
+                if (err) { return next(err); }
+                res.render('team', {team: team, projects: projects, clients: clients});
+            });
+        });
     });
 });
 
-router.route('/team/:id/clients')
+router.post('/teams/:id/projects', function(req, res, next) {
+    if (req.user) {
+        Team
+        .findById(req.params.id)
+        .exec(function (err, team) {
+            if (err) { return next (err); }
+            var project = new Project();
+            project.name = req.body.project.name;
+            project.client = req.body.project.client;
+            project.team = team;
+            project.user = req.user._id;
+
+            project.save(function (err) {
+                if (err) { return next (err); }
+                res.json(project);
+            });
+        });
+    }
+    else {
+        res.status(403);
+    }
+});
+
+router.delete('/teams/:id/projects/:id', ensureAuthenticated, function (req, res, next) {
+    Team
+    .findById(req.params.id)
+    .exec(function (err, team) {
+        if (err) { return next (err); }
+        // TODO: Add permission check upon delete
+        Hours.find({'project': req.params.id}, function (err, hours) {
+            if (err) {
+                res.json(400, err);
+            }
+            if (hours.length) {
+                res.json(400, 'Project has to be empty');
+            }
+            else {
+                Project.findById(req.params.id, function (err, project) {
+                    if (err) {
+                        res.json(400, err);
+                    }
+                    project.remove(function (err) {
+                        if (err) {
+                            res.json(500, err);
+                        }
+                        res.json(200, {});
+                    });
+                });
+            }
+        });
+    });
+});
+
+
+router.route('/teams/:id/clients')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
     Client

@@ -21,7 +21,7 @@ var ProjectSchema = new mongoose.Schema({
     name: {type: String, trim: true, required: true},
     client: {type: String, trim: true},
     user: {type: String, ref: 'User', required: true}, // user who created project
-    team: {type: String, ref: 'Team'},
+    team: {type: String, ref: 'Team', required: true},
     created: {type: Date, required: true, 'default': Date.now},
     modified: {type: Date, required: true, 'default': Date.now}
 });

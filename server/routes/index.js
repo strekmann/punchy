@@ -234,6 +234,17 @@ router.route('/teams/:id/clients')
     });
 });
 
+router.route('/invoice')
+.all(ensureAuthenticated)
+.get(function (req, res, next) {
+    Client
+    .find({teams: {$in: req.user.teams}})
+    .exec(function (err, clients) {
+        if (err) { return next(err); }
+        res.render('invoice', {clients: clients});
+    });
+});
+
 router.get('/login', function(req, res, next){
     res.render('login');
 });

@@ -426,3 +426,13 @@ module.exports.clients = function (c) {
         });
     });
 };
+
+module.exports.invoice = function (_clients) {
+    var invoice = new Ractive({
+        el: '#create-invoice',
+        template: '#create-invoice-template',
+        data: {
+            clients: _clients
+        }
+    });
+};

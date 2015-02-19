@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  section#create-invoice
+
+  script#create-invoice-template(type="text/ractive")
+    .row
+      .columns
+        h1= __("Create invoice")
+
+        form
+          select(value="{{client}}")
+            option(disabled selected)= __("Choose client")
+            | {{#each clients}}
+            option(value="{{._id}}") {{.name}}
+            | {{/each}}
+
+block javascript
+  script
+    | require('s7n').tracker.invoice(
+    != JSON.stringify(clients)
+    | );
+

@@ -80,19 +80,27 @@ router.post('/', function(req, res, next) {
 });
 
 router.get('/projects/:id', function (req, res, next) {
-    Project.find({users: req.user}).sort('-modified').lean().exec(function (err, projects) {
-        Project.findOne({_id: req.params.id, users:req.user}, function (err, project) {
+    Project.find({team: {$in: req.user.teams}}).sort('-modified').lean().exec(function (err, projects) {
+        Project.findOne({_id: req.params.id, team: {$in:req.user.teams}}, function (err, project) {
+            console.log(project);
             if (project) {
                 Hours.find({project: project._id})
                 .populate('user', 'name username')
                 .populate('project', 'name')
                 .sort('date start')
                 .exec(function (err, hours) {
-                    res.render('project', {project: project, projects: projects, hours: hours});
+                    res.render('project', {
+                        conf: {
+                            project: project,
+                            projects: projects || [],
+                            hours: hours,
+                            userid: req.user._id
+                        }
+                    });
                 });
             }
             else {
-                res.status(404);
+                res.sendStatus(404);
             }
         });
     });

@@ -307,7 +307,12 @@ module.exports.projects = function (_projects, _clients) {
     return tracker;
 };
 
-module.exports.project = function (project, projects, hours) {
+module.exports.project = function (conf) {
+    var project = conf.project,
+        projects = conf.projects,
+        hours = conf.hours,
+        userid = conf.userid;
+
     var all, own;
     var u = URI(window.location.href);
     if (u.hash() === "#all") {
@@ -317,7 +322,7 @@ module.exports.project = function (project, projects, hours) {
         own = true;
     }
     var own_hours = _.filter(hours, function (h) {
-        return (h.user._id.match(/^gartmann/));
+        return h.user._id === userid;
     });
     var tracker = new Tracker({
         el: '#project',

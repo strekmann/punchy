@@ -66,7 +66,7 @@ block content
           tbody
             | {{#own_hours}}
             | {{^.expanded}}
-            tr(intro-outro="fade" data-comment="{{comment ? comment : ''}}" class="{{moved ? 'moved' : ''}}")
+            tr(data-comment="{{comment ? comment : ''}}" class="{{moved ? 'moved' : ''}}")
               td(data-date="{{isoformat(date)}}") {{dateformat(date)}}
               td {{timeformat(start)}}
               td {{timeformat(end)}}
@@ -79,7 +79,7 @@ block content
                   i.fa.fa-edit
             | {{/.expanded}}
             | {{#.expanded}}
-            tr(intro-outro="fade")
+            tr
               td(colspan="7")
                 form(on-submit="updateHours")
                   .row
@@ -148,9 +148,5 @@ block content
 block javascript
   script
     | require('s7n').tracker.project(
-    != JSON.stringify(project)
-    | ,
-    != JSON.stringify(projects)
-    | ,
-    != JSON.stringify(hours)
+    != JSON.stringify(conf)
     | );

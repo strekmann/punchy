@@ -74,6 +74,13 @@ tr.moved td {
   text-overflow: ellipsis;
 }
 
+.loader {
+    position: absolute;
+    left: calc(50% - 2.5em);
+    top: calc(50% - 2.5em);
+    color: #999;
+}
+
 #hours {
     .hours {
         margin-bottom: rem-calc(30px);

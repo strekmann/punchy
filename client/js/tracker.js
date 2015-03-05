@@ -158,7 +158,6 @@ module.exports.simple = function (projects, hours) {
     var tracker = new Tracker({
         el: '#simple',
         template: '#template',
-        noIntro: true,
         data: {
             projects: projects,
             hours: hours,

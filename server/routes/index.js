@@ -39,8 +39,8 @@ router.get('/', function(req, res, next){
             .limit(10)
             .exec(function(err, hours) {
                 res.render('index', {
-                    projects: projects,
-                    hours: hours
+                    projects: projects || [],
+                    hours: hours || []
                 });
             });
         });

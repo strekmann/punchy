@@ -7,6 +7,7 @@ var express = require('express'),
     Project = require('../models').Project,
     Hours = require('../models').Hours,
     Client = require('../models').Client,
+    Invoice = require('../models').Invoice,
     ensureAuthenticated = require('../lib/middleware').ensureAuthenticated;
 
 // Util functions
@@ -242,6 +243,34 @@ router.route('/invoice')
     .exec(function (err, clients) {
         if (err) { return next(err); }
         res.render('invoice', {clients: clients});
+    });
+});
+
+router.route('/invoice/:id')
+.all(ensureAuthenticated)
+.get(function (req, res, next) {
+    Project.find({client: req.params.id})
+    .exec(function (err, projects) {
+        if (err) { return next(err); }
+        Hours.find({project: { $in: projects}}, function (err, hours){
+            if (err) { return next(err); }
+            res.json({projects: projects, hours: hours});
+        });
+    });
+})
+.post(function (req, res, next) {
+    Project.find({client: req.params.id})
+    .exec(function (err, projects) {
+        var invoice = new Invoice();
+        invoice.hours = req.body.hours;
+        invoice.user = req.user;
+        //invoice.team = project.team;
+        invoice.client = req.params.id;
+        invoice.save(function (err, invoice) {
+            if (err) { return next (err); }
+            Hours.update({_id: { $in: invoice.hours }}, { $set: { invoice: invoice._id}});
+            res.json({});
+        });
     });
 });
 

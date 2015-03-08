@@ -281,7 +281,6 @@ module.exports.projects = function (_projects, _clients) {
         event.original.preventDefault();
 
         var project = event.context.project;
-        console.log(project);
 
         tracker.createProject(project)
             .then(function(data){
@@ -431,7 +430,58 @@ module.exports.invoice = function (_clients) {
         el: '#create-invoice',
         template: '#create-invoice-template',
         data: {
-            clients: _clients
+            clients: _clients,
+            client: undefined,
+            projects: [],
+            project: undefined,
+            hours: [],
+            filteredHours: [],
+            selectedHours: []
         }
+    });
+
+    invoice.observe('client', function (value) {
+        if (value) {
+            $.ajax({
+                url: '/invoice/' + value,
+                type: 'get',
+                dataType: 'json'
+            })
+            .then(function (data) {
+                invoice.set('projects', data.projects);
+                invoice.set('hours', data.hours);
+                invoice.set('filteredHours', data.hours);
+            });
+        }
+    });
+
+    invoice.observe('project', function (value) {
+        if (!value) {
+            return invoice.set('filteredHours', invoice.get('hours'));
+        }
+        invoice.set('filteredHours', _.filter(invoice.get('hours'), function (item) {
+            return item.project === value;
+        }));
+    });
+
+    invoice.on('prepareInvoice', function (event) {
+        event.original.preventDefault();
+        invoice.set('selectedHours', event.context.selected);
+        //window.location.hash = "#selectedHours";
+        $(document.body).animate({
+            'scrollTop': $('#selectedHours').offset().top
+        }, 1000);
+    });
+    invoice.on('saveInvoice', function (event) {
+        event.original.preventDefault();
+        console.log(invoice.data);
+        $.ajax({
+            url: '/invoice/' + invoice.get('client'),
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                hours: event.context.selectedHours,
+            }
+        });
     });
 };

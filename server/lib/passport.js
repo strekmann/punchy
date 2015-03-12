@@ -1,5 +1,6 @@
 var User = require('../models').User,
     Team = require('../models').Team,
+    Organization = require('../models').Organization,
     passport = require('passport'),
     GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
@@ -9,14 +10,22 @@ module.exports = function(app){
     });
 
     passport.deserializeUser(function(id, done) {
-        User.findById(id, function(err, user){
+        User.findById(id)
+        .lean()
+        .exec(function(err, user){
             if (err) {
                 return done(err.message, null);
             }
             if (!user) {
                 return done("Could not find user "+ id);
             }
-            done(null, user);
+
+            Organization.find({users: id})
+            .lean()
+            .exec(function(err, orgs){
+                user.organizations = orgs;
+                done(null, user);
+            });
         });
     });
 

@@ -15,13 +15,20 @@ block content
             a.button.tiny.secondary(on-click="deleteProject")
               i.fa.fa-trash-o
           h2
-            a(href="/teams/{{.team}}/projects/{{._id}}") {{.name}}
+            a(href="/teams/#{organization._id}/projects/{{._id}}") {{.name}}
           .client {{.client}}
 
         | {{/projects}}
 
-        a(href="/teams/#{team._id}/clients")
-          h2= __("Clients")
+        a(href="/teams/#{organization._id}/clients")
+          h1= __("Clients")
+        | {{#each clients}}
+        .client
+          h2
+            a(href="/teams/#{organization._id}/clients/{{._id}}") {{.name}}
+        | {{/each}}
+
+
 
       .columns.medium-6
         .row

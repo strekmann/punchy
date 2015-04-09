@@ -44,27 +44,22 @@ module.exports = function(app){
                         if (user) {
                             return done(null, user);
                         }
-                        else {
-                            user = new User({
-                                username: profile.displayName,
-                                name: profile.displayName,
-                                email: profile._json.email,
-                                google_id: profile.id
+                        user = new User({
+                            username: profile.displayName,
+                            name: profile.displayName,
+                            email: profile._json.email,
+                            google_id: profile.id
+                        });
+                        user.save(function (err, user) {
+                            if (err) { return done("Could not create user"); }
+                            var organization = Organization();
+                            organization.name = user.name;
+                            organization.users.push(user);
+                            organization.save(function (err) {
+                                if (err) { return done("Could not create organization"); }
+                                return done(null, user);
                             });
-                            var team = Team();
-                            team.name = user.name;
-                            team.users.push(user);
-                            team.save(function (err, team) {
-                                if (err) { return done("Could not create team"); }
-                                user.teams.push(team);
-                                user.save(function(err){
-                                    if (err) {
-                                        return done("Could not create user", null);
-                                    }
-                                    return done(null, user);
-                                });
-                            });
-                        }
+                        });
                     });
                 });
             }

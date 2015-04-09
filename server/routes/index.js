@@ -3,7 +3,8 @@ var express = require('express'),
     moment= require('moment'),
     router = express.Router(),
     User = require('../models').User,
-    Team = require('../models').Team,
+    //Team = require('../models').Team,
+    Organization = require('../models').Organization,
     Project = require('../models').Project,
     Hours = require('../models').Hours,
     Client = require('../models').Client,
@@ -26,7 +27,7 @@ var add_time = function (date, timestring) {
 // Routes
 router.get('/', function(req, res, next){
     if (req.user) {
-        Project.find({team: {$in: req.user.teams}}).sort('-modified').lean().exec(function (err, projects) {
+        Project.find({organization: {$in: req.user.organizations}}).sort('-modified').lean().exec(function (err, projects) {
             _.each(projects, function(project) {
                 if (project._id.toString() === req.query.project) {
                     project.active = true;
@@ -81,9 +82,8 @@ router.post('/', function(req, res, next) {
 });
 
 router.get('/projects/:id', function (req, res, next) {
-    Project.find({team: {$in: req.user.teams}}).sort('-modified').lean().exec(function (err, projects) {
-        Project.findOne({_id: req.params.id, team: {$in:req.user.teams}}, function (err, project) {
-            console.log(project);
+    Project.find({organization: {$in: req.user.organizations}}).sort('-modified').lean().exec(function (err, projects) {
+        Project.findOne({_id: req.params.id, organization: {$in:req.user.organizations}}, function (err, project) {
             if (project) {
                 Hours.find({project: project._id})
                 .populate('user', 'name username')
@@ -128,7 +128,7 @@ router.put('/projects/:id', function (req, res, next) {
 router.route('/clients')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
-    Client.find({teams: {$in: req.user.teams}}, function (err, clients) {
+    Client.find({organization: {$in: req.user.organizations}}, function (err, clients) {
         if (err) { return next(err); }
         res.render('clients', {clients: clients});
     });
@@ -137,24 +137,25 @@ router.route('/clients')
 router.route('/teams')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
-    req.user.populate('teams', 'name', function (err, user) {
+    Organization.find({users: req.user}, function (err, organizations) {
         if (err) { return next (err); }
-        res.render('teams', {teams: user.teams});
+        res.render('teams', {organizations: organizations});
     });
 });
 
 router.route('/teams/:id')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
-    Team
+    Organization
     .findById(req.params.id)
-    .exec(function (err, team) {
+    .exec(function (err, organization) {
         if (err) { return next (err); }
-        Project.find({team: {$in: req.user.teams}}).sort('-created').exec(function (err, projects) {
+        Project.find({organization: organization}).sort('-created').exec(function (err, projects) {
             if (err) { return next(err); }
-            Client.find({teams: {$in: req.user.teams}}, function (err, clients) {
+            Client.find({organization: organization}, function (err, clients) {
+                console.log("asdfa", clients);
                 if (err) { return next(err); }
-                res.render('team', {team: team, projects: projects, clients: clients});
+                res.render('team', {organization: organization, projects: projects, clients: clients});
             });
         });
     });
@@ -162,14 +163,14 @@ router.route('/teams/:id')
 
 router.post('/teams/:id/projects', function(req, res, next) {
     if (req.user) {
-        Team
+        Organization
         .findById(req.params.id)
-        .exec(function (err, team) {
+        .exec(function (err, organization) {
             if (err) { return next (err); }
             var project = new Project();
             project.name = req.body.project.name;
             project.client = req.body.project.client;
-            project.team = team;
+            project.organization = organization;
             project.user = req.user._id;
 
             project.save(function (err) {
@@ -184,9 +185,9 @@ router.post('/teams/:id/projects', function(req, res, next) {
 });
 
 router.delete('/teams/:id/projects/:id', ensureAuthenticated, function (req, res, next) {
-    Team
+    Organization
     .findById(req.params.id)
-    .exec(function (err, team) {
+    .exec(function (err, organization) {
         if (err) { return next (err); }
         // TODO: Add permission check upon delete
         Hours.find({'project': req.params.id}, function (err, hours) {
@@ -218,7 +219,7 @@ router.route('/teams/:id/clients')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
     Client
-    .find({teams: req.params.id})
+    .find({organization: req.params.id})
     .exec(function (err, clients) {
         if (err) { return next(err); }
         res.render('clients', {clients: clients});
@@ -228,7 +229,7 @@ router.route('/teams/:id/clients')
     var client = new Client();
     client.name = req.body.name;
     client.user = req.user._id;
-    client.teams.push(req.params.id);
+    client.organization = req.params.id;
     client.save(function (err, client) {
         if (err) { return next(err); }
         res.json(client);
@@ -239,10 +240,17 @@ router.route('/invoice')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
     Client
-    .find({teams: {$in: req.user.teams}})
+    .find({organization: {$in: req.user.organizations}})
     .exec(function (err, clients) {
         if (err) { return next(err); }
-        res.render('invoice', {clients: clients});
+        Invoice.find({client: {$in: clients}})
+        .exec(function (err, invoices) {
+            if (err) { return next(err); }
+            res.render('invoice', {
+                clients: clients,
+                invoices: invoices
+            });
+        });
     });
 });
 

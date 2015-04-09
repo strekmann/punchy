@@ -4,10 +4,10 @@ block content
   section#teams
     .row
       .columns
-        h1 Team
+        h1 Teams
 
         ul
-          each team in teams
+          each team in organizations
             li
               a(href="/teams/#{team._id}")= team.name
 

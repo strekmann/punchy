@@ -17,7 +17,8 @@ module.exports = function(app){
                 return done(err.message, null);
             }
             if (!user) {
-                return done("Could not find user "+ id);
+                // User not found, tell passport user is not valid
+                return done(null, false);
             }
 
             Organization.find({users: id})

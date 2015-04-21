@@ -55,7 +55,6 @@
     "grunt-sass": "",
     "mocha": "",
     "supertest": "",
-    "through": "",
     "uglify-js": "",
     "passport-stub": "^1.0.1"
   }

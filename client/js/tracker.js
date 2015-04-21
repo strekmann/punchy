@@ -48,15 +48,6 @@ var Tracker = Ractive.extend({
         }
     },
 
-    createProject: function(project){
-        return $.ajax({
-            type: 'POST',
-            dataType: 'json',
-            url: window.location.href + '/projects',
-            data: {project: project}
-        });
-    },
-
     updateProject: function (project) {
         return $.ajax({
             type: 'PUT',
@@ -67,11 +58,6 @@ var Tracker = Ractive.extend({
     },
 
     deleteProject: function (project_id) {
-        return $.ajax({
-            type: 'DELETE',
-            dataType: 'json',
-            url: window.location.href + '/projects/' + project_id
-        });
     },
 
     createHours: function (data) {
@@ -267,40 +253,87 @@ module.exports.simple = function (projects, hours) {
     return tracker;
 };
 
-module.exports.projects = function (_projects, _clients) {
+module.exports.organization = function (obj) {
     var tracker = new Tracker({
         el: '#organization',
         template: '#template',
-        data: {
-            projects: _projects || [],
-            clients: _clients || []
-        }
+        data: obj
     });
 
     tracker.on('createProject', function (event) {
         event.original.preventDefault();
 
-        var project = event.context.project;
+        var project = tracker.get('project');
+        project.organization = tracker.get('organization')._id;
 
-        tracker.createProject(project)
-            .then(function(data){
-                // everything ok
-                tracker.toggle('expanded');
-                tracker.get('projects').unshift(data);
-            }, function(xhr, status, err){
-                tracker.get('error').push(err);
-            });
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: '/projects',
+            data: {project: project}
+        })
+        .then(function(data){
+            // everything ok
+            tracker.get('projects').unshift(data);
+            tracker.set('project', {});
+        }, function(xhr, status, err){
+            tracker.get('error').push(err);
+        });
         //$('body').animate({scrollTop: 0}, 'fast');
     });
 
     tracker.on('deleteProject', function (event) {
-        tracker.deleteProject(event.context._id)
-            .then(function (data) {
-                tracker.get('projects').splice(event.keypath.split('.').pop(), 1);
-            }, function (xhr, status, err) {
-                tracker.get('error').push(xhr.responseText);
-            });
+        var project = event.context;
+        $.ajax({
+            type: 'DELETE',
+            dataType: 'json',
+            url: '/projects',
+            data: {project: project}
+        })
+        .then(function (data) {
+            tracker.get('projects').splice(event.keypath.split('.').pop(), 1);
+        }, function (xhr, status, err) {
+            tracker.get('error').push(xhr.responseText);
+        });
     });
+
+    tracker.on('createClient', function (event) {
+        event.original.preventDefault();
+
+        var client = tracker.get('client');
+        client.organization = tracker.get('organization')._id;
+
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: '/clients',
+            data: {client: client}
+        })
+        .then(function(data){
+            // everything ok
+            tracker.get('clients').unshift(data);
+            tracker.set('client', {});
+        }, function(xhr, status, err){
+            tracker.get('error').push(err);
+        });
+    });
+
+    tracker.on('deleteClient', function (event) {
+        var client = event.context;
+
+        $.ajax({
+            type: 'DELETE',
+            dataType: 'json',
+            url: '/clients',
+            data: {client: client}
+        })
+        .then(function (data) {
+            tracker.get('clients').splice(event.keypath.split('.').pop(), 1);
+        }, function (xhr, status, err) {
+            tracker.get('error').push(xhr.responseText);
+        });
+    });
+
 
     return tracker;
 };

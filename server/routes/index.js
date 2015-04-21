@@ -80,6 +80,59 @@ router.post('/', function(req, res, next) {
     }
 });
 
+router.post('/projects', ensureAuthenticated, function(req, res, next) {
+    if (req.user) {
+        // TODO: Add permission checks
+        Organization
+        .findById(req.body.project.organization)
+        .exec(function (err) {
+            if (err) { return next (err); }
+            var project = new Project();
+            project.name = req.body.project.name;
+            project.client = req.body.project.client;
+            project.organization = req.body.project.organization;
+            project.user = req.user._id;
+
+            project.save(function (err) {
+                if (err) { return next (err); }
+                res.json(project);
+            });
+        });
+    }
+    else {
+        res.status(403);
+    }
+});
+
+router.delete('/projects', ensureAuthenticated, function (req, res, next) {
+    // TODO: Add permission check upon delete
+    Organization
+    .findById(req.body.project.organization)
+    .exec(function (err) {
+        if (err) { return next (err); }
+        Hours.find({'project': req.body.project._id}, function (err, hours) {
+            if (err) {
+                return res.json(400, err);
+            }
+            if (hours.length) {
+                return res.json(400, 'Project has to be empty');
+            }
+            Project.findById(req.body.project._id, function (err, project) {
+                if (err) {
+                    res.json(400, err);
+                }
+                project.remove(function (err) {
+                    if (err) {
+                        res.json(500, err);
+                    }
+                    res.json(200, {});
+                });
+            });
+        });
+    });
+});
+
+
 router.get('/projects/:id', function (req, res, next) {
     Project.find({organization: {$in: req.user.organizations}}).sort('-modified').lean().exec(function (err, projects) {
         Project.findOne({_id: req.params.id, organization: {$in:req.user.organizations}}, function (err, project) {
@@ -131,6 +184,42 @@ router.route('/clients')
         if (err) { return next(err); }
         res.render('clients', {clients: clients});
     });
+})
+.post(function (req, res, next) {
+    // TODO: Add permission checks
+    Organization
+    .findById(req.body.client.organization)
+    .exec(function (err) {
+        if (err) { return next (err); }
+        var client = new Client();
+        client.name = req.body.client.name;
+        client.organization = req.body.client.organization;
+        client.user = req.user._id;
+
+        client.save(function (err) {
+            if (err) { return next (err); }
+            res.json(client);
+        });
+    });
+})
+.delete(ensureAuthenticated, function (req, res, next) {
+    // TODO: Add permission check upon delete
+    Organization
+    .findById(req.body.client.organization)
+    .exec(function (err) {
+        if (err) { return next (err); }
+        Client.findById(req.body.client._id, function (err, client) {
+            if (err) {
+                res.json(400, err);
+            }
+            client.remove(function (err) {
+                if (err) {
+                    res.json(500, err);
+                }
+                res.json(200, {});
+            });
+        });
+    });
 });
 
 router.route('/companies')
@@ -156,81 +245,6 @@ router.route('/companies/:id')
                 res.render('organization', {organization: organization, projects: projects, clients: clients});
             });
         });
-    });
-});
-
-router.post('/companies/:id/projects', function(req, res, next) {
-    if (req.user) {
-        Organization
-        .findById(req.params.id)
-        .exec(function (err, organization) {
-            if (err) { return next (err); }
-            var project = new Project();
-            project.name = req.body.project.name;
-            project.client = req.body.project.client;
-            project.organization = organization;
-            project.user = req.user._id;
-
-            project.save(function (err) {
-                if (err) { return next (err); }
-                res.json(project);
-            });
-        });
-    }
-    else {
-        res.status(403);
-    }
-});
-
-router.delete('/companies/:id/projects/:id', ensureAuthenticated, function (req, res, next) {
-    Organization
-    .findById(req.params.id)
-    .exec(function (err, organization) {
-        if (err) { return next (err); }
-        // TODO: Add permission check upon delete
-        Hours.find({'project': req.params.id}, function (err, hours) {
-            if (err) {
-                res.json(400, err);
-            }
-            if (hours.length) {
-                res.json(400, 'Project has to be empty');
-            }
-            else {
-                Project.findById(req.params.id, function (err, project) {
-                    if (err) {
-                        res.json(400, err);
-                    }
-                    project.remove(function (err) {
-                        if (err) {
-                            res.json(500, err);
-                        }
-                        res.json(200, {});
-                    });
-                });
-            }
-        });
-    });
-});
-
-
-router.route('/companies/:id/clients')
-.all(ensureAuthenticated)
-.get(function (req, res, next) {
-    Client
-    .find({organization: req.params.id})
-    .exec(function (err, clients) {
-        if (err) { return next(err); }
-        res.render('clients', {clients: clients});
-    });
-})
-.post(function (req, res, next) {
-    var client = new Client();
-    client.name = req.body.name;
-    client.user = req.user._id;
-    client.organization = req.params.id;
-    client.save(function (err, client) {
-        if (err) { return next(err); }
-        res.json(client);
     });
 });
 

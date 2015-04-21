@@ -6,34 +6,30 @@ block content
   script#template(type="text/ractive")
     .row
       .columns.medium-6
-        h1= __('Projects')
-        | {{#projects}}
-        .project
-          .right
-            a.button.tiny(href="/?project={{._id}}")
-              i.fa.fa-dashboard
-            a.button.tiny.secondary(on-click="deleteProject")
-              i.fa.fa-trash-o
-          h2
-            a(href="/projects/{{._id}}") {{.name}}
-          .client {{.client}}
+        h1= __("Clients")
+        h2= __('New client')
 
-        | {{/projects}}
-
-        a(href="/companies/#{organization._id}/clients")
-          h1= __("Clients")
+        form(on-submit="createClient")
+          .row
+            .columns
+              label= __('Client name')
+              input#name(type="text" name="name" value="{{.client.name}}")
+          .row
+            .columns
+              button= __('Save')
         | {{#each clients}}
         .client
+          .right
+            a.button.tiny.secondary(on-click="deleteClient")
+              i.fa.fa-trash-o
           h2
-            a(href="/companies/#{organization._id}/clients/{{._id}}") {{.name}}
+            a(href="/clients/{{._id}}") {{.name}}
         | {{/each}}
 
-
-
       .columns.medium-6
-        .row
-          .columns
-            h1= __('New project')
+        h1= __('Projects')
+
+        h2= __('New project')
 
         form(on-submit="createProject")
           .row
@@ -51,11 +47,26 @@ block content
           .row
             .columns
               button= __('Save')
+        | {{#projects}}
+        .project
+          .right
+            a.button.tiny(href="/?project={{._id}}")
+              i.fa.fa-dashboard
+            a.button.tiny.secondary(on-click="deleteProject")
+              i.fa.fa-trash-o
+          h2
+            a(href="/projects/{{._id}}") {{.name}}
+          .client {{.client}}
+
+        | {{/projects}}
+
 
 block javascript
   script
-    | require('s7n').tracker.projects(
+    | require('s7n').tracker.organization({organization:
+    != JSON.stringify(organization)
+    | , projects:
     != JSON.stringify(projects)
-    | ,
+    | , clients:
     != JSON.stringify(clients)
-    | );
+    | });

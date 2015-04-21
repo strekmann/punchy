@@ -54,6 +54,7 @@ module.exports = function(app){
                         user.save(function (err, user) {
                             if (err) { return done("Could not create user"); }
                             var organization = Organization();
+                            organization._id = user._id;
                             organization.name = user.name;
                             organization.users.push(user);
                             organization.save(function (err) {

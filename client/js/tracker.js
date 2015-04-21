@@ -269,7 +269,7 @@ module.exports.simple = function (projects, hours) {
 
 module.exports.projects = function (_projects, _clients) {
     var tracker = new Tracker({
-        el: '#projects',
+        el: '#organization',
         template: '#template',
         data: {
             projects: _projects || [],

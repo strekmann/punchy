@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  section#organizations
+    .row
+      .columns
+        h1= __("Companies")
+
+        ul
+          each org in organizations
+            li
+              a(href="/companies/#{org._id}")= org.name
+

@@ -3,7 +3,6 @@ var express = require('express'),
     moment= require('moment'),
     router = express.Router(),
     User = require('../models').User,
-    //Team = require('../models').Team,
     Organization = require('../models').Organization,
     Project = require('../models').Project,
     Hours = require('../models').Hours,
@@ -134,16 +133,16 @@ router.route('/clients')
     });
 });
 
-router.route('/teams')
+router.route('/companies')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
     Organization.find({users: req.user}, function (err, organizations) {
         if (err) { return next (err); }
-        res.render('teams', {organizations: organizations});
+        res.render('organizations', {organizations: organizations});
     });
 });
 
-router.route('/teams/:id')
+router.route('/companies/:id')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
     Organization
@@ -153,15 +152,14 @@ router.route('/teams/:id')
         Project.find({organization: organization}).sort('-created').exec(function (err, projects) {
             if (err) { return next(err); }
             Client.find({organization: organization}, function (err, clients) {
-                console.log("asdfa", clients);
                 if (err) { return next(err); }
-                res.render('team', {organization: organization, projects: projects, clients: clients});
+                res.render('organization', {organization: organization, projects: projects, clients: clients});
             });
         });
     });
 });
 
-router.post('/teams/:id/projects', function(req, res, next) {
+router.post('/companies/:id/projects', function(req, res, next) {
     if (req.user) {
         Organization
         .findById(req.params.id)
@@ -184,7 +182,7 @@ router.post('/teams/:id/projects', function(req, res, next) {
     }
 });
 
-router.delete('/teams/:id/projects/:id', ensureAuthenticated, function (req, res, next) {
+router.delete('/companies/:id/projects/:id', ensureAuthenticated, function (req, res, next) {
     Organization
     .findById(req.params.id)
     .exec(function (err, organization) {
@@ -215,7 +213,7 @@ router.delete('/teams/:id/projects/:id', ensureAuthenticated, function (req, res
 });
 
 
-router.route('/teams/:id/clients')
+router.route('/companies/:id/clients')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
     Client
@@ -272,7 +270,6 @@ router.route('/invoice/:id')
         var invoice = new Invoice();
         invoice.hours = req.body.hours;
         invoice.user = req.user;
-        //invoice.team = project.team;
         invoice.client = req.params.id;
         invoice.save(function (err, invoice) {
             if (err) { return next (err); }

@@ -150,9 +150,10 @@ block content
                 | {{/hours}}
 
 block javascript
-  script
-    | require('s7n').tracker.simple(
-    != JSON.stringify(projects || [])
-    | ,
-    != JSON.stringify(hours || [])
-    | );
+  if active_user
+    script
+      | require('s7n').tracker.simple(
+      != JSON.stringify(projects || [])
+      | ,
+      != JSON.stringify(hours || [])
+      | );

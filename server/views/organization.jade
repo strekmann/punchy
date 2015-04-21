@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  section#projects
+  section#organization
 
   script#template(type="text/ractive")
     .row
@@ -15,17 +15,17 @@ block content
             a.button.tiny.secondary(on-click="deleteProject")
               i.fa.fa-trash-o
           h2
-            a(href="/teams/#{organization._id}/projects/{{._id}}") {{.name}}
+            a(href="/projects/{{._id}}") {{.name}}
           .client {{.client}}
 
         | {{/projects}}
 
-        a(href="/teams/#{organization._id}/clients")
+        a(href="/companies/#{organization._id}/clients")
           h1= __("Clients")
         | {{#each clients}}
         .client
           h2
-            a(href="/teams/#{organization._id}/clients/{{._id}}") {{.name}}
+            a(href="/companies/#{organization._id}/clients/{{._id}}") {{.name}}
         | {{/each}}
 
 

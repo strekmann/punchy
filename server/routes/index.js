@@ -26,7 +26,7 @@ var add_time = function (date, timestring) {
 // Routes
 router.get('/', function(req, res, next){
     if (req.user) {
-        Project.find({organization: {$in: req.user.organizations}}).sort('-modified').lean().exec(function (err, projects) {
+        Project.find({organization: {$in: req.user.organizations}}).populate('client', 'name').sort('-modified').lean().exec(function (err, projects) {
             _.each(projects, function(project) {
                 if (project._id.toString() === req.query.project) {
                     project.active = true;

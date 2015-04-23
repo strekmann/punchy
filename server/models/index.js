@@ -26,7 +26,7 @@ var OrganizationSchema = new mongoose.Schema({
 var ProjectSchema = new mongoose.Schema({
     _id: {type: String, required: true, unique: true, 'default': shortid.generate},
     name: {type: String, trim: true, required: true},
-    client: {type: String, trim: true},
+    client: {type: String, trim: true, ref: 'Client'},
     user: {type: String, ref: 'User', required: true}, // user who created project
     organization: {type: String, ref: 'Organization', required: true},
     active: {type: Date},

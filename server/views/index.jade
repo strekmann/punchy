@@ -30,26 +30,12 @@ block content
   if active_user
     script#template(type="text/ractive")
       div(intro="fade:{delay: 310}")
-        | {{^expanded}}
-        | {{#projects.length}}
-        .row(intro-outro="slide")
-          .columns
-            .right
-              a.button(on-click="toggleNew")= __("Add working hours")
-        | {{/projects.length}}
-        | {{/expanded}}
-        | {{^hours.length}}
+        | {{#if !projects.length}}
         .row
           .columns.small-8.small-centered
-            | {{#projects.length}}
-            p.help= __("You have no registered hours yet. Add one by clicking the big button above")
-            | {{/projects.length}}
-            | {{^projects.length}}
             p.help= __("Before registering hours, you need to register at least one project from the projects page")
-            | {{/projects.length}}
-        | {{/hours.length}}
-        | {{#expanded}}
-        .row(intro-outro="slide")
+        | {{else}}
+        .row
           .columns
             form#createHours(on-submit="createHours")
               fieldset
@@ -60,10 +46,10 @@ block content
                     select#project(name="project" autofocus="{{has_project(false)}}" disabled="{{has_project(true)}}")
                       | {{#projects}}
                       | {{#.active}}
-                      option(value="{{._id}}" selected) {{.name}} ({{.client}})
+                      option(value="{{._id}}" selected) {{.name}} ({{.client.name}})
                       | {{/.active}}
                       | {{^.active}}
-                      option(value="{{._id}}") {{.name}} ({{.client}})
+                      option(value="{{._id}}") {{.name}} ({{.client.name}})
                       | {{/.active}}
                       | {{/projects}}
                 .row
@@ -86,10 +72,13 @@ block content
                   .columns
                     button.small= __('Save')
                     button.small.secondary(type="reset" on-click="toggleNew")= __('Cancel')
-        | {{/expanded}}
+        | {{/if}}
 
         .row
           .columns
+            | {{#if !hours.length}}
+            = __("No hours registered yet")
+            | {{else}}
             h1= __('Previous registrations')
             table
               thead
@@ -102,8 +91,8 @@ block content
                   th= __('Registered')
                   th
               tbody
-                | {{#hours}}
-                | {{^.expanded}}
+                | {{#each hours}}
+                | {{#if !.expanded}}
                 tr(intro-outro="fade" data-comment="{{comment ? comment : ''}}")
                   td
                     a(href="/projects/{{project._id}}") {{project.name}}
@@ -115,8 +104,7 @@ block content
                   td
                     a(href="/edit/{{._id}}" title=__('Edit') on-click="toggleEdit")
                       i.fa.fa-edit
-                | {{/.expanded}}
-                | {{#.expanded}}
+                | {{else}}
                 tr(intro-outro="fade")
                   td(colspan="7")
                     form(on-submit="updateHours")
@@ -146,8 +134,9 @@ block content
                         .columns
                           button= __('Save')
                           button.secondary(type="reset" on-click="toggleEdit")= __('Cancel')
-                | {{/.expanded}}
-                | {{/hours}}
+                | {{/if}}
+                | {{/each}}
+            | {{/if}}
 
 block javascript
   if active_user

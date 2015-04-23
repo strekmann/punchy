@@ -458,25 +458,26 @@ module.exports.clients = function (c) {
     });
 };
 
-module.exports.invoice = function (_clients) {
+module.exports.invoice = function (obj) {
     var invoice = new Ractive({
         el: '#create-invoice',
         template: '#create-invoice-template',
         data: {
-            clients: _clients,
+            clients: obj.clients,
             client: undefined,
             projects: [],
             project: undefined,
             hours: [],
             filteredHours: [],
-            selectedHours: []
+            selectedHours: [],
+            invoices: obj.invoices
         }
     });
 
     invoice.observe('client', function (value) {
         if (value) {
             $.ajax({
-                url: '/invoice/' + value,
+                url: '/invoice/project/' + value,
                 type: 'get',
                 dataType: 'json'
             })
@@ -493,7 +494,7 @@ module.exports.invoice = function (_clients) {
             return invoice.set('filteredHours', invoice.get('hours'));
         }
         invoice.set('filteredHours', _.filter(invoice.get('hours'), function (item) {
-            return item.project === value;
+            return item.project._id === value;
         }));
     });
 
@@ -505,16 +506,20 @@ module.exports.invoice = function (_clients) {
             'scrollTop': $('#selectedHours').offset().top
         }, 1000);
     });
+
     invoice.on('saveInvoice', function (event) {
         event.original.preventDefault();
         console.log(invoice.data);
         $.ajax({
-            url: '/invoice/' + invoice.get('client'),
+            url: '/invoice',
             type: 'POST',
             dataType: 'json',
             data: {
                 hours: event.context.selectedHours,
+                client: invoice.get('client')
             }
+        }).then(function (data) {
+            window.location.href = '/invoice/' + data.id;
         });
     });
 };

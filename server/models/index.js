@@ -58,6 +58,9 @@ var InvoiceSchema = new mongoose.Schema({
     _id: {type: String, required: true, unique: true, 'default': shortid.generate},
     user: {type: String, ref: 'User', required: true}, // who made it
     created: {type: Date, required: true, 'default': Date.now},
+    start: {type: Date, required: true},
+    end: {type: Date, required: true},
+    sum: {type: Number, required: true},
     client: {type: String, ref: 'Client'}
 });
 

@@ -1,6 +1,7 @@
 var express = require('express'),
     _ = require('underscore'),
     moment= require('moment'),
+    async = require('async'),
     router = express.Router(),
     User = require('../models').User,
     Organization = require('../models').Organization,
@@ -256,6 +257,9 @@ router.route('/invoice')
     .exec(function (err, clients) {
         if (err) { return next(err); }
         Invoice.find({client: {$in: clients}})
+        .populate('client', 'name')
+        .populate('user', 'name')
+        .sort('-created')
         .exec(function (err, invoices) {
             if (err) { return next(err); }
             res.render('invoice', {
@@ -264,32 +268,61 @@ router.route('/invoice')
             });
         });
     });
+})
+.post(function (req, res, next) {
+    var hours = req.body.hours;
+    var sum = 0,
+        start,
+        end;
+    _.each(hours, function (item) {
+        if (!start || item.date < start) {
+            start = item.date;
+        }
+        if (!end || item.date > end) {
+            end = item.date;
+        }
+        sum = sum + parseFloat(item.duration);
+    });
+    var invoice = new Invoice();
+    invoice.user = req.user;
+    invoice.client = req.body.client;
+    invoice.sum = sum;
+    invoice.start = start;
+    invoice.end = end;
+    invoice.save(function (err, invoice) {
+        if (err) { return next (err); }
+        async.each(hours, function(item, callback) {
+            Hours.findByIdAndUpdate(item._id, {$set: { invoice: invoice._id, comment: item.comment}}, callback);
+        }, function (err) {
+            if (err) { return next (err); }
+            res.json({id: invoice._id});
+        });
+    });
 });
 
-router.route('/invoice/:id')
+router.route('/invoice/project/:id')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
     Project.find({client: req.params.id})
     .exec(function (err, projects) {
         if (err) { return next(err); }
-        Hours.find({project: { $in: projects}}, function (err, hours){
+        Hours
+        .find({project: {$in: projects}, $or: [{invoice: null}, {invoice: {$exists: false}}]})
+        .populate('project', 'name')
+        .exec(function (err, hours){
             if (err) { return next(err); }
             res.json({projects: projects, hours: hours});
         });
     });
-})
-.post(function (req, res, next) {
-    Project.find({client: req.params.id})
-    .exec(function (err, projects) {
-        var invoice = new Invoice();
-        invoice.hours = req.body.hours;
-        invoice.user = req.user;
-        invoice.client = req.params.id;
-        invoice.save(function (err, invoice) {
-            if (err) { return next (err); }
-            Hours.update({_id: { $in: invoice.hours }}, { $set: { invoice: invoice._id}});
-            res.json({});
-        });
+});
+
+router.route('/invoice/:id')
+.all(ensureAuthenticated)
+.get(function (req, res, next) {
+    // show invoice
+    Invoice.findById(req.params.id).exec(function (err, invoice) {
+        if (err) { return next (err); }
+        res.json(invoice);
     });
 });
 

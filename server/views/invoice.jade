@@ -9,33 +9,34 @@ block content
         h1= __("Create invoice")
 
         form
-          select(value="{{client}}")
-            option(disabled selected)= __("Choose client")
-            | {{#each clients}}
-            option(value="{{._id}}") {{.name}}
-            | {{/each}}
+          label= __("Client")
+            select(value="{{client}}")
+              option(disabled selected)= __("Choose client")
+              | {{#each clients}}
+              option(value="{{._id}}") {{.name}}
+              | {{/each}}
 
     | {{#if projects.length}}
     form(on-submit="prepareInvoice")
       .row
         .columns
-
-          select(value="{{project}}")
-            option(value="" selected)= __("All")
-            | {{#each projects}}
-            option(value="{{._id}}") {{.name}}
-            | {{/each}}
+          label= __("Prosjekt")
+            select(value="{{project}}")
+              option(value="" selected)= __("All")
+              | {{#each projects}}
+              option(value="{{._id}}") {{.name}}
+              | {{/each}}
 
       .row
         .columns
-          h1= __("Hours, not invoiced")
+          h1= __("Hours not invoiced")
           | {{#each filteredHours}}
           .row
             .columns.small-1
               label
                 input(type="checkbox" name="{{selected}}" value="{{.}}")
             .columns.small-3
-              | {{.project}}
+              | {{.project.name}}
             .columns.small-2
               | {{.date}}
             .columns.small-3
@@ -65,9 +66,27 @@ block content
           button= __("Save")
     | {{/if}}
 
+    .row
+      .columns
+        | {{#if invoices.length}}
+        h1= __("Your invoices")
+        | {{#each invoices}}
+        h2
+          a(href="/invoice/{{_id}}") {{.client.name}}  
+            small {{shortdate(.created)}}
+        span {{.user.name}}
+        |  
+        b {{.sum}}
+        |  
+        span {{shortdate(.start)}} - {{shortdate(.end)}}
+        | {{/each}}
+        | {{/if}}
+
 block javascript
   script
-    | require('s7n').tracker.invoice(
+    | require('s7n').tracker.invoice({clients:
     != JSON.stringify(clients)
-    | );
+    | , invoices:
+    != JSON.stringify(invoices)
+    | });
 

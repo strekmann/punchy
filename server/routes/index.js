@@ -3,6 +3,7 @@ var express = require('express'),
     moment= require('moment'),
     async = require('async'),
     router = express.Router(),
+    populateRelated = require('../lib/populate-related'),
     User = require('../models').User,
     Organization = require('../models').Organization,
     Project = require('../models').Project,
@@ -226,9 +227,13 @@ router.route('/clients')
 router.route('/companies')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
-    Organization.find({users: req.user}, function (err, organizations) {
+    Organization.find({users: req.user}).exec(function (err, organizations) {
         if (err) { return next (err); }
-        res.render('organizations', {organizations: organizations});
+        populateRelated(organizations, 'clients', true, Client, 'organization', function (err, organizations) {
+            if (err) { return next (err); }
+            //console.log(JSON.stringify(organizations, null, 2));
+            res.render('organizations', {organizations: organizations});
+        });
     });
 });
 

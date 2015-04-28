@@ -227,13 +227,22 @@ router.route('/clients')
 router.route('/companies')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
-    Organization.find({users: req.user}).exec(function (err, organizations) {
-        if (err) { return next (err); }
-        populateRelated(organizations, 'clients', true, Client, 'organization', function (err, organizations) {
-            if (err) { return next (err); }
-            //console.log(JSON.stringify(organizations, null, 2));
-            res.render('organizations', {organizations: organizations});
+    Project.find({organization: {$in: req.user.organizations}})
+    .populate('client')
+    .populate('organization')
+    .lean()
+    .exec(function(err, projects){
+        var map = {};
+        _.each(projects, function(project){
+            map[project.organization._id] = map[project.organization._id] || project.organization;
+            map[project.organization._id].clients = map[project.organization._id].clients || {};
+            map[project.organization._id].clients[project.client._id] = map[project.organization._id].clients[project.client._id] || project.client;
+            map[project.organization._id].clients[project.client._id].projects = map[project.organization._id].clients[project.client._id].projects || [];
+            map[project.organization._id].clients[project.client._id].projects.push(_.omit(project, 'organization', 'client'));
         });
+
+        var organizations = _.values(map);
+        res.render('organizations', {organizations: organizations});
     });
 });
 

@@ -227,22 +227,32 @@ router.route('/clients')
 router.route('/companies')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
-    Project.find({organization: {$in: req.user.organizations}})
-    .populate('client')
-    .populate('organization')
-    .lean()
-    .exec(function(err, projects){
-        var map = {};
-        _.each(projects, function(project){
-            map[project.organization._id] = map[project.organization._id] || project.organization;
-            map[project.organization._id].clients = map[project.organization._id].clients || {};
-            map[project.organization._id].clients[project.client._id] = map[project.organization._id].clients[project.client._id] || project.client;
-            map[project.organization._id].clients[project.client._id].projects = map[project.organization._id].clients[project.client._id].projects || [];
-            map[project.organization._id].clients[project.client._id].projects.push(_.omit(project, 'organization', 'client'));
-        });
+    Client.find({organization: {$in: req.user.organizations}}).lean().exec(function(err, clients){
+        if (err){ return next(err); }
+        Project.find({client: {$in: clients}}).lean().exec(function(err, projects){
+            if (err){ return next(err); }
 
-        var organizations = _.values(map);
-        res.render('organizations', {organizations: organizations});
+            var clientmap = _.groupBy(clients, function(client){
+                return client.organization;
+            });
+
+            var projectmap = _.groupBy(projects, function(project){
+                return project.client;
+            });
+
+            var organizations = req.user.organizations;
+
+            _.each(organizations, function(o){
+                o.clients = _.values(clientmap[o._id]);
+
+                _.each(o.clients, function(c){
+                    c.projects = _.values(projectmap[c._id]);
+                });
+            });
+
+            console.log(JSON.stringify(organizations, null, 2));
+            res.render('organizations', {organizations: organizations});
+        });
     });
 });
 

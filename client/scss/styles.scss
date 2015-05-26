@@ -98,3 +98,26 @@ tr.moved td {
         }
     }
 }
+
+#organizations {
+    .organization {
+        border: 1px solid #ddd;
+        border-bottom: none;
+
+        &:last-of-type {
+            border-bottom: 1px solid #ddd;
+        }
+    }
+
+    .name {
+        border-bottom: 1px solid #ddd;
+        background-color: #efefef;
+    }
+
+    .clients {
+        margin-bottom: 0.4rem;
+    }
+    .project {
+        margin-left: .5rem;
+    }
+}

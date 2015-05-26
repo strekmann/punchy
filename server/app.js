@@ -2,6 +2,7 @@ var express = require('express'),
     path = require('path'),
     fs = require('fs'),
     db = require('./lib/db'),
+    util = require('./lib/util'),
     moment      = require('moment'),
     log = require('./lib/logger').getLogger(),
     package = require('../package'),
@@ -52,6 +53,15 @@ app.use(app.passport.session());
 app.use(function(req, res, next){
     res.locals.active_user = req.user;
     res.locals.stamp = app.stamp;
+    res.locals.longdate = function (date) {
+        if (!date) { return; }
+        return moment(date).format('LLL');
+    };
+    res.locals.shortdate = function (date) {
+        if (!date) { return; }
+        return moment(date).format('Do MMM');
+    };
+    res.locals.daterange = util.daterange;
     next();
 });
 

@@ -344,9 +344,17 @@ router.route('/invoice/:id')
 .all(ensureAuthenticated)
 .get(function (req, res, next) {
     // show invoice
-    Invoice.findById(req.params.id).exec(function (err, invoice) {
+    Invoice.findById(req.params.id).populate('user', 'name').populate('client', 'name').exec(function (err, invoice) {
         if (err) { return next (err); }
-        res.json(invoice);
+        res.format({
+            json: function () {
+                res.json(invoice);
+
+            },
+            html: function () {
+                res.render('invoice_details.jade', {invoice: invoice});
+            }
+        });
     });
 });
 

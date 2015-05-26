@@ -1,0 +1,14 @@
+extends layout
+
+block content
+
+  h2
+    != daterange(invoice.start, invoice.end)
+
+  p= invoice.user.name
+
+  p= invoice.client.name
+
+  p= invoice.sum
+
+  p= invoice.created

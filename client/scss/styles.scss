@@ -121,3 +121,28 @@ tr.moved td {
         margin-left: .5rem;
     }
 }
+
+#invoice_details {
+    .project {
+        border: 1px solid #ddd;
+        border-bottom: none;
+        &:last-of-type {
+            border-bottom: 1px solid #ddd;
+        }
+        .name {
+            border-bottom: 1px solid #ddd;
+            background-color: #efefef;
+        }
+        h3 {
+            margin: 0;
+        }
+        .headers {
+            font-weight: bold;
+        }
+        .line {
+            &:nth-of-type(2n+1) {
+                background-color: #f7f7f7;
+            }
+        }
+    }
+}

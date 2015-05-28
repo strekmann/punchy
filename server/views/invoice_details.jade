@@ -2,13 +2,36 @@ extends layout
 
 block content
 
-  h2
-    != daterange(invoice.start, invoice.end)
+  section#invoice_details
+    .row
+      .columns
+        h2
+          != daterange(invoice.start, invoice.end)
 
-  p= invoice.user.name
+        p= invoice.client.name
 
-  p= invoice.client.name
+        for hours, project in invoice.projects
+          .row.project
+            .columns
+              .row
+                .columns.name
+                  h3= project
 
-  p= invoice.sum
+              .row.headers
+                .columns.small-3.medium-3= __("Date")
+                .columns.hide-for-small.medium-4= __("Comment")
+                .columns.small-3.medium-2= __("From")
+                .columns.small-3.medium-2= __("To")
+                .columns.small-3.medium-1= __("Duration")
 
-  p= invoice.created
+              for h in hours
+                .row.line
+                  .columns.small-3.medium-3= shortdate(h.date)
+                  .columns.hide-for-small.medium-4= h.comment
+                  .columns.small-3.medium-2= time(h.start)
+                  .columns.small-3.medium-2= time(h.end)
+                  .columns.small-3.medium-1= h.duration
+
+        p= invoice.sum
+
+        p= invoice.created

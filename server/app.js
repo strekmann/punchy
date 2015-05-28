@@ -61,6 +61,10 @@ app.use(function(req, res, next){
         if (!date) { return; }
         return moment(date).format('Do MMM');
     };
+    res.locals.time = function (date) {
+        if (!date) { return; }
+        return moment(date).format('LT');
+    };
     res.locals.daterange = util.daterange;
     next();
 });

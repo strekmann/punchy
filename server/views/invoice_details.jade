@@ -8,14 +8,20 @@ block content
         h2
           != daterange(invoice.start, invoice.end)
 
-        p= invoice.client.name
+        label= __("Customer")
+          | :
+        = invoice.client.name
+        label= __("Created")
+          | :
+        = shortdate(invoice.created)
 
-        for hours, project in invoice.projects
+
+        for project in invoice.projects
           .row.project
             .columns
               .row
                 .columns.name
-                  h3= project
+                  h3= project.name
 
               .row.headers
                 .columns.small-3.medium-3= __("Date")
@@ -24,7 +30,7 @@ block content
                 .columns.small-3.medium-2= __("To")
                 .columns.small-3.medium-1= __("Duration")
 
-              for h in hours
+              for h in project.hours
                 .row.line
                   .columns.small-3.medium-3= shortdate(h.date)
                   .columns.hide-for-small.medium-4= h.comment
@@ -32,6 +38,17 @@ block content
                   .columns.small-3.medium-2= time(h.end)
                   .columns.small-3.medium-1= h.duration
 
-        p= invoice.sum
+    #summary.row
+      .columns
+        h3= __("Summary")
 
-        p= invoice.created
+        for project in invoice.projects
+          .row
+            .columns.small-10= project.name
+            .columns.small-2= project.sum
+        .row
+          .columns
+            .sum
+              .row
+                .columns.small-10= __("Sum")
+                .columns.small-2= invoice.sum

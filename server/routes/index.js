@@ -348,9 +348,16 @@ router.route('/invoice/:id')
         if (err) { return next (err); }
     Hours.find({invoice: invoice._id}).populate('project', 'name').exec(function (err, hours) {
             if (err) { return next (err); }
-            invoice.projects = _.groupBy(hours, function (h) {
-                return h.project.name;
-            });
+            invoice.projects = _.map(
+                _.groupBy(hours, function (h) {
+                    return h.project.name;
+                }),
+                function (hourlist, project) {
+                    var sum = _.reduce(hourlist, function (memo, hours) {
+                        return memo + hours.duration;
+                    }, 0);
+                    return {name: project, hours: hourlist, sum: sum};
+                });
 
             res.format({
                 json: function () {

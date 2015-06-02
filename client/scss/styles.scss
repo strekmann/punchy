@@ -138,11 +138,22 @@ tr.moved td {
         }
         .headers {
             font-weight: bold;
+            font-size: 0.8rem;
         }
         .line {
             &:nth-of-type(2n+1) {
                 background-color: #f7f7f7;
             }
+        }
+    }
+    #summary {
+        h3 {
+            border-bottom: 1px solid #ddd;
+
+        }
+        .sum {
+            border-top: 1px solid #ddd;
+            font-weight: bold;
         }
     }
 }

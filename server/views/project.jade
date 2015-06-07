@@ -2,148 +2,150 @@ extends layout
 
 block content
   section#project
+    .loader
 
   script#template(type="text/ractive")
-    .row
-      .columns
-        | {{#expanded}}
-        h1= __('Edit project')
-        form(on-submit="updateProject")
-          .row
-            .columns
-              label= __('Project name')
-              input#name(type="text" name="name" value="{{project.name}}")
-          .row
-            .columns
-              label= __('Client')
-              input#client(type="text" name="client" value="{{project.client}}")
-          .row
-            .columns
-              button= __('Save')
-        | {{/expanded}}
-        | {{^expanded}}
-        h1 {{project.name}}
-          | &nbsp;
-          small {{.client}}
-        a.button(href="/?project={{project._id}}")
-          i.fa.fa-dashboard
-          | &nbsp;
-          = __('Register hours')
-        a.button.secondary(on-click="editToggle")
-          i.fa.fa-edit
-          | &nbsp;
-          = __('Edit project')
+    div(intro="fade:{delay: 310}")
+      .row
+        .columns
+          | {{#expanded}}
+          h1= __('Edit project')
+          form(on-submit="updateProject")
+            .row
+              .columns
+                label= __('Project name')
+                input#name(type="text" name="name" value="{{project.name}}")
+            .row
+              .columns
+                label= __('Client')
+                input#client(type="text" name="client" value="{{project.client}}")
+            .row
+              .columns
+                button= __('Save')
+          | {{/expanded}}
+          | {{^expanded}}
+          h1 {{project.name}}
+            | &nbsp;
+            small {{.client}}
+          a.button(href="/?project={{project._id}}")
+            i.fa.fa-dashboard
+            | &nbsp;
+            = __('Register hours')
+          a.button.secondary(on-click="editToggle")
+            i.fa.fa-edit
+            | &nbsp;
+            = __('Edit project')
 
-        ul.tabs(data-tab data-options="deep_linking:true")
-          li.tab-title(class="{{#own}}active{{/own}}")
-            a(href="#own" on-click="toggleAll")= __('Your hours')
-          li.tab-title(class="{{#all}}active{{/all}}")
-            a(href="#all" on-click="toggleAll")= __('All hours')
+          ul.tabs(data-tab data-options="deep_linking:true")
+            li.tab-title(class="{{#own}}active{{/own}}")
+              a(href="#own" on-click="toggleAll")= __('Your hours')
+            li.tab-title(class="{{#all}}active{{/all}}")
+              a(href="#all" on-click="toggleAll")= __('All hours')
 
-        #all
-        #own
-        | {{#own}}
-        table.hours
-          thead
-            tr
-              th= __('Date')
-              th= __('Start')
-              th= __('End')
-              th= __('Duration')
-              th
-                .hide-for-small-only= __('Registered')
-              th= __('By')
-              th
-          tfoot
-            tr
-              td
-              td
-              td
-              td.sum
-              td
-              td
-              td
-          tbody
-            | {{#own_hours}}
-            | {{^.expanded}}
-            tr(data-comment="{{comment ? comment : ''}}" class="{{moved ? 'moved' : ''}}")
-              td(data-date="{{isoformat(date)}}") {{dateformat(date)}}
-              td {{timeformat(start)}}
-              td {{timeformat(end)}}
-              td {{duration}}
-              td
-                .hide-for-small-only {{humanformat(created)}}
-              td(data-userid="{{user._id}}") {{user.name}}
-              td
-                a(href="/edit/{{._id}}" title=__('Edit') on-click="toggleEdit")
-                  i.fa.fa-edit
-            | {{/.expanded}}
-            | {{#.expanded}}
-            tr
-              td(colspan="7")
-                form(on-submit="updateHours")
-                  .row
-                    .columns.medium-9
-                      select#project(name="project" value="{{.project._id}}")
-                        | {{#projects}}
-                        option(value="{{._id}}") {{.name}} ({{.client}})
-                        | {{/projects}}
-                  .row
-                    .columns.medium-3
-                      label(for="date")= __('Date')
-                      input#date(type="date" value="{{isodateformat(.date)}}")
-                    .columns.medium-3.small-4
-                      label(for="start")= __('Start')
-                      input#start.start.timepicker(type="time" name="start" step="900" value="{{timeformat(.start)}}" on-change="updateDuration")
-                    .columns.medium-3.small-4
-                      label(for="end")= __('End')
-                      input#end.end.timepicker(type="time" name="end" step="900" value="{{timeformat(.end)}}" on-change="updateDuration")
-                    .columns.medium-3.small-4
-                      label(for="duration")= __('Duration')
-                      input#duration(type="number" step="0.25" value="{{.duration}}")
-                    .columns
-                      label(for="comment")= __('Comments')
-                      textarea#comment(name="comment" value="{{.comment}}")
-                  .row
-                    .columns
-                      button.small= __('Save')
-                      button.small.secondary(type="reset" on-click="toggleEdit")= __('Cancel')
-            | {{/.expanded}}
-            | {{/own_hours}}
-        | {{/own}}
+          #all
+          #own
+          | {{#own}}
+          table.hours
+            thead
+              tr
+                th= __('Date')
+                th= __('Start')
+                th= __('End')
+                th= __('Duration')
+                th
+                  .hide-for-small-only= __('Registered')
+                th= __('By')
+                th
+            tfoot
+              tr
+                td
+                td
+                td
+                td.sum
+                td
+                td
+                td
+            tbody
+              | {{#own_hours}}
+              | {{^.expanded}}
+              tr(data-comment="{{comment ? comment : ''}}" class="{{moved ? 'moved' : ''}}")
+                td(data-date="{{isoformat(date)}}") {{dateformat(date)}}
+                td {{timeformat(start)}}
+                td {{timeformat(end)}}
+                td {{duration}}
+                td
+                  .hide-for-small-only {{humanformat(created)}}
+                td(data-userid="{{user._id}}") {{user.name}}
+                td
+                  a(href="/edit/{{._id}}" title=__('Edit') on-click="toggleEdit")
+                    i.fa.fa-edit
+              | {{/.expanded}}
+              | {{#.expanded}}
+              tr
+                td(colspan="7")
+                  form(on-submit="updateHours")
+                    .row
+                      .columns.medium-9
+                        select#project(name="project" value="{{.project._id}}")
+                          | {{#projects}}
+                          option(value="{{._id}}") {{.name}} ({{.client}})
+                          | {{/projects}}
+                    .row
+                      .columns.medium-3
+                        label(for="date")= __('Date')
+                        input#date(type="date" value="{{isodateformat(.date)}}")
+                      .columns.medium-3.small-4
+                        label(for="start")= __('Start')
+                        input#start.start.timepicker(type="time" name="start" step="900" value="{{timeformat(.start)}}" on-change="updateDuration")
+                      .columns.medium-3.small-4
+                        label(for="end")= __('End')
+                        input#end.end.timepicker(type="time" name="end" step="900" value="{{timeformat(.end)}}" on-change="updateDuration")
+                      .columns.medium-3.small-4
+                        label(for="duration")= __('Duration')
+                        input#duration(type="number" step="0.25" value="{{.duration}}")
+                      .columns
+                        label(for="comment")= __('Comments')
+                        textarea#comment(name="comment" value="{{.comment}}")
+                    .row
+                      .columns
+                        button.small= __('Save')
+                        button.small.secondary(type="reset" on-click="toggleEdit")= __('Cancel')
+              | {{/.expanded}}
+              | {{/own_hours}}
+          | {{/own}}
 
-        | {{#all}}
-        table.hours
-          thead
-            tr
-              th= __('Date')
-              th= __('Start')
-              th= __('End')
-              th= __('Duration')
-              th
-                .hide-for-small-only= __('Registered')
-              th= __('By')
-          tfoot
-            tr
-              td
-              td
-              td
-              td.sum
-              td
-              td
-          tbody
-            | {{#hours}}
-            tr
-              td {{dateformat(date)}}
-              td {{timeformat(start)}}
-              td {{timeformat(end)}}
-              td {{duration}}
-              td
-                .hide-for-small-only {{datetimeformat(created)}}
-              td(data-userid="{{user._id}}") {{user.name}}
-            | {{/hours}}
-        | {{/all}}
-        | {{/expanded}}
+          | {{#all}}
+          table.hours
+            thead
+              tr
+                th= __('Date')
+                th= __('Start')
+                th= __('End')
+                th= __('Duration')
+                th
+                  .hide-for-small-only= __('Registered')
+                th= __('By')
+            tfoot
+              tr
+                td
+                td
+                td
+                td.sum
+                td
+                td
+            tbody
+              | {{#hours}}
+              tr
+                td {{dateformat(date)}}
+                td {{timeformat(start)}}
+                td {{timeformat(end)}}
+                td {{duration}}
+                td
+                  .hide-for-small-only {{datetimeformat(created)}}
+                td(data-userid="{{user._id}}") {{user.name}}
+              | {{/hours}}
+          | {{/all}}
+          | {{/expanded}}
 
 block javascript
   script

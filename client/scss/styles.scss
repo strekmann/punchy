@@ -74,10 +74,18 @@ tr.moved td {
 }
 
 .loader {
-    position: absolute;
-    left: calc(50% - 2.5em);
-    top: calc(50% - 2.5em);
+    position: fixed;
+    left: calc(50% - 2.5rem);
+    top: calc(50% - 2.5rem);
     color: #999;
+
+    font-family: FontAwesome;
+    font-size: 5rem;
+    animation: fa-spin 2s infinite linear;
+
+    &:before{
+        content: '\f013';
+    }
 }
 
 #hours {

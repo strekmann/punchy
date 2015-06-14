@@ -29,6 +29,7 @@ var ProjectSchema = new mongoose.Schema({
     client: {type: String, trim: true, ref: 'Client'},
     user: {type: String, ref: 'User', required: true}, // user who created project
     organization: {type: String, ref: 'Organization', required: true},
+    users: [{type: String, ref: 'User'}], // deprecated
     active: {type: Date},
     created: {type: Date, required: true, 'default': Date.now},
     modified: {type: Date, required: true, 'default': Date.now}

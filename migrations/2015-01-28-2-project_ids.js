@@ -56,12 +56,18 @@ async.series([
                                 Project.create(newProject, function(err){
                                     if (err){ return done(err); }
 
-                                    project.remove(function(err){
-
-                                        // update project hours
-                                        Hours.update({project: project._id}, {$set: {project: newProject._id}}, {multi: true}, function(err){
-                                            done(err);
-                                        });
+                                    // update project hours
+                                    Hours.update({project: project._id}, {$set: {project: newProject._id}}, {multi: true}, function(err){
+                                        if (project._id[0] !== 5) {
+                                            project.remove(function(err){
+                                                done(err);
+                                            });
+                                        }
+                                        else {
+                                            Project.collection.remove({_id: ObjectId(project._id)}, function(err){
+                                                done(err);
+                                            });
+                                        }
                                     });
                                 });
                             });

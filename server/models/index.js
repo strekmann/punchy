@@ -68,9 +68,7 @@ var InvoiceSchema = new mongoose.Schema({
 module.exports = {
     User: mongoose.model('User', UserSchema),
     Project: mongoose.model('Project', ProjectSchema),
-    NewProject: mongoose.model('NewProject', NewProjectSchema),
     Hours: mongoose.model('Hours', HoursSchema),
-    NewHours: mongoose.model('NewHours', NewHoursSchema),
     Organization: mongoose.model('Organization', OrganizationSchema),
     Client: mongoose.model('Client', ClientSchema),
     Invoice: mongoose.model('Invoice', InvoiceSchema)

@@ -6,6 +6,7 @@ var shortid = require('shortid'),
     Project = require('../server/models').Project,
     Organization = require('../server/models').Organization,
     Hours = require('../server/models').Hours,
+    NewHours = require('../server/models').NewHours,
     _ = require('underscore'),
     async = require('async'),
     settings = require('../server/settings');
@@ -13,6 +14,15 @@ var shortid = require('shortid'),
 mongoose.connect(settings.mongo.servers.join(','), {replSet: {rs_name: settings.mongo.replset}});
 
 async.series([
+        // Delete old indexes
+        function(cb){
+            console.log('Dropping indexes');
+            Hours.collection.dropAllIndexes(function(err, results){
+                console.log(results);
+                cb(err);
+            });
+        },
+
         // Update all hours
         function(cb){
             Hours.find({}).exec(function(err, hours){
@@ -30,21 +40,9 @@ async.series([
                     var newH = h.toObject();
                     newH._id = map[h._id];
 
-                    Hours.create(newH, function(err){
-                        if (err){ return done(err); }
-
-                        if (h._id[0] !== 5) {
-                            h.remove(function(err){
-                                done(err);
-                            });
-                        }
-                        else {
-                            Hours.collection.remove({_id: ObjectId(h._id)}, function(err){
-                                done(err);
-                            });
-                        }
+                    NewHours.create(newH, function(err){
+                        return done(err);
                     });
-
                 }, function(err){
                     cb(err);
                 });

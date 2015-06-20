@@ -3,6 +3,7 @@
 var shortid = require('shortid'),
     mongoose = require('mongoose'),
     Project = require('../server/models').Project,
+    NewProject = require('../server/models').NewProject,
     Hours = require('../server/models').Hours,
     User = require('../server/models').User,
     Client = require('../server/models').Client,
@@ -53,21 +54,12 @@ async.series([
                             client.save(function (err, client) {
                                 if (err) { done (err); }
                                 newProject.client = client._id;
-                                Project.create(newProject, function(err){
+                                NewProject.create(newProject, function(err){
                                     if (err){ return done(err); }
 
                                     // update project hours
                                     Hours.update({project: project._id}, {$set: {project: newProject._id}}, {multi: true}, function(err){
-                                        if (project._id[0] !== 5) {
-                                            project.remove(function(err){
-                                                done(err);
-                                            });
-                                        }
-                                        else {
-                                            Project.collection.remove({_id: ObjectId(project._id)}, function(err){
-                                                done(err);
-                                            });
-                                        }
+                                        done(err);
                                     });
                                 });
                             });

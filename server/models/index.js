@@ -24,6 +24,17 @@ var OrganizationSchema = new mongoose.Schema({
 });
 
 var ProjectSchema = new mongoose.Schema({
+    name: {type: String, trim: true, required: true},
+    client: {type: String, trim: true, ref: 'Client'},
+    user: {type: String, ref: 'User', required: true}, // user who created project
+    organization: {type: String, ref: 'Organization', required: true},
+    users: [{type: String, ref: 'User'}], // deprecated
+    active: {type: Date},
+    created: {type: Date, required: true, 'default': Date.now},
+    modified: {type: Date, required: true, 'default': Date.now}
+});
+
+var NewProjectSchema = new mongoose.Schema({
     _id: {type: String, required: true, unique: true, 'default': shortid.generate},
     name: {type: String, trim: true, required: true},
     client: {type: String, trim: true, ref: 'Client'},
@@ -35,8 +46,21 @@ var ProjectSchema = new mongoose.Schema({
     modified: {type: Date, required: true, 'default': Date.now}
 });
 
-var HoursSchema = new mongoose.Schema({
+var NewHoursSchema = new mongoose.Schema({
     _id: {type: String, required: true, unique: true, 'default': shortid.generate},
+    user: {type: String, ref: 'User', required: true},
+    project: {type: String, ref: 'Project', required: true},
+    date: {type: Date, required: true},
+    start: {type: Date}, // use this for date
+    end: {type: Date},
+    duration: {type: Number, required: true},
+    comment: {type: String, trim: true},
+    created: {type: Date, required: true, 'default': Date.now},
+    invoice: {type: String, ref: 'Invoice'}
+});
+
+var HoursSchema = new mongoose.Schema({
+    //_id: {type: String, required: true, unique: true, 'default': shortid.generate},
     user: {type: String, ref: 'User', required: true},
     project: {type: String, ref: 'Project', required: true},
     date: {type: Date, required: true},
@@ -68,7 +92,9 @@ var InvoiceSchema = new mongoose.Schema({
 module.exports = {
     User: mongoose.model('User', UserSchema),
     Project: mongoose.model('Project', ProjectSchema),
+    NewProject: mongoose.model('NewProject', NewProjectSchema),
     Hours: mongoose.model('Hours', HoursSchema),
+    NewHours: mongoose.model('NewHours', NewHoursSchema),
     Organization: mongoose.model('Organization', OrganizationSchema),
     Client: mongoose.model('Client', ClientSchema),
     Invoice: mongoose.model('Invoice', InvoiceSchema)

@@ -15,10 +15,10 @@ var Tracker = Ractive.extend({
         error: [],
         list: [],
         projects: [],
-        project: null,
+        project: undefined,
         hours: [],
         own_hours: [],
-        active: null,
+        active: undefined,
         duration: 0,
         date: moment().format("YYYY-MM-DD"), // needed for default value - a nice trick by accident
         isodateformat: function (date) {
@@ -48,32 +48,22 @@ var Tracker = Ractive.extend({
         }
     },
 
-    createProject: function(project){
-        return $.ajax({
-            type: 'POST',
-            url: window.location.href,
-            data: project
-        });
-    },
-
     updateProject: function (project) {
         return $.ajax({
             type: 'PUT',
+            dataType: 'json',
             url: window.location.href,
             data: project
         });
     },
 
     deleteProject: function (project_id) {
-        return $.ajax({
-            type: 'DELETE',
-            url: window.location.href + '/' + project_id
-        });
     },
 
     createHours: function (data) {
         return $.ajax({
             type: 'POST',
+            dataType: 'json',
             url: '/',
             data: _.pick(data, 'project', 'date', 'start', 'end', 'duration', 'comment')
         });
@@ -82,6 +72,7 @@ var Tracker = Ractive.extend({
     updateHours: function (data) {
         return $.ajax({
             type: 'PUT',
+            dataType: 'json',
             url: '/' + data._id,
             data: _.pick(data, 'project', 'date', 'start', 'end', 'duration', 'comment')
         });
@@ -153,7 +144,6 @@ module.exports.simple = function (projects, hours) {
     var tracker = new Tracker({
         el: '#simple',
         template: '#template',
-        noIntro: true,
         data: {
             projects: projects,
             hours: hours,
@@ -263,48 +253,97 @@ module.exports.simple = function (projects, hours) {
     return tracker;
 };
 
-module.exports.projects = function (projects) {
+module.exports.organization = function (obj) {
     var tracker = new Tracker({
-        el: '#projects',
+        el: '#organization',
         template: '#template',
-        data: {
-            projects: projects
-        }
+        data: obj
     });
 
     tracker.on('createProject', function (event) {
         event.original.preventDefault();
 
-        var node = $(event.node),
-            project = {
-                name: node.find('#name').val(),
-                client: node.find('#client').val()
-            };
+        var project = tracker.get('project');
+        project.organization = tracker.get('organization')._id;
 
-        tracker.createProject(project)
-            .then(function(data){
-                // everything ok
-                tracker.toggle('expanded');
-                tracker.get('projects').unshift(data);
-            }, function(xhr, status, err){
-                tracker.get('error').push(err);
-            });
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: '/projects',
+            data: {project: project}
+        })
+        .then(function(data){
+            // everything ok
+            tracker.get('projects').unshift(data);
+            tracker.set('project', {});
+        }, function(xhr, status, err){
+            tracker.get('error').push(err);
+        });
         //$('body').animate({scrollTop: 0}, 'fast');
     });
 
     tracker.on('deleteProject', function (event) {
-        tracker.deleteProject(event.context._id)
-            .then(function (data) {
-                tracker.get('projects').splice(event.keypath.split('.').pop());
-            }, function (xhr, status, err) {
-                tracker.get('error').push(xhr.responseText);
-            });
+        var project = event.context;
+        $.ajax({
+            type: 'DELETE',
+            dataType: 'json',
+            url: '/projects',
+            data: {project: project}
+        })
+        .then(function (data) {
+            tracker.get('projects').splice(event.keypath.split('.').pop(), 1);
+        }, function (xhr, status, err) {
+            tracker.get('error').push(xhr.responseText);
+        });
     });
+
+    tracker.on('createClient', function (event) {
+        event.original.preventDefault();
+
+        var client = tracker.get('client');
+        client.organization = tracker.get('organization')._id;
+
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: '/clients',
+            data: {client: client}
+        })
+        .then(function(data){
+            // everything ok
+            tracker.get('clients').unshift(data);
+            tracker.set('client', {});
+        }, function(xhr, status, err){
+            tracker.get('error').push(err);
+        });
+    });
+
+    tracker.on('deleteClient', function (event) {
+        var client = event.context;
+
+        $.ajax({
+            type: 'DELETE',
+            dataType: 'json',
+            url: '/clients',
+            data: {client: client}
+        })
+        .then(function (data) {
+            tracker.get('clients').splice(event.keypath.split('.').pop(), 1);
+        }, function (xhr, status, err) {
+            tracker.get('error').push(xhr.responseText);
+        });
+    });
+
 
     return tracker;
 };
 
-module.exports.project = function (project, projects, hours) {
+module.exports.project = function (conf) {
+    var project = conf.project,
+        projects = conf.projects,
+        hours = conf.hours,
+        userid = conf.userid;
+
     var all, own;
     var u = URI(window.location.href);
     if (u.hash() === "#all") {
@@ -314,7 +353,7 @@ module.exports.project = function (project, projects, hours) {
         own = true;
     }
     var own_hours = _.filter(hours, function (h) {
-        return (h.user._id.match(/^gartmann/));
+        return h.user._id === userid;
     });
     var tracker = new Tracker({
         el: '#project',
@@ -389,3 +428,98 @@ module.exports.project = function (project, projects, hours) {
     return tracker;
 };
 
+module.exports.clients = function (c) {
+    var clients = new Ractive({
+        el: '#clients',
+        template: '#template',
+        data: {
+            clients: c || [],
+            client: {}
+        }
+    });
+
+    clients.on('createClient', function (event) {
+        event.original.preventDefault();
+
+        var client = event.context.client;
+
+        $.ajax({
+            dataType: 'json',
+            type: 'POST',
+            url: window.location.href,
+            data: client
+        })
+        .then(function (client) {
+            clients.push('clients', client);
+        })
+        .fail(function (err) {
+            alert(err.responseJSON.error);
+        });
+    });
+};
+
+module.exports.invoice = function (obj) {
+    var invoice = new Ractive({
+        el: '#create-invoice',
+        template: '#create-invoice-template',
+        data: {
+            clients: obj.clients,
+            client: undefined,
+            projects: [],
+            project: undefined,
+            hours: [],
+            filteredHours: [],
+            selectedHours: [],
+            invoices: obj.invoices
+        }
+    });
+
+    invoice.observe('client', function (value) {
+        if (value) {
+            $.ajax({
+                url: '/invoice/project/' + value,
+                type: 'get',
+                dataType: 'json'
+            })
+            .then(function (data) {
+                invoice.set('projects', data.projects);
+                invoice.set('hours', data.hours);
+                invoice.set('filteredHours', data.hours);
+            });
+        }
+    });
+
+    invoice.observe('project', function (value) {
+        if (!value) {
+            return invoice.set('filteredHours', invoice.get('hours'));
+        }
+        invoice.set('filteredHours', _.filter(invoice.get('hours'), function (item) {
+            return item.project._id === value;
+        }));
+    });
+
+    invoice.on('prepareInvoice', function (event) {
+        event.original.preventDefault();
+        invoice.set('selectedHours', event.context.selected);
+        //window.location.hash = "#selectedHours";
+        $(document.body).animate({
+            'scrollTop': $('#selectedHours').offset().top
+        }, 1000);
+    });
+
+    invoice.on('saveInvoice', function (event) {
+        event.original.preventDefault();
+        console.log(invoice.data);
+        $.ajax({
+            url: '/invoice',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                hours: event.context.selectedHours,
+                client: invoice.get('client')
+            }
+        }).then(function (data) {
+            window.location.href = '/invoice/' + data.id;
+        });
+    });
+};

@@ -1,0 +1,54 @@
+extends layout
+
+block content
+
+  section#invoice_details
+    .row
+      .columns
+        h2
+          != daterange(invoice.start, invoice.end)
+
+        label= __("Customer")
+          | :
+        = invoice.client.name
+        label= __("Created")
+          | :
+        = shortdate(invoice.created)
+
+
+        for project in invoice.projects
+          .row.project
+            .columns
+              .row
+                .columns.name
+                  h3= project.name
+
+              .row.headers
+                .columns.small-3.medium-3= __("Date")
+                .columns.hide-for-small.medium-4= __("Comment")
+                .columns.small-3.medium-2= __("From")
+                .columns.small-3.medium-2= __("To")
+                .columns.small-3.medium-1= __("Duration")
+
+              for h in project.hours
+                .row.line
+                  .columns.small-3.medium-3= shortdate(h.date)
+                  .columns.hide-for-small.medium-4= h.comment
+                  .columns.small-3.medium-2= time(h.start)
+                  .columns.small-3.medium-2= time(h.end)
+                  .columns.small-3.medium-1= h.duration
+
+    #summary.row
+      .columns
+        h3= __("Summary")
+
+        for project in invoice.projects
+          .row
+            .columns.small-10= project.name
+            .columns.small-2= project.sum
+        .row
+          .columns
+            .sum
+              .row
+                .columns.small-10= __("Sum")
+                .columns.small-2= invoice.sum

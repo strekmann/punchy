@@ -1,9 +1,5 @@
 // Ractive component
 var Account = Ractive.extend({
-    init: function(options){
-        this.restAPI = options.restAPI || window.location.href;
-    },
-
     data: {
         user: {},
         info: [],

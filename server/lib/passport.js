@@ -1,4 +1,6 @@
 var User = require('../models').User,
+    Team = require('../models').Team,
+    Organization = require('../models').Organization,
     passport = require('passport'),
     GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
@@ -8,14 +10,23 @@ module.exports = function(app){
     });
 
     passport.deserializeUser(function(id, done) {
-        User.findById(id, function(err, user){
+        User.findById(id)
+        .lean()
+        .exec(function(err, user){
             if (err) {
                 return done(err.message, null);
             }
             if (!user) {
-                return done("Could not find user "+ id);
+                // User not found, tell passport user is not valid
+                return done(null, false);
             }
-            done(null, user);
+
+            Organization.find({users: id})
+            .lean()
+            .exec(function(err, orgs){
+                user.organizations = orgs;
+                done(null, user);
+            });
         });
     });
 
@@ -34,21 +45,23 @@ module.exports = function(app){
                         if (user) {
                             return done(null, user);
                         }
-                        else {
-                            user = new User({
-                                _id: profile._json.family_name + "." + profile.id,
-                                username: profile._json.family_name + "." + profile.id,
-                                name: profile.displayName,
-                                email: profile._json.email,
-                                google_id: profile.id
-                            });
-                            user.save(function(err){
-                                if (err) {
-                                    return done("Could not create user", null);
-                                }
+                        user = new User({
+                            username: profile.displayName,
+                            name: profile.displayName,
+                            email: profile._json.email,
+                            google_id: profile.id
+                        });
+                        user.save(function (err, user) {
+                            if (err) { return done("Could not create user"); }
+                            var organization = Organization();
+                            organization._id = user._id;
+                            organization.name = user.name;
+                            organization.users.push(user);
+                            organization.save(function (err) {
+                                if (err) { return done("Could not create organization"); }
                                 return done(null, user);
                             });
-                        }
+                        });
                     });
                 });
             }

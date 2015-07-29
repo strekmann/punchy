@@ -1,0 +1,37 @@
+extends layout
+
+block content
+  section#organizations
+    .row
+      .columns
+        h1= __("Companies")
+
+    .row
+      .columns.text-right
+        a(role="button")
+          i.fa.fa-plus.fa-fw
+          = __("new company")
+    .row.organizations
+      .columns
+        for org in organizations
+          .row.organization
+            .columns
+              .row
+                .columns.name
+                  a(href="/companies/#{org._id}")= org.name
+              .row
+                .columns
+                  for client in org.clients || []
+                    .row.clients
+                      .columns
+                        a(href="/clients/#{client._id}")= client.name
+                        .row
+                          .columns.projects
+                            for project in client.projects || []
+                              .row.project
+                                .columns
+                                  a(href="/projects/#{project._id}")= project.name
+                            else
+                              .row.project
+                                .columns= __('No projects added to this client.')
+

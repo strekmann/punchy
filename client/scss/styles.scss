@@ -9,7 +9,6 @@
 // foundation lib
 @import "foundation";
 
-
 // font-awesome
 @import "font-awesome";
 
@@ -74,6 +73,21 @@ tr.moved td {
   text-overflow: ellipsis;
 }
 
+.loader {
+    position: fixed;
+    left: calc(50% - 2.5rem);
+    top: calc(50% - 2.5rem);
+    color: #999;
+
+    font-family: FontAwesome;
+    font-size: 5rem;
+    animation: fa-spin 2s infinite linear;
+
+    &:before{
+        content: '\f013';
+    }
+}
+
 #hours {
     .hours {
         margin-bottom: rem-calc(30px);
@@ -89,6 +103,65 @@ tr.moved td {
             margin-top: 0.2rem;
             margin-bottom: 0.5rem;
             margin-right: 0.5rem;
+        }
+    }
+}
+
+#organizations {
+    .organization {
+        border: 1px solid #ddd;
+        border-bottom: none;
+
+        &:last-of-type {
+            border-bottom: 1px solid #ddd;
+        }
+    }
+
+    .name {
+        border-bottom: 1px solid #ddd;
+        background-color: #efefef;
+    }
+
+    .clients {
+        margin-bottom: 0.4rem;
+    }
+    .project {
+        margin-left: .5rem;
+    }
+}
+
+#invoice_details {
+    .project {
+        border: 1px solid #ddd;
+        border-bottom: none;
+        &:last-of-type {
+            border-bottom: 1px solid #ddd;
+        }
+        .name {
+            border-bottom: 1px solid #ddd;
+            background-color: #efefef;
+        }
+        h3 {
+            margin: 0;
+        }
+        .headers {
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        .line {
+            &:nth-of-type(2n+1) {
+                background-color: #f7f7f7;
+            }
+        }
+    }
+    #summary {
+        h3 {
+            border-bottom: 1px solid #ddd;
+
+        }
+        .sum {
+            border-top: 1px solid #ddd;
+            font-weight: bold;
         }
     }
 }

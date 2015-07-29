@@ -2,155 +2,149 @@ extends layout
 
 block content
   section#simple
-    .row
-      .colums
-        h1= __('Punchy')
+    if !active_user
+      .row
+        .colums
+          h1= __('Punchy')
 
-        p= __('Punchy is a service for tracking working hours. Either if you are a freelancer, or if you have to use a system that is unnecessary complicated elsewhere, this is a service that focuses on the core task: Tracking hours.')
+          p= __('Punchy is a service for tracking working hours. Either if you are a freelancer, or if you have to use a system that is unnecessary complicated elsewhere, this is a service that focuses on the core task: Tracking hours.')
 
         .text-center
           a.button(href="/auth/google") Logg inn med Google
 
         h2= __('Simple to use')
 
-        p= __('Even though this is a webpage, and not a native mobile app, it should be fast and as few clicks as possible for you to register your time. When you log in, the main page is where you do the hours registration, and if you need to have a look at statistics for a project, you get there from the main page.')
+          p= __('Even though this is a webpage, and not a native mobile app, it should be fast and as few clicks as possible for you to register your time. When you log in, the main page is where you do the hours registration, and if you need to have a look at statistics for a project, you get there from the main page.')
 
-        h2= __('Reporting')
+          h2= __('Reporting')
 
-        p= __('As this is a new service, there is only very simple reporting: You can get a list of registered hours per project in total and by yourself. What reporting would you need to start using this service?')
+          p= __('As this is a new service, there is only very simple reporting: You can get a list of registered hours per project in total and by yourself. What reporting would you need to start using this service?')
 
-        hr
+          hr
 
-        p.text-center
-          = __('By')
-          | &nbsp;
-          a(href="http://strekmann.no") Strekmann
+          p.text-center
+            = __('By')
+            | &nbsp;
+            a(href="http://strekmann.no") Strekmann
+    else
+      .loader
 
-  script#template(type="text/ractive")
+  if active_user
+    script#template(type="text/ractive")
+      div(intro="fade:{delay: 310}")
+        | {{#if !projects.length}}
+        .row
+          .columns.small-8.small-centered
+            p.help= __("Before registering hours, you need to register at least one project from the projects page")
+        | {{else}}
+        .row
+          .columns
+            form#createHours(on-submit="createHours")
+              fieldset
+                legend= __('Add working hours')
+                .row
+                  .columns
+                    label= __('Project')
+                    select#project(name="project" autofocus="{{has_project(false)}}" disabled="{{has_project(true)}}")
+                      | {{#projects}}
+                      | {{#.active}}
+                      option(value="{{._id}}" selected) {{.name}} ({{.client.name}})
+                      | {{/.active}}
+                      | {{^.active}}
+                      option(value="{{._id}}") {{.name}} ({{.client.name}})
+                      | {{/.active}}
+                      | {{/projects}}
+                .row
+                  .columns.medium-3
+                    label(for="date")= __('Date')
+                    input#date(type="date" value="{{date}}" autofocus="{{has_project(true)}}")
+                  .columns.medium-3.small-4
+                    label(for="start")= __('Start')
+                    input#start.timepicker(type="time" step="900")
+                  .columns.medium-3.small-4
+                    label(for="end")= __('End')
+                    input#end.timepicker(type="time" step="900")
+                  .columns.medium-3.small-4
+                    label(for="duration")= __('Duration')
+                    input#duration(type="number" step="0.25" value="{{duration}}")
+                  .columns
+                    label(for="comment")= __('Comments')
+                    textarea#comment(name="comment" value="{{.comment}}")
+                .row
+                  .columns
+                    button.small= __('Save')
+                    button.small.secondary(type="reset" on-click="toggleNew")= __('Cancel')
+        | {{/if}}
 
-    | {{^expanded}}
-    | {{#projects.length}}
-    .row(intro-outro="slide")
-      .columns
-        .right
-          a.button(on-click="toggleNew")= __("Add working hours")
-    | {{/projects.length}}
-    | {{/expanded}}
-    | {{^hours.length}}
-    .row
-      .columns.small-8.small-centered
-        | {{#projects.length}}
-        p.help= __("You have no registered hours yet. Add one by clicking the big button above")
-        | {{/projects.length}}
-        | {{^projects.length}}
-        p.help= __("Before registering hours, you need to register at least one project from the projects page")
-        | {{/projects.length}}
-    | {{/hours.length}}
-    | {{#expanded}}
-    .row(intro-outro="slide")
-      .columns
-        form#createHours(on-submit="createHours")
-          fieldset
-            legend= __('Add working hours')
-            .row
-              .columns
-                label= __('Project')
-                select#project(name="project" autofocus="{{has_project(false)}}" disabled="{{has_project(true)}}")
-                  | {{#projects}}
-                  | {{#.active}}
-                  option(value="{{._id}}" selected) {{.name}} ({{.client}})
-                  | {{/.active}}
-                  | {{^.active}}
-                  option(value="{{._id}}") {{.name}} ({{.client}})
-                  | {{/.active}}
-                  | {{/projects}}
-            .row
-              .columns.medium-3
-                label(for="date")= __('Date')
-                input#date(type="date" value="{{date}}" autofocus="{{has_project(true)}}")
-              .columns.medium-3.small-4
-                label(for="start")= __('Start')
-                input#start.timepicker(type="time" step="900")
-              .columns.medium-3.small-4
-                label(for="end")= __('End')
-                input#end.timepicker(type="time" step="900")
-              .columns.medium-3.small-4
-                label(for="duration")= __('Duration')
-                input#duration(type="number" step="0.25" value="{{duration}}")
-              .columns
-                label(for="comment")= __('Comments')
-                textarea#comment(name="comment" value="{{.comment}}")
-            .row
-              .columns
-                button.small= __('Save')
-                button.small.secondary(type="reset" on-click="toggleNew")= __('Cancel')
-    | {{/expanded}}
-
-    .row
-      .columns
-        h1= __('Previous registrations')
-        table
-          thead
-            tr
-              th= __('Project')
-              th= __('Date')
-              th= __('Start')
-              th= __('End')
-              th= __('Duration')
-              th= __('Registered')
-              th
-          tbody
-            | {{#hours}}
-            | {{^.expanded}}
-            tr(intro-outro="fade" data-comment="{{comment ? comment : ''}}")
-              td
-                a(href="/projects/{{project._id}}") {{project.name}}
-              td(data-date="{{isoformat(date)}}") {{dateformat(date)}}
-              td {{timeformat(start)}}
-              td {{timeformat(end)}}
-              td {{duration}}
-              td {{humanformat(created)}}
-              td
-                a(href="/edit/{{._id}}" title=__('Edit') on-click="toggleEdit")
-                  i.fa.fa-edit
-            | {{/.expanded}}
-            | {{#.expanded}}
-            tr(intro-outro="fade")
-              td(colspan="7")
-                form(on-submit="updateHours")
-                  .row
-                    .columns.medium-9
-                      select#project(name="project" value="{{.project._id}}")
-                        | {{#projects}}
-                        option(value="{{._id}}") {{.name}} ({{.client}})
-                        | {{/projects}}
-                  .row
-                    .columns.medium-3
-                      label(for="date")= __('Date')
-                      input#date(type="date" value="{{isodateformat(date)}}")
-                    .columns.medium-3.small-4
-                      label(for="start")= __('Start')
-                      input#start.start.timepicker(type="time" name="start" step="900" value="{{timeformat(.start)}}" on-change="updateDuration")
-                    .columns.medium-3.small-4
-                      label(for="end")= __('End')
-                      input#end.end.timepicker(type="time" name="end" step="900" value="{{timeformat(.end)}}" on-change="updateDuration")
-                    .columns.medium-3.small-4
-                      label(for="duration")= __('Duration')
-                      input#duration(type="number" step="0.25" value="{{.duration}}")
-                    .columns
-                      label(for="comment")= __('Comments')
-                      textarea#comment(name="comment" value="{{.comment}}")
-                  .row
-                    .columns
-                      button= __('Save')
-                      button.secondary(type="reset" on-click="toggleEdit")= __('Cancel')
-            | {{/.expanded}}
-            | {{/hours}}
+        .row
+          .columns
+            | {{#if !hours.length}}
+            = __("No hours registered yet")
+            | {{else}}
+            h1= __('Previous registrations')
+            table
+              thead
+                tr
+                  th= __('Project')
+                  th= __('Date')
+                  th= __('Start')
+                  th= __('End')
+                  th= __('Duration')
+                  th= __('Registered')
+                  th
+              tbody
+                | {{#each hours}}
+                | {{#if !.expanded}}
+                tr(intro-outro="fade" data-comment="{{comment ? comment : ''}}")
+                  td
+                    a(href="/projects/{{project._id}}") {{project.name}}
+                  td(data-date="{{isoformat(date)}}") {{dateformat(date)}}
+                  td {{timeformat(start)}}
+                  td {{timeformat(end)}}
+                  td {{duration}}
+                  td {{humanformat(created)}}
+                  td
+                    a(href="/edit/{{._id}}" title=__('Edit') on-click="toggleEdit")
+                      i.fa.fa-edit
+                | {{else}}
+                tr(intro-outro="fade")
+                  td(colspan="7")
+                    form(on-submit="updateHours")
+                      .row
+                        .columns.medium-9
+                          select#project(name="project" value="{{.project._id}}")
+                            | {{#projects}}
+                            option(value="{{._id}}") {{.name}} ({{.client}})
+                            | {{/projects}}
+                      .row
+                        .columns.medium-3
+                          label(for="date")= __('Date')
+                          input#date(type="date" value="{{isodateformat(date)}}")
+                        .columns.medium-3.small-4
+                          label(for="start")= __('Start')
+                          input#start.start.timepicker(type="time" name="start" step="900" value="{{timeformat(.start)}}" on-change="updateDuration")
+                        .columns.medium-3.small-4
+                          label(for="end")= __('End')
+                          input#end.end.timepicker(type="time" name="end" step="900" value="{{timeformat(.end)}}" on-change="updateDuration")
+                        .columns.medium-3.small-4
+                          label(for="duration")= __('Duration')
+                          input#duration(type="number" step="0.25" value="{{.duration}}")
+                        .columns
+                          label(for="comment")= __('Comments')
+                          textarea#comment(name="comment" value="{{.comment}}")
+                      .row
+                        .columns
+                          button= __('Save')
+                          button.secondary(type="reset" on-click="toggleEdit")= __('Cancel')
+                | {{/if}}
+                | {{/each}}
+            | {{/if}}
 
 block javascript
-  script
-    | require('s7n').tracker.simple(
-    != JSON.stringify(projects)
-    | ,
-    != JSON.stringify(hours)
-    | );
+  if active_user
+    script
+      | require('s7n').tracker.simple(
+      != JSON.stringify(projects || [])
+      | ,
+      != JSON.stringify(hours || [])
+      | );

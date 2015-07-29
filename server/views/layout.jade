@@ -36,7 +36,9 @@ html(lang=lang dir=lang_dir locale=locale)
         ul.left
           if active_user
             li
-              a(href="/projects")= __("Projects")
+              a(href="/companies")= __("Companies")
+            li
+              a(href="/invoice")= __("Invoices")
           else
             li
               a(href="http://github.com/strekmann/punchy")

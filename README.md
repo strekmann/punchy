@@ -6,12 +6,16 @@ This is a very simple time tracker, that lacks most features you want
 Based on
 --------
 
-* node.js
+* node
 * express
 * mongoose
 * passport
 * jade
-* ractive
+* react
+* alt (flux pattern)
+* iso (isomorphic react)
+* i18n-abide
+* mocha
 
 Howto
 -----
@@ -21,14 +25,15 @@ Howto
 * Install dependencies: ``npm install``
 * Create a settings file, and remember to edit it: ``cp server/settings.example.js server/settings.js``
 * See that everything works on your side: ``make test``
-* Run: ``node cluster``
+* Run: ``node index``
 * Open browser at localhost:3000
 
 Developers howto
 ----------------
 
 * Make everything: ``make``
-* Compile sass on file changes: ``make watch``
+* Make translation files: ``make locales``
+* Compile sass and react components on file changes: ``make watch``
 * Restart cluster on file changes: ``nodemon cluster``
 
 Bugs? Contributions?

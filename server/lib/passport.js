@@ -46,7 +46,6 @@ module.exports = function(app){
                             return done(null, user);
                         }
                         user = new User({
-                            username: profile.displayName,
                             name: profile.displayName,
                             email: profile._json.email,
                             google_id: profile.id

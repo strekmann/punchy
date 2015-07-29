@@ -2,8 +2,11 @@ var express = require('express'),
     _ = require('underscore'),
     moment= require('moment'),
     async = require('async'),
-    router = express.Router(),
     populateRelated = require('../lib/populate-related'),
+    fs = require('fs'),
+    path = require('path'),
+    router = express.Router(),
+    React = require('react'),
     User = require('../models').User,
     Organization = require('../models').Organization,
     Project = require('../models').Project,
@@ -371,10 +374,6 @@ router.route('/invoice/:id')
     });
 });
 
-router.get('/login', function(req, res, next){
-    res.render('login');
-});
-
 router.get('/logout', function(req, res, next){
     req.logout();
     req.session.destroy();
@@ -384,12 +383,18 @@ router.get('/logout', function(req, res, next){
 router.route('/account')
     .all(ensureAuthenticated)
     .get(function(req, res, next){
-        res.render('account');
+        var data = {
+            UserStore: {
+                user: req.user
+            }
+        };
+
+        res.renderReact('account', data);
     })
     .put(function(req, res, next){
         User.findById(req.user._id, function(err, user){
             if (err) {
-                return res.json(404, {
+                return res.status(404).json({
                     error: 'Could not find user'
                 });
             }
@@ -400,7 +405,7 @@ router.route('/account')
 
             var errors = req.validationErrors();
             if (errors) {
-                return res.json('200', {
+                return res.status(400).json({
                     errors: errors
                 });
             }
@@ -408,12 +413,10 @@ router.route('/account')
             user.username = req.body.username;
             user.name = req.body.name;
             user.email = req.body.email;
-            return user.save(function(err){
-                if (err) { next(err); }
+            user.save(function(err){
+                if (err) { return next(err); }
 
-                return res.json(200, {
-                    message: 'Changes saved'
-                });
+                return res.json(user);
             });
         });
     });

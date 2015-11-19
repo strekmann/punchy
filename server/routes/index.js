@@ -346,7 +346,7 @@ router.route('/invoice/:id')
     // show invoice
     Invoice.findById(req.params.id).populate('user', 'name').populate('client', 'name').lean().exec(function (err, invoice) {
         if (err) { return next (err); }
-    Hours.find({invoice: invoice._id}).populate('project', 'name').exec(function (err, hours) {
+    Hours.find({invoice: invoice._id}).sort('date').populate('project', 'name').exec(function (err, hours) {
             if (err) { return next (err); }
             invoice.projects = _.map(
                 _.groupBy(hours, function (h) {

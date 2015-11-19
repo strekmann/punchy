@@ -53,13 +53,14 @@ app.use(app.passport.session());
 app.use(function(req, res, next){
     res.locals.active_user = req.user;
     res.locals.stamp = app.stamp;
+    moment.locale(res.locals.locale);
     res.locals.longdate = function (date) {
         if (!date) { return; }
         return moment(date).format('LLL');
     };
     res.locals.shortdate = function (date) {
         if (!date) { return; }
-        return moment(date).format('Do MMM');
+        return moment(date).format('Do MMM YYYY');
     };
     res.locals.time = function (date) {
         if (!date) { return; }

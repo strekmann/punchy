@@ -1,0 +1,12 @@
+[Service]
+ExecStart=/usr/bin/node /srv/punchy/punchy/cluster.js
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=punchy
+User=www-data
+Group=www-data
+Environment=NODE_ENV=production PORT=15003
+
+[Install]
+WantedBy=multi-user.target

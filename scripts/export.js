@@ -11,6 +11,9 @@ var async = require('async'),
 
 var argv = require('yargs')
     .default("file", "export.csv")
+    .example('$0 output_file.csv', 'export data to output_file.csv')
+    .help('h')
+    .alias('h', 'help')
     .argv;
 
 mongoose.connect(settings.mongo.servers.join(','), {replSet: {rs_name: settings.mongo.replset}});

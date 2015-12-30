@@ -40,16 +40,19 @@ async.waterfall([
                     ymd: {$dateToString: {format: "%Y-%m", date: "$date"}}
                 }
             }, {
-                $group: {_id: {
-                    ymd: "$ymd",
-                    project: "$project",
-                    duration: {$sum: "$duration"}
-                }}
+                $group: {
+                    _id: {
+                        ymd: "$ymd",
+                        project: "$project",
+                    },
+                    duration: {"$sum": "$duration"}
+                }
             }, {
                 $group: {
                     _id: "$_id.ymd",
-                    projects: {"$push": {"project": "$_id.project", "duration": "$_id.duration"}},
-                    duration: {"$sum": "$_id.duration"}}
+                    projects: {"$push": {"project": "$_id.project", "duration": "$duration"}},
+                    duration: {"$sum": "$duration"}
+                }
             }, {
                 $sort: {
                     _id: 1

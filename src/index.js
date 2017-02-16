@@ -91,36 +91,28 @@ passport.use(new GoogleStrategy({
     clientID: config.get('auth.google.clientId'),
     clientSecret: config.get('auth.google.clientSecret'),
     callbackURL: config.get('auth.google.callbackURL'),
-}, function(accessToken, refreshToken, profile, done) {
-    process.nextTick(function () {
-        User.findOne({google_id: profile.id}, function(err, user){
-            if (err) {
-                return done(err.message, null);
+}, (accessToken, refreshToken, profile, done) => {
+    process.nextTick(() => {
+        User.findOne({google_id: profile.id})
+        .then(_user => {
+            if (_user) {
+                return done(null, _user);
             }
-            if (user) {
-                return done(null, user);
-            }
-            user = new User({
+            return User.create({
                 username: profile.displayName,
                 name: profile.displayName,
                 email: profile._json.email,
                 google_id: profile.id
-            });
-            user.save(function (err, user) {
-                if (err) { return done("Could not create user"); }
-                var organization = Organization();
+            }).then((user) => {
+                const organization = Organization();
                 organization._id = user._id;
                 organization.name = user.name;
                 organization.users.push(user);
-                organization.save(function (err) {
-                    if (err) { return done("Could not create organization"); }
-                    return done(null, user);
-                });
-            });
-        });
+                organization.save(() => done(null, user));
+            }).catch(err => done(`Could not create user: ${err}`));
+        }).catch(err => done(`Could not find user: ${err}`);
     });
 }));
-
 
 app.use(passport.initialize());
 app.use(passport.session());

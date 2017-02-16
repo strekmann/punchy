@@ -1,8 +1,7 @@
 /node_modules
-/bower_components
-/server/settings.js
-/setup/mongo
+/dist
+/config/development.js
+/config/production.js
 .sass-cache
-/public
 *.mo
 dump

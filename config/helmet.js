@@ -1,4 +1,4 @@
-var config = {
+const config = {
     defaultTitle: 'Punchy',
     titleTemplate: 'Punchy - %s',
     meta: [

@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+/* eslint "import/newline-after-import": 0 */
+/* eslint "import/first": 0 */
+/* eslint no-param-reassign: ["error", { "props": false }] */
+
 import Promise from 'bluebird';
 import mongoose from 'mongoose';
 mongoose.Promise = Promise;
@@ -8,12 +12,12 @@ import ReactDOMServer from 'react-dom/server';
 import ReactHelmet from 'react-helmet';
 import RelayLocalSchema from 'relay-local-schema';
 import Router from 'isomorphic-relay-router';
-import bodyParser from 'body-parser';
+// import bodyParser from 'body-parser';
 import config from 'config';
 import connectMongo from 'connect-mongo';
 import express from 'express';
 import expressBunyan from 'express-bunyan-logger';
-import fs from 'fs';
+// import fs from 'fs';
 import graphqlHTTP from 'express-graphql';
 import helmet from 'helmet';
 import hpp from 'hpp';
@@ -23,21 +27,16 @@ import passport from 'passport';
 import path from 'path';
 import session from 'express-session';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-injectTapEventPlugin();
-
-import {
-    match,
-} from 'react-router';
-
-import {
-    OAuth2Strategy as GoogleStrategy,
-} from 'passport-google-oauth';
+import { match } from 'react-router';
+import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 
 import User from './models/user';
 import Organization from './models/organization';
 import log from './log';
 import routes from './common/routes';
 import schema from './graphql/schema';
+
+injectTapEventPlugin();
 
 const MongoStore = connectMongo(session);
 
@@ -66,13 +65,13 @@ app.use(session({
 const httpServer = http.createServer(app);
 
 /* LOGGING */
-const bunyan_opts = {
+const bunyanOptions = {
     logger: log,
     excludes: config.get('bunyan-express').excludes,
     format: config.get('bunyan-express').format,
 };
-app.use(expressBunyan(bunyan_opts));
-app.use(expressBunyan.errorLogger(bunyan_opts));
+app.use(expressBunyan(bunyanOptions));
+app.use(expressBunyan.errorLogger(bunyanOptions));
 
 /* PASSPORT */
 passport.serializeUser((user, done) => {
@@ -80,11 +79,13 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-    User.findById(id, function(err, user){
-        if (err) { return done(err.message, null); }
-        if (!user) { return done(null, false); }
-        done(null, user);
-    });
+    User.findById(id)
+    .then((user) => {
+        if (!user) {
+            return done(null, false);
+        }
+        return done(null, user);
+    }).catch(err => done(err.message, null));
 });
 
 passport.use(new GoogleStrategy({
@@ -93,16 +94,16 @@ passport.use(new GoogleStrategy({
     callbackURL: config.get('auth.google.callbackURL'),
 }, (accessToken, refreshToken, profile, done) => {
     process.nextTick(() => {
-        User.findOne({google_id: profile.id})
-        .then(_user => {
-            if (_user) {
-                return done(null, _user);
+        User.findOne({ google_id: profile.id })
+        .then((dbUser) => {
+            if (dbUser) {
+                return done(null, dbUser);
             }
             return User.create({
                 username: profile.displayName,
                 name: profile.displayName,
                 email: profile._json.email,
-                google_id: profile.id
+                google_id: profile.id,
             }).then((user) => {
                 const organization = Organization();
                 organization._id = user._id;
@@ -110,7 +111,7 @@ passport.use(new GoogleStrategy({
                 organization.users.push(user);
                 organization.save(() => done(null, user));
             }).catch(err => done(`Could not create user: ${err}`));
-        }).catch(err => done(`Could not find user: ${err}`);
+        }).catch(err => done(`Could not find user: ${err}`));
     });
 }));
 
@@ -126,7 +127,7 @@ app.use('/graphql', graphqlHTTP(req => ({
 })));
 
 /* DEFAULT */
-function renderPage(renderedContent, initialState, helmet) {
+function renderPage(renderedContent, initialState, head) {
     let style = '';
     if (config.get('html.style')) {
         style = '<link rel="stylesheet" href="/styles.css">';
@@ -135,8 +136,8 @@ function renderPage(renderedContent, initialState, helmet) {
     <!doctype html>
     <html>
     <head>
-        ${helmet.title.toString()}
-        ${helmet.meta.toString()}
+        ${head.title.toString()}
+        ${head.meta.toString()}
         ${style}
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     </head>
@@ -154,9 +155,9 @@ function renderPage(renderedContent, initialState, helmet) {
 // app.use(bodyParser.urlencoded({extended: false}));
 app.use(hpp());
 
-app.get('/auth/google', app.passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']}), function(req, res){});
-app.get('/auth/google/callback', app.passport.authenticate('google', { failureRedirect: '/login' }), function(req, res){
-    var url = req.session.returnTo || '/';
+app.get('/auth/google', app.passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'] }), (req, res) => {});
+app.get('/auth/google/callback', app.passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+    const url = req.session.returnTo || '/';
     delete req.session.returnTo;
     res.redirect(url);
 });
@@ -184,16 +185,15 @@ const universal = (req, res, next) => {
             });
             return Router.prepareData(renderProps, networkLayer).then(({ data, props }) => {
                 try {
-
                     global.navigator = { userAgent: req.headers['user-agent'] };
                     const renderedContent = ReactDOMServer.renderToString(Router.render(props));
-                    const helmet = ReactHelmet.rewind();
+                    const head = ReactHelmet.rewind();
 
-                    const renderedPage = renderPage(renderedContent, data, helmet);
+                    const renderedPage = renderPage(renderedContent, data, head);
                     return res.send(renderedPage);
                 }
-                catch (err) {
-                    return next(err);
+                catch (routeErr) {
+                    return next(routeErr);
                 }
             }, next);
         }
@@ -250,11 +250,15 @@ process.on('uncaughtException', (err) => {
     process.exit(1);
 });
 
-mongoose.connect(config.get('mongodb.servers').join(','), {replSet: {rs_name: config.get('mongodb.replset')}}, function(err) {
+mongoose.connect(config.get('mongodb.servers').join(','), {
+    replSet: {
+        rs_name: config.get('mongodb.replset'),
+    },
+}, (err) => {
     if (err) {
-        return log.error("MongoDB: ", err.message);
+        return log.error(`MongoDB: ${err.message}`);
     }
-    httpServer.listen(config.get('express.port'), function() {
+    return httpServer.listen(config.get('express.port'), () => {
         log.info('port %s, env=%s', config.get('express.port'), config.util.getEnv('NODE_ENV'));
     });
 });

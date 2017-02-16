@@ -85,7 +85,9 @@ passport.deserializeUser((id, done) => {
             return done(null, false);
         }
         return done(null, user);
-    }).catch(err => done(err.message, null));
+    }).catch((err) => {
+        return done(err.message, null);
+    });
 });
 
 passport.use(new GoogleStrategy({
@@ -109,9 +111,15 @@ passport.use(new GoogleStrategy({
                 organization._id = user._id;
                 organization.name = user.name;
                 organization.users.push(user);
-                organization.save(() => done(null, user));
-            }).catch(err => done(`Could not create user: ${err}`));
-        }).catch(err => done(`Could not find user: ${err}`));
+                organization.save(() => {
+                    return done(null, user);
+                });
+            }).catch((err) => {
+                return done(`Could not create user: ${err}`);
+            });
+        }).catch((err) => {
+            return done(`Could not find user: ${err}`);
+        });
     });
 }));
 
@@ -119,12 +127,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 /* GRAPHQL ENDPOINT */
-app.use('/graphql', graphqlHTTP(req => ({
-    schema,
-    context: { viewer: req.user },
-    pretty: config.get('graphql.pretty'),
-    graphiql: config.get('graphql.graphiql'),
-})));
+app.use('/graphql', graphqlHTTP((req) => {
+    return {
+        schema,
+        context: { viewer: req.user },
+        pretty: config.get('graphql.pretty'),
+        graphiql: config.get('graphql.graphiql'),
+    };
+}));
 
 /* DEFAULT */
 function renderPage(renderedContent, initialState, head) {
@@ -181,7 +191,9 @@ const universal = (req, res, next) => {
             const networkLayer = new RelayLocalSchema.NetworkLayer({
                 schema,
                 contextValue,
-                onError: (errors, request) => next(new Error(errors)),
+                onError: (errors, request) => {
+                    return next(new Error(errors));
+                },
             });
             return Router.prepareData(renderProps, networkLayer).then(({ data, props }) => {
                 try {

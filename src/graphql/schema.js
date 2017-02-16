@@ -31,7 +31,7 @@ import { connectionFromMongooseQuery, offsetToCursor } from './connections/mongo
 import User from '../models/user';
 
 const { nodeInterface, nodeField } = nodeDefinitions(
-    (globalId, {viewer}) => {
+    (globalId, { viewer }) => {
         const { type, id } = fromGlobalId(globalId);
         if (type === 'User') {
             if (viewer && viewer.id === id) { return viewer; }
@@ -48,7 +48,7 @@ const { nodeInterface, nodeField } = nodeDefinitions(
 );
 
 
-/*** TYPES ***/
+/** TYPES **/
 const userType = new GraphQLObjectType({
     name: 'User',
     description: 'A user',
@@ -74,10 +74,10 @@ const errorType = new GraphQLObjectType({
 });
 
 
-/*** RELAY CONNECTIONS ***/
+/** RELAY CONNECTIONS **/
 // const { connectionType: linksConnection, edgeType: LinkEdge } = connectionDefinitions({name: 'Link', nodeType: linkType});
 
-/*** QUERY TYPE ***/
+/** QUERY TYPE **/
 const queryType = new GraphQLObjectType({
     name: 'Query',
     fields: {
@@ -147,7 +147,7 @@ const queryType = new GraphQLObjectType({
 // });
 
 
-/*** MUTATION TYPE ***/
+/** MUTATION TYPE **/
 const mutationType = new GraphQLObjectType({
     name: 'Mutation',
     fields: () => ({

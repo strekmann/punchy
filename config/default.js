@@ -83,6 +83,13 @@ module.exports = {
     bunyan: {
         level: 'debug',
     },
+    auth: {
+        google: {
+            clientId: '',
+            clientSecret: '',
+            callbackURL: '',
+        },
+    },
     graphql: {
         pretty: true,
         graphiql: true,

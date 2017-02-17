@@ -1,15 +1,13 @@
-const path = require('path');
-
-const project_name = 'punchy';
+const projectName = 'punchy';
 
 const serializers = {
-    req: function(req) {
+    req: function (req) {
         return {
             method: req.method,
             url: req.url,
         };
     },
-    res: function(res) {
+    res: function (res) {
         return {
             statusCode: res.statusCode,
         };
@@ -21,7 +19,7 @@ module.exports = {
         style: true,
     },
     mongodb: {
-        servers: ['mongodb://localhost/' + project_name],
+        servers: ['mongodb://localhost/' + projectName],
         replset: null,
     },
     express: {
@@ -29,7 +27,7 @@ module.exports = {
         trust_proxy: true, // false in development
         session: {
             secret: '$session$ecret',
-            name: project_name + '.sid',
+            name: projectName + '.sid',
             httpOnly: true,
             secure: true, // false in development
             domain: 'example.com',
@@ -50,17 +48,17 @@ module.exports = {
     },
     bunyan: {
         level: 'info',
-        name: project_name,
+        name: projectName,
         serializers: serializers,
     },
-    'bunyan-express' : {
+    'bunyan-express': {
         excludes: [
             'body',
             'http-version',
             'req-headers',
             'res-headers',
         ],
-        format: ":remote-address :incoming :method :url HTTP/:http-version :status-code :res-headers[content-length] :referer :user-agent[family] :user-agent[major].:user-agent[minor] :user-agent[os] :response-time ms",
+        format: ':remote-address :incoming :method :url HTTP/:http-version :status-code :res-headers[content-length] :referer :user-agent[family] :user-agent[major].:user-agent[minor] :user-agent[os] :response-time ms',
     },
     graphql: {
         pretty: false,
@@ -68,7 +66,7 @@ module.exports = {
     },
 };
 
-/*** EXAMPLE DEV SETTINGS ***
+/** EXAMPLE DEV SETTINGS **
 module.exports = {
     html: {
         style: false,
@@ -82,13 +80,6 @@ module.exports = {
     },
     bunyan: {
         level: 'debug',
-    },
-    auth: {
-        google: {
-            clientId: '',
-            clientSecret: '',
-            callbackURL: '',
-        },
     },
     graphql: {
         pretty: true,

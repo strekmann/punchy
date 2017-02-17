@@ -1,13 +1,15 @@
-import moment from 'moment';
+/* eslint no-use-before-define: ["error", { "variables": false }] */
+
+// import moment from 'moment';
 
 // Import graphql stuff
 import {
     GraphQLBoolean,
-    GraphQLID,
-    GraphQLInputObjectType,
-    GraphQLInt,
-    GraphQLList,
-    GraphQLNonNull,
+    // GraphQLID,
+    // GraphQLInputObjectType,
+    // GraphQLInt,
+    // GraphQLList,
+    // GraphQLNonNull,
     GraphQLObjectType,
     GraphQLSchema,
     GraphQLString,
@@ -17,18 +19,18 @@ import GraphQLDate from 'graphql-custom-datetype';
 // Import relay stuff
 import {
     fromGlobalId,
-    toGlobalId,
+    // toGlobalId,
     globalIdField,
-    mutationWithClientMutationId,
+    // mutationWithClientMutationId,
     nodeDefinitions,
-    connectionArgs,
-    connectionDefinitions,
+    // connectionArgs,
+    // connectionDefinitions,
 } from 'graphql-relay';
 
-import { connectionFromMongooseQuery, offsetToCursor } from './connections/mongoose';
+// import { connectionFromMongooseQuery, offsetToCursor } from './connections/mongoose';
 
 // Import models
-import User from '../models/user';
+// import User from '../models/user';
 
 const { nodeInterface, nodeField } = nodeDefinitions(
     (globalId, { viewer }) => {
@@ -44,7 +46,7 @@ const { nodeInterface, nodeField } = nodeDefinitions(
             return userType;
         }
         return null;
-    }
+    },
 );
 
 
@@ -52,30 +54,36 @@ const { nodeInterface, nodeField } = nodeDefinitions(
 const userType = new GraphQLObjectType({
     name: 'User',
     description: 'A user',
-    fields: () => ({
-        id: globalIdField('User'),
-        username: { type: GraphQLString },
-        name: { type: GraphQLString },
-        email: { type: GraphQLString },
-        is_active: { type: GraphQLBoolean },
-        is_admin: { type: GraphQLBoolean },
-        created: { type: GraphQLDate },
-    }),
+    fields: () => {
+        return {
+            id: globalIdField('User'),
+            username: { type: GraphQLString },
+            name: { type: GraphQLString },
+            email: { type: GraphQLString },
+            is_active: { type: GraphQLBoolean },
+            is_admin: { type: GraphQLBoolean },
+            created: { type: GraphQLDate },
+        };
+    },
     interfaces: [nodeInterface],
 });
 
 const errorType = new GraphQLObjectType({
     name: 'ErrorType',
     description: 'Application error',
-    fields: () => ({
-        key: { type: GraphQLString },
-        msg: { type: GraphQLString },
-    }),
+    fields: () => {
+        return {
+            key: { type: GraphQLString },
+            msg: { type: GraphQLString },
+        };
+    },
 });
 
 
 /** RELAY CONNECTIONS **/
-// const { connectionType: linksConnection, edgeType: LinkEdge } = connectionDefinitions({name: 'Link', nodeType: linkType});
+// const {
+// connectionType: linksConnection, edgeType: LinkEdge
+// } = connectionDefinitions({name: 'Link', nodeType: linkType});
 
 /** QUERY TYPE **/
 const queryType = new GraphQLObjectType({
@@ -150,9 +158,11 @@ const queryType = new GraphQLObjectType({
 /** MUTATION TYPE **/
 const mutationType = new GraphQLObjectType({
     name: 'Mutation',
-    fields: () => ({
-        // createLink: mutationCreateLink,
-    }),
+    fields: () => {
+        return {
+            // createLink: mutationCreateLink,
+        };
+    },
 });
 
 const schema = new GraphQLSchema({

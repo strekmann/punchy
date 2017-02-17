@@ -6,7 +6,7 @@ function getStyles(props, context) {
     } = context.muiTheme;
 
     const {
-        className,
+        // className,
         style,
         noPadding,
         flexLayout,
@@ -34,10 +34,10 @@ export default class Container extends React.Component {
         children: React.PropTypes.node,
         className: React.PropTypes.string,
         id: React.PropTypes.string,
-        style: React.PropTypes.object,
-        noPadding: React.PropTypes.bool,
+        // style: React.PropTypes.object,
+        // noPadding: React.PropTypes.bool,
         flexLayout: React.PropTypes.string,
-        flex: React.PropTypes.string,
+        // flex: React.PropTypes.string,
     }
 
     static contextTypes = {
@@ -50,7 +50,7 @@ export default class Container extends React.Component {
         if (this.props.flexLayout) { classes.push(this.props.flexLayout); }
         if (this.props.className) { classes.push(this.props.className); }
         return (
-            <div id={this.props.id} className={ classes.join(' ')} style={styles}>
+            <div id={this.props.id} className={classes.join(' ')} style={styles}>
                 { this.props.children }
             </div>
         );

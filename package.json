@@ -19,6 +19,7 @@
     "build:schema": "babel-node ./scripts/build-schema.js",
     "dev": "webpack-dev-server --progress --colors",
     "dist": "rm -rf node_modules && rm -rf dist && mkdir dist && yarn install && cp -r node_modules dist/ && npm run build",
+    "lint": "eslint src/client \"src/**/*.js\" || :",
     "nodemon": "nodemon src/index.js --exec babel-node | bunyan -o short",
     "start": "NODE_ENV=production node dist/index.js"
   },

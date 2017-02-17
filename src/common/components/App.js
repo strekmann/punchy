@@ -15,7 +15,8 @@ class App extends React.Component {
                 <Helmet
                     defaultTitle={helmetConfig.defaultTitle}
                     titleTemplate={helmetConfig.titleTemplate}
-                    meta={helmetConfig.meta}/>
+                    meta={helmetConfig.meta}
+                />
                 { this.props.children }
             </div>
         );
@@ -24,9 +25,11 @@ class App extends React.Component {
 
 export default Relay.createContainer(App, {
     fragments: {
-        viewer: () => Relay.QL`
-        fragment on User {
-            id,
-        }`,
+        viewer: () => {
+            return Relay.QL`
+            fragment on User {
+                id,
+            }`;
+        },
     },
 });

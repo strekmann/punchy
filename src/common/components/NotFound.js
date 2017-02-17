@@ -1,7 +1,9 @@
+/* global navigator */
+
 import React from 'react';
-import Container from './Container';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import theme from '../theme';
+import Container from './Container';
 
 export default class NotFound extends React.Component {
     static childContextTypes = {

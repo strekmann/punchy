@@ -34,11 +34,11 @@ module.exports = {
     plugins: [
         new webpack.ContextReplacementPlugin(/moment[\\\/]locale$/, /^\.\/(en)$/),
         new webpack.DefinePlugin({
-            "process.env": {
+            'process.env': {
                 NODE_ENV: JSON.stringify('production')
             }
         }),
-        new ExtractTextPlugin("styles.css"),
+        new ExtractTextPlugin('styles.css'),
         new webpack.NoErrorsPlugin(),
         new webpack.optimize.DedupePlugin(),
         new webpack.optimize.UglifyJsPlugin(),

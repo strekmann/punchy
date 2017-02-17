@@ -12,10 +12,14 @@
   "engines": {
     "node": "6.9"
   },
-  "scripts": {
+  "metadata": {
+    "graphql": {
+      "schema": "./src/graphql/schema.json"
+    }
+  },  "scripts": {
     "build": "npm run build:schema && npm run build:dist && npm run build:client",
     "build:client": "webpack --progress --colors --config webpack.prod.config.js",
-    "build:dist": "babel src -d dist && cp -r config src/cron.txt dist/ && rm -rf dist/client",
+    "build:dist": "babel src -d dist && cp -r config dist/ && rm -rf dist/client",
     "build:schema": "babel-node ./scripts/build-schema.js",
     "dev": "webpack-dev-server --progress --colors",
     "dist": "rm -rf node_modules && rm -rf dist && mkdir dist && yarn install && cp -r node_modules dist/ && npm run build",
@@ -67,6 +71,7 @@
     "babel-preset-stage-0": "^6.22.0",
     "babel-relay-plugin": "^0.11.0",
     "babel-relay-plugin-loader": "^0.10.0",
+    "copy-webpack-plugin": "^4.0.1",
     "eslint": "^3.15.0",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-plugin-import": "^2.2.0",
@@ -79,7 +84,7 @@
     "raw-loader": "^0.5.1",
     "sass-loader": "^6.0.0",
     "style-loader": "^0.13.1",
-    "webpack": "^2.2.1",
-    "webpack-dev-server": "^2.3.0"
+    "webpack": "1.14.0",
+    "webpack-dev-server": "1.16.3"
   }
 }

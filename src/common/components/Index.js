@@ -34,6 +34,7 @@ class Index extends React.Component {
         return (
             <Container className="wrapper" id="index">
                 <h2>Derp derp</h2>
+                <a href="/auth/google">Login</a>
             </Container>
         );
     }

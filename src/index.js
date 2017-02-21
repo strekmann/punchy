@@ -121,10 +121,10 @@ passport.use(new GoogleStrategy({
                     return done(null, user);
                 });
             }).catch((err) => {
-                return done(`Could not create user: ${err}`);
+                return done(new Error(`Could not create user: ${err}`));
             });
         }).catch((err) => {
-            return done(`Could not find user: ${err}`);
+            return done(new Error(`Could not find user: ${err}`));
         });
     });
 }));

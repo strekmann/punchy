@@ -28,7 +28,7 @@ import path from 'path';
 import session from 'express-session';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { match } from 'react-router';
-import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
 import User from './models/user';
 import Organization from './models/organization';

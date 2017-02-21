@@ -2,6 +2,15 @@
 
 // import moment from 'moment';
 
+// User -- Hours
+// User -- Organization
+// Hours -- Project
+// Organization -- Project
+// Project -- client
+// Project -- Invoice (Attachment)
+
+// Root er site: alt ligger under den
+
 // Import graphql stuff
 import {
     GraphQLBoolean,
@@ -49,6 +58,10 @@ const { nodeInterface, nodeField } = nodeDefinitions(
     },
 );
 
+/** RELAY CONNECTIONS **/
+// const {
+// connectionType: linksConnection, edgeType: LinkEdge
+// } = connectionDefinitions({name: 'Link', nodeType: linkType});
 
 /** TYPES **/
 const userType = new GraphQLObjectType({
@@ -79,22 +92,28 @@ const errorType = new GraphQLObjectType({
     },
 });
 
-
-/** RELAY CONNECTIONS **/
-// const {
-// connectionType: linksConnection, edgeType: LinkEdge
-// } = connectionDefinitions({name: 'Link', nodeType: linkType});
+const siteType = new GraphQLObjectType({
+    name: 'Site',
+    description: 'I R Punchy',
+    fields: () => {
+        return {
+            viewer: {
+                type: userType,
+                resolve: (_, args, { viewer }) => {
+                    return viewer;
+                },
+            },
+        };
+    },
+});
 
 /** QUERY TYPE **/
 const queryType = new GraphQLObjectType({
     name: 'Query',
     fields: {
         node: nodeField,
-        viewer: {
-            type: userType,
-            resolve: (_, args, { viewer }) => {
-                return viewer;
-            },
+        site: {
+            type: siteType,
         },
     },
 });

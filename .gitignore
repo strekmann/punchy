@@ -2,6 +2,8 @@
 /dist
 /config/development.js
 /config/production.js
+/src/graphql/schema.graphql
+/src/graphql/schema.json
 .sass-cache
 *.mo
 dump

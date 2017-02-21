@@ -101,10 +101,16 @@ passport.use(new GoogleStrategy({
             if (dbUser) {
                 return done(null, dbUser);
             }
+            const email = profile.emails.find((el) => {
+                return el.type === 'account';
+            }).value;
+
+            const username = email.split('@').shift();
+
             return User.create({
-                username: profile.displayName,
+                username,
+                email,
                 name: profile.displayName,
-                email: profile._json.email,
                 google_id: profile.id,
             }).then((user) => {
                 const organization = Organization();
@@ -162,10 +168,12 @@ function renderPage(renderedContent, initialState, head) {
     `;
 }
 
-// app.use(bodyParser.urlencoded({extended: false}));
+// app.use(bodyParser.urlencoded({ extended: false }));
 app.use(hpp());
 
-app.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'] }), (req, res) => {});
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// app.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'] }), (req, res) => {});
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
     const url = req.session.returnTo || '/';
     delete req.session.returnTo;

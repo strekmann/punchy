@@ -165,8 +165,8 @@ function renderPage(renderedContent, initialState, head) {
 // app.use(bodyParser.urlencoded({extended: false}));
 app.use(hpp());
 
-app.get('/auth/google', app.passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'] }), (req, res) => {});
-app.get('/auth/google/callback', app.passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+app.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'] }), (req, res) => {});
+app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
     const url = req.session.returnTo || '/';
     delete req.session.returnTo;
     res.redirect(url);

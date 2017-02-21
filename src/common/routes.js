@@ -7,6 +7,7 @@ import {
 } from 'react-router';
 
 import App from './components/App';
+import Index from './components/Index';
 import NotFound from './components/NotFound';
 
 export const viewerQuery = {

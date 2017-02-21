@@ -1,0 +1,6 @@
+---
+auth:
+    google:
+        clientId: '{{ vault.auth.google.clientId }}'
+        clientSecret: '{{ vault.auth.google.clientSecret }}'
+        callbackURL: '{{ vault.auth.google.callbackURL }}'

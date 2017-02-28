@@ -2,7 +2,7 @@ import Helmet from 'react-helmet';
 import React from 'react';
 import Relay from 'react-relay';
 
-import helmetConfig from '../../../config/helmet';
+import helmetConfig from '../../helmet';
 
 class App extends React.Component {
     static propTypes = {

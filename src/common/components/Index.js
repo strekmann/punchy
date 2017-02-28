@@ -33,9 +33,9 @@ class Index extends React.Component {
 
     render() {
         if (this.props.site.viewer) {
-            return <Registration />;
+            return <Registration site={this.props.site} />;
         }
-        return <Landing />;
+        return <Landing site={this.props.site} />;
     }
 }
 
@@ -47,6 +47,7 @@ export default Relay.createContainer(Index, {
                 viewer {
                     id
                 }
+                ${Landing.getFragment('site')}
             }`;
         },
     },

@@ -10,15 +10,15 @@ import App from './components/App';
 import Index from './components/Index';
 import NotFound from './components/NotFound';
 
-export const viewerQuery = {
-    viewer: () => {
-        return Relay.QL`query { viewer }`;
+export const query = {
+    site: () => {
+        return Relay.QL`query { site }`;
     },
 };
 
 export default createRoutes(
-    <Route path="/" component={App} queries={viewerQuery}>
-        <IndexRoute component={Index} queries={viewerQuery} />
+    <Route path="/" component={App} queries={query}>
+        <IndexRoute component={Index} queries={query} />
         <Route path="*" component={NotFound} />
     </Route>,
 );

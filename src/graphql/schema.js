@@ -14,7 +14,7 @@
 // Import graphql stuff
 import {
     GraphQLBoolean,
-    // GraphQLID,
+    GraphQLID,
     // GraphQLInputObjectType,
     // GraphQLInt,
     // GraphQLList,
@@ -35,6 +35,8 @@ import {
     // connectionArgs,
     // connectionDefinitions,
 } from 'graphql-relay';
+
+import config from 'config';
 
 // import { connectionFromMongooseQuery, offsetToCursor } from './connections/mongoose';
 
@@ -97,6 +99,9 @@ const siteType = new GraphQLObjectType({
     description: 'I R Punchy',
     fields: () => {
         return {
+            name: {
+                type: GraphQLString,
+            },
             viewer: {
                 type: userType,
                 resolve: (_, args, { viewer }) => {
@@ -114,6 +119,11 @@ const queryType = new GraphQLObjectType({
         node: nodeField,
         site: {
             type: siteType,
+            resolve: () => {
+                return {
+                    name: config.get('graphql.name'),
+                };
+            },
         },
     },
 });

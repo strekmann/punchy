@@ -5,11 +5,12 @@ import Relay from 'react-relay';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import theme from '../theme';
 
-import Container from './Container';
+import Landing from './Landing';
+import Registration from './Registration';
 
 class Index extends React.Component {
     static propTypes = {
-        viewer: React.PropTypes.object,
+        site: React.PropTypes.object.isRequired,
         relay: React.PropTypes.object.isRequired,
     }
 
@@ -31,21 +32,21 @@ class Index extends React.Component {
     }
 
     render() {
-        return (
-            <Container className="wrapper" id="index">
-                <h2>Derp derp</h2>
-                <a href="/auth/google">Login</a>
-            </Container>
-        );
+        if (this.props.site.viewer) {
+            return <Registration />;
+        }
+        return <Landing />;
     }
 }
 
 export default Relay.createContainer(Index, {
     fragments: {
-        viewer: () => {
+        site: () => {
             return Relay.QL`
-            fragment on User {
-                id
+            fragment on Site {
+                viewer {
+                    id
+                }
             }`;
         },
     },

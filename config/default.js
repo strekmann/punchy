@@ -61,6 +61,7 @@ module.exports = {
         format: ':remote-address :incoming :method :url HTTP/:http-version :status-code :res-headers[content-length] :referer :user-agent[family] :user-agent[major].:user-agent[minor] :user-agent[os] :response-time ms',
     },
     graphql: {
+        name: projectName,
         pretty: false,
         graphiql: false,
     },

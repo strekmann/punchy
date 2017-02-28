@@ -25,10 +25,10 @@ class App extends React.Component {
 
 export default Relay.createContainer(App, {
     fragments: {
-        viewer: () => {
+        site: () => {
             return Relay.QL`
-            fragment on User {
-                id,
+            fragment on Site {
+                name
             }`;
         },
     },

@@ -1,13 +1,14 @@
-const projectName = 'punchy';
+import pakke from '../package.json';
 
+const projectName = pakke.name;
 const serializers = {
-    req: function (req) {
+    req: (req) => {
         return {
             method: req.method,
             url: req.url,
         };
     },
-    res: function (res) {
+    res: (res) => {
         return {
             statusCode: res.statusCode,
         };
@@ -19,7 +20,7 @@ module.exports = {
         style: true,
     },
     mongodb: {
-        servers: ['mongodb://localhost/' + projectName],
+        servers: [`mongodb://localhost/${pakke.name}`],
         replset: null,
     },
     express: {
@@ -27,7 +28,7 @@ module.exports = {
         trust_proxy: true, // false in development
         session: {
             secret: '$session$ecret',
-            name: projectName + '.sid',
+            name: `${pakke.name}.sid`,
             httpOnly: true,
             secure: true, // false in development
             domain: 'example.com',
@@ -47,9 +48,9 @@ module.exports = {
         },
     },
     bunyan: {
+        serializers,
         level: 'info',
         name: projectName,
-        serializers: serializers,
     },
     'bunyan-express': {
         excludes: [
@@ -61,7 +62,8 @@ module.exports = {
         format: ':remote-address :incoming :method :url HTTP/:http-version :status-code :res-headers[content-length] :referer :user-agent[family] :user-agent[major].:user-agent[minor] :user-agent[os] :response-time ms',
     },
     graphql: {
-        name: projectName,
+        name: pakke.name,
+        version: pakke.version,
         pretty: false,
         graphiql: false,
     },

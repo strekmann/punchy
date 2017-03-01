@@ -33,6 +33,23 @@ class Landing extends React.Component {
                 textTransform: 'uppercase',
                 color: '#202020',
             },
+            hero: {
+                position: 'relative',
+                background: '#171E26',
+            },
+            heroheader: {
+                background: 'linear-gradient(rgba(23, 30, 38, 0.8), rgba(23, 30, 38, 0))',
+                boxShadow: 'none',
+                display: 'block',
+            },
+            intro: {
+                margin: '0 auto',
+                padding: '0 20px',
+                clear: 'both',
+                display: 'flex',
+                maxWidth: '1070px',
+                flexDirection: 'column',
+            },
         };
 
         return (
@@ -47,14 +64,16 @@ class Landing extends React.Component {
                 </header>
 
                 <div className="hero">
-                    <header aria-hidden="true">
-                        <nav>
-                            <a href="#test">Test</a>
-                        </nav>
-                    </header>
-                    <section className="intro" style={style.section}>
-                        Intro something here
-                    </section>
+                    <div className="abs">
+                        <header aria-hidden="true" style={style.heroheader}>
+                            <nav>
+                                <a href="#test">Test</a>
+                            </nav>
+                        </header>
+                        <section className="intro" style={style.into}>
+                            Intro something here
+                        </section>
+                    </div>
                 </div>
 
                 <section className="lead" style={style.section}>

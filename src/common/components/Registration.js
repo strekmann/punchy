@@ -19,12 +19,6 @@ function mergeTime(date, time) {
     return date;
 }
 
-function formatDuration(number) {
-    const minutes = number % 60;
-    const hours = (number - (minutes % 60)) / 60;
-    return moment.duration({ hours, minutes }).format('h:mm');
-}
-
 class Registration extends React.Component {
     state = {
         loadedDay: moment().startOf('day'),
@@ -39,7 +33,7 @@ class Registration extends React.Component {
         if (this.old()) {
             const data = {
                 date: this.state.date.clone().startOf('day').toDate(),
-                duration: this.state.duration,
+                duration: moment.duration(this.state.duration).asHours(),
                 comment: this.state.comment,
             };
             if (this.state.start) {
@@ -62,6 +56,14 @@ class Registration extends React.Component {
 
     old = () => {
         return this.state.start || !this.state.loadedDay.isSame(this.state.date.clone().startOf('day'));
+    }
+
+    formatDuration = () => {
+        if (!this.state.duration.toString().includes(':')) {
+            this.setState({
+                duration: moment.duration({ hours: this.state.duration }).format('h:mm'),
+            });
+        }
     }
 
     render() {
@@ -89,9 +91,9 @@ class Registration extends React.Component {
                                 const mstart = moment(start).startOf('minute');
                                 const newState = { start: mstart };
                                 if (this.state.stop) {
-                                    newState.duration = this.state.stop.diff(mstart, 'minutes');
+                                    newState.duration = this.state.stop.diff(mstart, 'hours', true);
                                 }
-                                this.setState(newState);
+                                this.setState(newState, this.formatDuration);
                             }}
                         />
                     </IconWrapper>
@@ -106,9 +108,9 @@ class Registration extends React.Component {
                                     const mstop = moment(stop).startOf('minute');
                                     const newState = { stop: mstop };
                                     if (this.state.start) {
-                                        newState.duration = mstop.diff(this.state.start, 'minutes');
+                                        newState.duration = mstop.diff(this.state.start, 'hours', true);
                                     }
-                                    this.setState(newState);
+                                    this.setState(newState, this.formatDuration);
                                 }}
                             />
                         </IconWrapper>
@@ -120,10 +122,11 @@ class Registration extends React.Component {
                         <TextField
                             id="duration"
                             floatingLabelText="Duration"
-                            value={formatDuration(this.state.duration)}
+                            value={this.state.duration}
                             onChange={(_, duration) => {
-                                this.setState({ duration: duration * 60 });
+                                this.setState({ duration });
                             }}
+                            onBlur={() => { this.formatDuration(); }}
                         />
                     </IconWrapper>
                     : null

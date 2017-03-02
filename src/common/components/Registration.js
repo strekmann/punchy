@@ -3,6 +3,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TimePicker from 'material-ui/TimePicker';
 import TextField from 'material-ui/TextField';
 import moment from 'moment';
+import 'moment-duration-format';
 import React from 'react';
 import Container from './Container';
 import IconWrapper from './IconWrapper';
@@ -18,10 +19,10 @@ function mergeTime(date, time) {
     return date;
 }
 
-function formatDuration(minutes) {
-    const rest = minutes % 60;
-    const hours = (minutes - (rest % 60)) / 60;
-    return `${hours}:${rest}`;
+function formatDuration(number) {
+    const minutes = number % 60;
+    const hours = (number - (minutes % 60)) / 60;
+    return moment.duration({ hours, minutes }).format('h:mm');
 }
 
 class Registration extends React.Component {

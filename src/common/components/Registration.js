@@ -91,6 +91,11 @@ class Registration extends React.Component {
                                 const mstart = moment(start).startOf('minute');
                                 const newState = { start: mstart };
                                 if (this.state.stop) {
+                                    // starting after ending: means continued into the next day.
+                                    // Removing a day from the start, to fix the duration.
+                                    if (this.state.stop.isBefore(mstart)) {
+                                        mstart.subtract(1, 'day');
+                                    }
                                     newState.duration = this.state.stop.diff(mstart, 'hours', true);
                                 }
                                 this.setState(newState, this.formatDuration);
@@ -108,6 +113,11 @@ class Registration extends React.Component {
                                     const mstop = moment(stop).startOf('minute');
                                     const newState = { stop: mstop };
                                     if (this.state.start) {
+                                        // starting after ending: means continued into the next
+                                        // day. Adding a day from the stop, to fix the duration.
+                                        if (this.state.start.isAfter(mstop)) {
+                                            mstop.add(1, 'day');
+                                        }
                                         newState.duration = mstop.diff(this.state.start, 'hours', true);
                                     }
                                     this.setState(newState, this.formatDuration);

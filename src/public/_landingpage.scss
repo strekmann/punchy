@@ -1,0 +1,136 @@
+#landingpage {
+    background: #f5f6f7;
+    a {
+        text-decoration: none;
+    }
+    section {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    header {
+        display: none;
+        color: #202020;
+        font-size: 15px;
+        line-height: 21px;
+        height: 50px;
+        background: white;
+        box-shadow: inset 0 -1px 0 0 rgba(0,0,0,.1);
+        z-index: 10;
+
+        .nav-home {
+            float: left;
+            font-size: 18px;
+            color: #F57C00;
+            line-height: 50px;
+            display: inline-block;
+            padding-right: 1em;
+            text-decoration: none;
+        }
+    }
+    nav a {
+        color: #aaa;
+        display: inline-block;
+        line-height: 50px;
+        padding: 0 1em;
+        transition: color .1s ease-out;
+
+        &:hover {
+            color: #202020;
+        }
+    }
+    .hero {
+        position: relative;
+        background: #F57C00;
+
+        .abs {
+            position: relative;
+        }
+
+        header {
+            background: #3B3738;
+            text-transform: uppercase;
+            box-shadow: none;
+            display: block;
+
+            nav a:hover {
+                color: white;
+            }
+        }
+
+        .intro {
+            clear: both;
+            display: flex;
+            max-width: 1070px;
+            flex-direction: column;
+            text-align: center;
+            color: white;
+        }
+    }
+    .lead, .point1 {
+        color: #202020;
+        font-size: 22px;
+        line-height: 35.2px;
+        text-align: center;
+        max-width: 760px;
+        padding-top: 6em;
+    }
+    .grayWash {
+        background: #ecedee;
+        position: relative;
+    }
+    footer {
+        background: #37474F;
+        color: white;
+        padding: 1em 0;
+    }
+}
+@media screen and (min-width: 1020px) {
+    #landingpage {
+        header {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+        nav {
+            float: left;
+        }
+        .hero {
+            min-height: 450px;
+            max-height: 900px;
+            height: 65vh;
+            margin-top: -50px;
+            padding-top: 50px;
+            z-index: 11;
+
+            .abs {
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                clip: rect(0, auto, auto, 0);
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+            }
+
+            header nav > a:first-child {
+                margin-left: -1em;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 1019px) {
+    #landingpage {
+        nav {
+            text-align: center;
+            margin: 0 -1em;
+        }
+    }
+}

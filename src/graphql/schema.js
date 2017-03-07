@@ -55,16 +55,24 @@ const { nodeInterface, nodeField } = nodeDefinitions(
             if (viewer && viewer.id === id) { return viewer; }
             return null;
         }
+        if (type === 'Project') {
+            // TODO: add rights check
+            return Project.findById(id);
+        }
         return null;
     },
     (obj) => {
         if (obj.$type === 'User') {
             return userType;
         }
+        if (obj.$type === 'Project') {
+            return projectType;
+        }
         return null;
     },
 );
 
+/** TYPES **/
 const projectType = new GraphQLObjectType({
     name: 'Project',
     fields: () => {
@@ -88,7 +96,6 @@ const organizationType = new GraphQLObjectType({
     },
 });
 
-/** TYPES **/
 const userType = new GraphQLObjectType({
     name: 'User',
     description: 'A user',
@@ -135,10 +142,11 @@ const siteType = new GraphQLObjectType({
                 type: projectConnection,
                 args: connectionArgs,
                 resolve: (_, args, { viewer }) => {
-                    return Organization.find({ users: viewer }).exec()
+                    return Organization.find({ users: viewer.id }).exec()
                     .then((organizations) => {
+                        console.log(organizations);
                         return connectionFromMongooseQuery(
-                            Project.find().where('organization').in(organizations),
+                            Project.find({}).where('organization').in(organizations),
                             args,
                         );
                     });

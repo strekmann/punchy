@@ -9,10 +9,16 @@ export default class IconWrapper extends React.Component {
     }
     render() {
         return (
-            <div style={{ display: 'flex', alignItems: 'flex-end', ...this.props.style }}>
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                    ...this.props.style,
+                }}
+            >
                 <FontIcon
                     className="material-icons"
-                    style={{ marginBottom: 12 }}
+                    style={{ marginBottom: 12, width: '1em', marginRight: '0.5rem' }}
                 >
                     {this.props.iconName}
                 </FontIcon>

@@ -144,9 +144,10 @@ const siteType = new GraphQLObjectType({
                 resolve: (_, args, { viewer }) => {
                     return Organization.find({ users: viewer.id }).exec()
                     .then((organizations) => {
-                        console.log(organizations);
                         return connectionFromMongooseQuery(
-                            Project.find({}).where('organization').in(organizations),
+                            Project.find({}).where('organization').in(organizations.map((org) => {
+                                return org._id;
+                            })),
                             args,
                         );
                     });

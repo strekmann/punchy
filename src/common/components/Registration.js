@@ -30,7 +30,7 @@ class Registration extends React.Component {
     }
 
     onSave = () => {
-        if (this.old()) {
+        if (this.isChanged()) {
             const data = {
                 date: this.state.date.clone().startOf('day').toDate(),
                 duration: moment.duration(this.state.duration).asHours(),
@@ -54,14 +54,15 @@ class Registration extends React.Component {
         }
     }
 
-    old = () => {
+    isChanged = () => {
         return this.state.start || !this.state.loadedDay.isSame(this.state.date.clone().startOf('day'));
     }
 
     formatDuration = () => {
         if (!this.state.duration.toString().includes(':')) {
+            const hours = this.state.duration.replace(',', '.');
             this.setState({
-                duration: moment.duration({ hours: this.state.duration }).format('h:mm'),
+                duration: moment.duration({ hours }).format('h:mm'),
             });
         }
     }
@@ -102,7 +103,7 @@ class Registration extends React.Component {
                             }}
                         />
                     </IconWrapper>
-                    {this.old()
+                    {this.isChanged()
                         ? <IconWrapper iconName="timer_off" style={{ flexGrow: '1' }}>
                             <TimePicker
                                 id="stop"
@@ -127,7 +128,7 @@ class Registration extends React.Component {
                         : null
                     }
                 </div>
-                {this.old()
+                {this.isChanged()
                     ? <IconWrapper iconName="timelapse">
                         <TextField
                             id="duration"
@@ -141,7 +142,7 @@ class Registration extends React.Component {
                     </IconWrapper>
                     : null
                 }
-                {this.old()
+                {this.isChanged()
                     ? <IconWrapper iconName="short_text">
                         <TextField
                             id="comment"
@@ -158,7 +159,7 @@ class Registration extends React.Component {
                 }
                 <div>
                     <RaisedButton
-                        label={this.old() ? 'Save' : 'Start now'}
+                        label={this.isChanged() ? 'Save' : 'Start now'}
                         primary
                         onClick={this.onSave}
                     />

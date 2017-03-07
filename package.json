@@ -21,7 +21,7 @@
     "build": "npm run build:schema && npm run build:dist && npm run build:client",
     "build:client": "webpack --progress --colors --config webpack.prod.config.js",
     "build:dist": "babel src -d dist && babel config  -d dist/config && rm -rf dist/client",
-    "build:schema": "babel-node ./scripts/build-schema.js",
+    "build:schema": "babel-node ./scripts/build-schema.js || :",
     "dev": "webpack-dev-server --progress --colors",
     "dist": "rm -rf node_modules && rm -rf dist && mkdir dist && yarn install && cp -r node_modules dist/ && npm run build",
     "lint": "eslint src/client \"src/**/*.js\" || :",

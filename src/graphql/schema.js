@@ -56,8 +56,12 @@ const { nodeInterface, nodeField } = nodeDefinitions(
             return null;
         }
         if (type === 'Project') {
-            // TODO: add rights check
-            return Project.findById(id);
+            return Organization.find({ users: viewer.id }).exec()
+            .then((organizations) => {
+                return Project.findById(id).where('organization').in(organizations.map((org) => {
+                    return org._id;
+                }));
+            });
         }
         return null;
     },

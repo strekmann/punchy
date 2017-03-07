@@ -1,4 +1,4 @@
-/* eslint no-use-before-define: ["error", { "variables": false }] */
+/* eslint no-use-before-define: 0 */
 
 // import moment from 'moment';
 
@@ -14,7 +14,7 @@
 // Import graphql stuff
 import {
     GraphQLBoolean,
-    GraphQLID,
+    // GraphQLID,
     // GraphQLInputObjectType,
     // GraphQLInt,
     // GraphQLList,
@@ -32,16 +32,21 @@ import {
     globalIdField,
     // mutationWithClientMutationId,
     nodeDefinitions,
-    // connectionArgs,
-    // connectionDefinitions,
+    connectionArgs,
+    connectionDefinitions,
 } from 'graphql-relay';
 
 import config from 'config';
 
-// import { connectionFromMongooseQuery, offsetToCursor } from './connections/mongoose';
+import {
+    connectionFromMongooseQuery,
+    // offsetToCursor,
+} from './connections/mongoose';
 
 // Import models
 // import User from '../models/user';
+import Project from '../models/project';
+import Organization from '../models/organization';
 
 const { nodeInterface, nodeField } = nodeDefinitions(
     (globalId, { viewer }) => {
@@ -60,10 +65,28 @@ const { nodeInterface, nodeField } = nodeDefinitions(
     },
 );
 
-/** RELAY CONNECTIONS **/
-// const {
-// connectionType: linksConnection, edgeType: LinkEdge
-// } = connectionDefinitions({name: 'Link', nodeType: linkType});
+const projectType = new GraphQLObjectType({
+    name: 'Project',
+    fields: () => {
+        return {
+            id: globalIdField('Project'),
+            name: { type: GraphQLString },
+            organization: { type: organizationType },
+        };
+    },
+    interfaces: [nodeInterface],
+});
+
+const organizationType = new GraphQLObjectType({
+    name: 'Organization',
+    description: 'The company or organization that a user works for',
+    fields: () => {
+        return {
+            id: globalIdField('Organization'),
+            name: { type: GraphQLString },
+        };
+    },
+});
 
 /** TYPES **/
 const userType = new GraphQLObjectType({
@@ -108,9 +131,28 @@ const siteType = new GraphQLObjectType({
                     return viewer;
                 },
             },
+            projects: {
+                type: projectConnection,
+                args: connectionArgs,
+                resolve: (_, args, { viewer }) => {
+                    return Organization.find({ users: viewer }).exec()
+                    .then((organizations) => {
+                        return connectionFromMongooseQuery(
+                            Project.find().where('organization').in(organizations),
+                            args,
+                        );
+                    });
+                },
+            },
         };
     },
 });
+
+/** RELAY CONNECTIONS **/
+const {
+    connectionType: projectConnection,
+    // edgeType: ProjectEdge,
+} = connectionDefinitions({ name: 'Project', nodeType: projectType });
 
 /** QUERY TYPE **/
 const queryType = new GraphQLObjectType({

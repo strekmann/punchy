@@ -5,6 +5,7 @@ import TextField from 'material-ui/TextField';
 import moment from 'moment';
 import 'moment-duration-format';
 import React from 'react';
+import Relay from 'react-relay';
 import Container from './Container';
 import IconWrapper from './IconWrapper';
 
@@ -169,4 +170,20 @@ class Registration extends React.Component {
     }
 }
 
-export default Registration;
+export default Relay.createContainer(Registration, {
+    fragments: {
+        site: () => {
+            return Relay.QL`
+                fragment on Site {
+                    projects(first:1000) {
+                        edges {
+                            node {
+                                name
+                            }
+                        }
+                    }
+                }
+            `;
+        },
+    },
+});

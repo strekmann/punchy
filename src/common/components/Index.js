@@ -48,6 +48,7 @@ export default Relay.createContainer(Index, {
                     id
                 }
                 ${Landing.getFragment('site')}
+                ${Registration.getFragment('site')}
             }`;
         },
     },

@@ -32,6 +32,7 @@ class Registration extends React.Component {
         start: undefined,
         stop: undefined,
         duration: '',
+        project: undefined,
         comment: '',
     }
 
@@ -83,6 +84,9 @@ class Registration extends React.Component {
                         id="project"
                         filter={AutoComplete.fuzzyFilter}
                         floatingLabelText="Project"
+                        onNewRequest={(chosen) => {
+                            this.setState({ project: chosen.value });
+                        }}
                         openOnFocus
                         dataSource={projects.edges.map((edge) => {
                             return { text: `${edge.node.name}`, value: edge.node };
@@ -180,6 +184,7 @@ class Registration extends React.Component {
                         label={this.isChanged() ? 'Save' : 'Start now'}
                         primary
                         onClick={this.onSave}
+                        disabled={!this.state.project}
                     />
                 </div>
             </Container>

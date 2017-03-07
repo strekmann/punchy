@@ -1,3 +1,4 @@
+import AutoComplete from 'material-ui/AutoComplete';
 import DatePicker from 'material-ui/DatePicker';
 import RaisedButton from 'material-ui/RaisedButton';
 import TimePicker from 'material-ui/TimePicker';
@@ -21,6 +22,10 @@ function mergeTime(date, time) {
 }
 
 class Registration extends React.Component {
+    static propTypes = {
+        site: React.PropTypes.object,
+    }
+
     state = {
         loadedDay: moment().startOf('day'),
         date: moment(),
@@ -69,9 +74,21 @@ class Registration extends React.Component {
     }
 
     render() {
+        const { projects } = this.props.site;
         return (
             <Container className="wrapper">
                 <h1>Registrering</h1>
+                <IconWrapper iconName="find_in_page">
+                    <AutoComplete
+                        id="project"
+                        filter={AutoComplete.fuzzyFilter}
+                        floatingLabelText="Project"
+                        openOnFocus
+                        dataSource={projects.edges.map((edge) => {
+                            return { text: `${edge.node.name}`, value: edge.node };
+                        })}
+                    />
+                </IconWrapper>
                 <IconWrapper iconName="today">
                     <DatePicker
                         id="date"

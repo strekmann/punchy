@@ -37,6 +37,7 @@
 
         &:hover {
             color: #202020;
+            cursor: pointer;
         }
     }
     .hero {
@@ -66,14 +67,22 @@
             text-align: center;
             color: white;
         }
+
+        .loginbtn {
+            color: white;
+            border: 2px solid white;
+            border-radius: 2px;
+            padding: .5em 1em;
+            text-transform: uppercase;
+        }
     }
-    .lead, .point1 {
+    .block {
         color: #202020;
         font-size: 22px;
-        line-height: 35.2px;
+        line-height: 35px;
         text-align: center;
         max-width: 760px;
-        padding-top: 6em;
+        padding: 3em 0;
     }
     .grayWash {
         background: #ecedee;
@@ -83,6 +92,7 @@
         background: #37474F;
         color: white;
         padding: 1em 0;
+        text-align: center;
     }
 }
 @media screen and (min-width: 1020px) {

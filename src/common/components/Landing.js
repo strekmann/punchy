@@ -13,7 +13,10 @@ class Landing extends React.Component {
                     <section>
                         <a className="nav-home" href="#landingpage">{site.name}</a>
                         <nav>
-                            <a href="#test">Top header</a>
+                            <a href="#easy">Enkelt</a>
+                            <a href="#rapport">Oversiktlig</a>
+                            <a href="#open">Åpent</a>
+                            <a href="/auth/google">Logg inn</a>
                         </nav>
                     </section>
                 </header>
@@ -23,7 +26,9 @@ class Landing extends React.Component {
                         <header aria-hidden="true">
                             <section>
                                 <nav>
-                                    <a href="#test">Test</a>
+                                    <a href="#easy">Enkelt</a>
+                                    <a href="#rapport">Oversiktlig</a>
+                                    <a href="#open">Åpent</a>
                                 </nav>
                             </section>
                         </header>
@@ -33,26 +38,44 @@ class Landing extends React.Component {
                             </div>
                             <div>
                                 <h2 style={{ fontSize: '16px', textTransform: 'uppercase' }}>Timeregistrering for vanlige mennesker</h2>
+                                <p style={{paddingTop: '4em'}}><a className="loginbtn" href="/auth/google">Logg inn</a></p>
                             </div>
                         </section>
                     </div>
                 </div>
 
-                <section className="lead">
-                    <h1>Derp derp</h1>
-                    <p>Some crap</p>
+                <section className="block">
+                    <h1 id="easy">Enkelt</h1>
+                    <p>
+                        Med fokus på enkelhet vil Punchy gi brukere en bedre timeføringshverdag.
+                        Tilrettelagt for enkel sanntidsføring og for føring i tabellformat vil
+                        brukere selv kunne velge hvordan de mest effektivt fører sine timer.
+                    </p>
                 </section>
 
                 <div className="grayWash">
-                    <section className="point1">
-                        <h1>Herp herp</h1>
-                        <p>Some moar crap</p>
+                    <section className="block">
+                        <h1 id="rapport">Oversiktlig</h1>
+                        <p>
+                            Med enkle og fine oversikter vil brukere samt ledere enkelt kunne ta ut
+                            rapporter på tid brukt på prosjekter, overtidstimer og flexi-tid.
+                            Dette gir brukere god oversikt over sine timer og ledere informasjon til
+                            budsjettering og fakturering.
+                        </p>
                     </section>
                 </div>
 
+                <section className="block">
+                    <h1 id="open">Åpent</h1>
+                    <p>
+                        Kildekoden er åpen og fritt tilgjengelig slik at du selv kan se hva som skjer
+                        og utvikle egne utvidelser.
+                    </p>
+                </section>
+
                 <footer>
                     <section>
-                        some footer stuff
+                        Strekmann &copy; 2017
                     </section>
                 </footer>
             </div>

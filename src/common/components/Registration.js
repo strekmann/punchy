@@ -36,7 +36,7 @@ class Registration extends React.Component {
         comment: '',
     }
 
-    onSave = () => {
+    onCreateHours = () => {
         if (this.isChanged()) {
             const data = {
                 date: this.state.date.clone().startOf('day').toDate(),
@@ -50,6 +50,33 @@ class Registration extends React.Component {
                 data.stop = mergeTime(this.state.date, this.state.stop).toDate();
             }
             console.log(data, "DATA");
+            this.context.relay.commitUpdate(new CreateHoursMutation({
+                viewer: this.props.site.viewer,
+                project: this.state.project,
+                date: this.state.date,
+                start: this.state.start,
+                end: this.state.end,
+                comment: this.state.comment,
+            }), {
+                onSuccess: ({ createHours }) => {
+                    if (createHours.errors.length > 0) {
+                        const errors = createHours.errors.reduce((m, o) => {
+                            m[o.key] = o.msg;
+                            return m;
+                        }, {});
+
+                        this.setState({ errors });
+                    }
+                    else {
+                        this.setState({
+                            start: undefined,
+                            end: undefined,
+                            duration: '',
+                            comment: '',
+                        });
+                    }
+                },
+            });
         }
         else {
             // now
@@ -185,6 +212,7 @@ class Registration extends React.Component {
                         primary
                         onClick={this.onSave}
                         disabled={!this.state.project}
+                        onTouchTap={this.onCreateHours}
                     />
                 </div>
             </Container>

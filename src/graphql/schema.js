@@ -14,11 +14,12 @@
 // Import graphql stuff
 import {
     GraphQLBoolean,
-    // GraphQLID,
+    GraphQLID,
     // GraphQLInputObjectType,
     // GraphQLInt,
-    // GraphQLList,
-    // GraphQLNonNull,
+    GraphQLList,
+    GraphQLFloat,
+    GraphQLNonNull,
     GraphQLObjectType,
     GraphQLSchema,
     GraphQLString,
@@ -30,7 +31,7 @@ import {
     fromGlobalId,
     // toGlobalId,
     globalIdField,
-    // mutationWithClientMutationId,
+    mutationWithClientMutationId,
     nodeDefinitions,
     connectionArgs,
     connectionDefinitions,
@@ -40,13 +41,14 @@ import config from 'config';
 
 import {
     connectionFromMongooseQuery,
-    // offsetToCursor,
+    offsetToCursor,
 } from './connections/mongoose';
 
 // Import models
 // import User from '../models/user';
 import Project from '../models/project';
 import Organization from '../models/organization';
+import Hours from '../models/hours';
 
 const { nodeInterface, nodeField } = nodeDefinitions(
     (globalId, { viewer }) => {
@@ -96,6 +98,27 @@ const organizationType = new GraphQLObjectType({
         return {
             id: globalIdField('Organization'),
             name: { type: GraphQLString },
+        };
+    },
+});
+
+const hoursType = new GraphQLObjectType({
+    name: 'Hours',
+    description: 'Hours is the registration object saved to the database. Silly name, I know.',
+    fields: () => {
+        return {
+            id: globalIdField('Hours'),
+            user: {
+                type: userType,
+            },
+            project: {
+                type: projectType,
+            },
+            date: { type: GraphQLDate },
+            start: { type: GraphQLDate },
+            end: { type: GraphQLDate },
+            duration: { type: GraphQLFloat },
+            comment: { type: GraphQLString },
         };
     },
 });
@@ -167,6 +190,11 @@ const {
     // edgeType: ProjectEdge,
 } = connectionDefinitions({ name: 'Project', nodeType: projectType });
 
+const {
+    // connectionType: hoursConnection,
+    edgeType: hoursEdge,
+} = connectionDefinitions({ name: 'Hours', nodeType: hoursType });
+
 /** QUERY TYPE **/
 const queryType = new GraphQLObjectType({
     name: 'Query',
@@ -183,60 +211,49 @@ const queryType = new GraphQLObjectType({
     },
 });
 
-// const mutationCreateLink = mutationWithClientMutationId({
-//     name: 'CreateLink',
-//     inputFields: {
-//         url: { type: new GraphQLNonNull(GraphQLString) },
-//         shortid: { type: new GraphQLNonNull(GraphQLString) },
-//     },
-//     outputFields: {
-//         newLinkEdge: {
-//             type: LinkEdge,
-//             resolve: ({link}, args, context) => {
-//                 return {
-//                     cursor: offsetToCursor(0),
-//                     node: link,
-//                 };
-//             },
-//         },
-//         viewer: {
-//             type: userType,
-//             resolve: (payload, args, {viewer}) => viewer,
-//         },
-//         errors: {
-//             type: new GraphQLList(errorType),
-//             resolve: ({errors}) => errors,
-//         },
-//     },
-//     mutateAndGetPayload: ({url, shortid}, {viewer}) => {
-//         url = url.trim();
-//         shortid = shortid.trim();
-//
-//         let e = [];
-//         e = e.concat(validateUrl(url, 'url'));
-//         e = e.concat(validateShortid(shortid, 'shortid'));
-//
-//         // check if shortid is taken
-//         return Link.findById(shortid).populate('user', 'name affiliation').exec()
-//         .then((link) => {
-//             if (link) {
-//                 const user = link.user.affiliation !== 'employee' ? 'a student' : link.user.name;
-//                 const expires = moment().to(moment(link.created).add(1, 'year'));
-//                 e.push({key: 'shortid', msg: `ID taken by ${user}. Expires ${expires}`});
-//             }
-//             if (e.length > 0) {
-//                 return {link: null, errors: e};
-//             }
-//
-//             link = new Link({
-//                 url,
-//                 _id: shortid,
-//                 user: viewer.id,
-//             });
-//             return {link: link.save(), errors: []};
-//         });
-//     },
-// });
+const mutationCreateHours = mutationWithClientMutationId({
+    name: 'CreateHours',
+    inputFields: {
+        projectId: { type: new GraphQLNonNull(GraphQLID) },
+        date: { type: new GraphQLNonNull(GraphQLDate) },
+        start: { type: GraphQLDate },
+        end: { type: GraphQLDate },
+        duration: { type: GraphQLFloat },
+        comment: { type: GraphQLString },
+    },
+    outputFields: {
+        newHoursEdge: {
+            type: hoursEdge,
+            resolve: ({ hours }) => {
+                return {
+                    cursor: offsetToCursor(0),
+                    node: hours,
+                };
+            },
+        },
+        errors: {
+            type: new GraphQLList(errorType),
+            resolve: ({ errors }) => {
+                return errors;
+            },
+        },
+    },
+    mutateAndGetPayload: (hours, { viewer }) => {
+        const pId = fromGlobalId(hours.projectId).id;
+        // TODO: Validation
+        return Hours.create({
+            project: pId,
+            user: viewer.id,
+            date: hours.date,
+            start: hours.start,
+            end: hours.end,
+            duration: hours.duration,
+            comment: hours.comment,
+        }).then((_hours) => {
+            return { hours: _hours };
+        });
+    },
+});
 
 
 /** MUTATION TYPE **/
@@ -244,14 +261,14 @@ const mutationType = new GraphQLObjectType({
     name: 'Mutation',
     fields: () => {
         return {
-            // createLink: mutationCreateLink,
+            createHours: mutationCreateHours,
         };
     },
 });
 
 const schema = new GraphQLSchema({
     query: queryType,
-    // mutation: mutationType,
+    mutation: mutationType,
 });
 
 export default schema;

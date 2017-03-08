@@ -93,8 +93,10 @@ class Registration extends React.Component {
     }
 
     formatDuration = () => {
+        // TODO: Check if we need the toStrings, as we should set the state value to a string
+        // everywhere
         if (!this.state.duration.toString().includes(':')) {
-            const hours = this.state.duration.replace(',', '.');
+            const hours = this.state.duration.toString().replace(',', '.');
             this.setState({
                 duration: moment.duration({ hours }).format('h:mm'),
             });
@@ -146,7 +148,7 @@ class Registration extends React.Component {
                                     if (this.state.stop.isBefore(mstart)) {
                                         mstart.subtract(1, 'day');
                                     }
-                                    newState.duration = this.state.stop.diff(mstart, 'hours', true);
+                                    newState.duration = this.state.stop.diff(mstart, 'hours', true).toString();
                                 }
                                 this.setState(newState, this.formatDuration);
                             }}
@@ -168,7 +170,7 @@ class Registration extends React.Component {
                                         if (this.state.start.isAfter(mstop)) {
                                             mstop.add(1, 'day');
                                         }
-                                        newState.duration = mstop.diff(this.state.start, 'hours', true);
+                                        newState.duration = mstop.diff(this.state.start, 'hours', true).toString();
                                     }
                                     this.setState(newState, this.formatDuration);
                                 }}

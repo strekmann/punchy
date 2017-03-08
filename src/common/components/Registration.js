@@ -65,10 +65,15 @@ class Registration extends React.Component {
             }), {
                 onSuccess: ({ createHours }) => {
                     if (createHours.errors.length > 0) {
+                        const errors = Object.assign(...createHours.errors.map((error) => {
+                            return { [error.key]: error.msg };
+                        }));
+                        /* replaces:
                         const errors = createHours.errors.reduce((m, o) => {
                             m[o.key] = o.msg;
                             return m;
                         }, {});
+                        // TODO: needs testing */
 
                         this.setState({ errors });
                     }

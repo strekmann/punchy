@@ -211,13 +211,14 @@ const queryType = new GraphQLObjectType({
     },
 });
 
+/* TODO: Check why GraphQLDate does not work in mutations */
 const mutationCreateHours = mutationWithClientMutationId({
     name: 'CreateHours',
     inputFields: {
         projectId: { type: new GraphQLNonNull(GraphQLID) },
-        date: { type: new GraphQLNonNull(GraphQLDate) },
-        start: { type: GraphQLDate },
-        end: { type: GraphQLDate },
+        date: { type: new GraphQLNonNull(GraphQLString) },
+        start: { type: GraphQLString },
+        end: { type: GraphQLString },
         duration: { type: GraphQLFloat },
         comment: { type: GraphQLString },
     },
@@ -229,6 +230,12 @@ const mutationCreateHours = mutationWithClientMutationId({
                     cursor: offsetToCursor(0),
                     node: hours,
                 };
+            },
+        },
+        viewer: {
+            type: userType,
+            resolve: (_, { viewer }) => {
+                return viewer;
             },
         },
         errors: {
@@ -250,7 +257,7 @@ const mutationCreateHours = mutationWithClientMutationId({
             duration: hours.duration,
             comment: hours.comment,
         }).then((_hours) => {
-            return { hours: _hours };
+            return { hours: _hours, errors: [] };
         });
     },
 });

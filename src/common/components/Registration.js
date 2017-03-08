@@ -7,6 +7,7 @@ import moment from 'moment';
 import 'moment-duration-format';
 import React from 'react';
 import Relay from 'react-relay';
+import CreateHoursMutation from '../mutations/createHours';
 import Container from './Container';
 import IconWrapper from './IconWrapper';
 
@@ -22,6 +23,10 @@ function mergeTime(date, time) {
 }
 
 class Registration extends React.Component {
+    static contextTypes = {
+        relay: Relay.PropTypes.Environment,
+    }
+
     static propTypes = {
         site: React.PropTypes.object,
     }
@@ -41,7 +46,6 @@ class Registration extends React.Component {
             const data = {
                 date: this.state.date.clone().startOf('day').toDate(),
                 duration: moment.duration(this.state.duration).asHours(),
-                comment: this.state.comment,
             };
             if (this.state.start) {
                 data.start = mergeTime(this.state.date, this.state.start).toDate();
@@ -53,9 +57,10 @@ class Registration extends React.Component {
             this.context.relay.commitUpdate(new CreateHoursMutation({
                 viewer: this.props.site.viewer,
                 project: this.state.project,
-                date: this.state.date,
-                start: this.state.start,
-                end: this.state.end,
+                date: data.date,
+                start: data.start,
+                end: data.stop,
+                duration: data.duration,
                 comment: this.state.comment,
             }), {
                 onSuccess: ({ createHours }) => {
@@ -230,9 +235,13 @@ export default Relay.createContainer(Registration, {
                     projects(first:1000) {
                         edges {
                             node {
+                                id
                                 name
                             }
                         }
+                    },
+                    viewer {
+                        ${CreateHoursMutation.getFragment('viewer')}
                     }
                 }
             `;

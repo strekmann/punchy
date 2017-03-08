@@ -41,7 +41,7 @@ export default class CreateHoursMutation extends Relay.Mutation {
         return [{
             type: 'RANGE_ADD',
             parentName: 'viewer',
-            parentId: this.props.viewer.id,
+            parentID: this.props.viewer.id,
             connectionName: 'hours',
             edgeName: 'newHoursEdge',
             rangeBehaviors: {

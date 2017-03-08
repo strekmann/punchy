@@ -109,7 +109,10 @@ class Registration extends React.Component {
     }
 
     render() {
-        const { projects } = this.props.site;
+        const {
+            projects,
+            viewer,
+        } = this.props.site;
         return (
             <Container className="wrapper">
                 <h1>Registrering</h1>
@@ -222,6 +225,29 @@ class Registration extends React.Component {
                         onTouchTap={this.onCreateHours}
                     />
                 </div>
+                <table>
+                    <tbody>
+                        {viewer.hours.edges.map((edge) => {
+                            const {
+                                id,
+                                project,
+                                date,
+                                start,
+                                end,
+                                duration,
+                            } = edge.node;
+                            return (
+                                <tr key={id}>
+                                    <td>{project.name}</td>
+                                    <td>{date}</td>
+                                    <td>{start}</td>
+                                    <td>{end}</td>
+                                    <td>{duration}</td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
             </Container>
         );
     }
@@ -241,6 +267,18 @@ export default Relay.createContainer(Registration, {
                         }
                     },
                     viewer {
+                        hours(first:10) {
+                            edges {
+                                node {
+                                    id
+                                    project { name }
+                                    date
+                                    start
+                                    end
+                                    duration
+                                }
+                            }
+                        }
                         ${CreateHoursMutation.getFragment('viewer')}
                     }
                 }

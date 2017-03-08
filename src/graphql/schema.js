@@ -135,6 +135,16 @@ const userType = new GraphQLObjectType({
             is_active: { type: GraphQLBoolean },
             is_admin: { type: GraphQLBoolean },
             created: { type: GraphQLDate },
+            hours: {
+                type: hoursConnection,
+                args: connectionArgs,
+                resolve: (_, args, { viewer }) => {
+                    return connectionFromMongooseQuery(
+                        Hours.find({ user: viewer.id }).sort('-created'),
+                        args,
+                    );
+                },
+            },
         };
     },
     interfaces: [nodeInterface],
@@ -191,7 +201,7 @@ const {
 } = connectionDefinitions({ name: 'Project', nodeType: projectType });
 
 const {
-    // connectionType: hoursConnection,
+    connectionType: hoursConnection,
     edgeType: hoursEdge,
 } = connectionDefinitions({ name: 'Hours', nodeType: hoursType });
 

@@ -22,6 +22,14 @@ function mergeTime(date, time) {
     return date;
 }
 
+function parseDuration(duration) {
+    if (duration.includes(':')) {
+        return moment.duration(duration);
+    }
+    const hours = duration.replace(',', '.');
+    return moment.duration({ hours });
+}
+
 class Registration extends React.Component {
     static contextTypes = {
         relay: Relay.PropTypes.Environment,
@@ -39,6 +47,7 @@ class Registration extends React.Component {
         duration: '',
         project: undefined,
         comment: '',
+        tmpDuration: '',
     }
 
     onCreateHours = () => {
@@ -98,19 +107,15 @@ class Registration extends React.Component {
         }
     }
 
-    isChanged = () => {
-        return this.state.start || !this.state.loadedDay.isSame(this.state.date.clone().startOf('day'));
+    formatDuration = () => {
+        if (this.state.duration) {
+            return this.state.duration.format('h:mm');
+        }
+        return 0;
     }
 
-    formatDuration = () => {
-        // TODO: Check if we need the toStrings, as we should set the state value to a string
-        // everywhere
-        if (!this.state.duration.toString().includes(':')) {
-            const hours = this.state.duration.toString().replace(',', '.');
-            this.setState({
-                duration: moment.duration({ hours }).format('h:mm'),
-            });
-        }
+    isChanged = () => {
+        return this.state.start || !this.state.loadedDay.isSame(this.state.date.clone().startOf('day'));
     }
 
     render() {
@@ -161,9 +166,10 @@ class Registration extends React.Component {
                                     if (this.state.stop.isBefore(mstart)) {
                                         mstart.subtract(1, 'day');
                                     }
-                                    newState.duration = this.state.stop.diff(mstart, 'hours', true).toString();
+                                    const diff = this.state.stop.diff(mstart);
+                                    newState.duration = moment.duration(diff);
                                 }
-                                this.setState(newState, this.formatDuration);
+                                this.setState(newState);
                             }}
                         />
                     </IconWrapper>
@@ -183,9 +189,10 @@ class Registration extends React.Component {
                                         if (this.state.start.isAfter(mstop)) {
                                             mstop.add(1, 'day');
                                         }
-                                        newState.duration = mstop.diff(this.state.start, 'hours', true).toString();
+                                        const diff = mstop.diff(this.state.start);
+                                        newState.duration = moment.duration(diff);
                                     }
-                                    this.setState(newState, this.formatDuration);
+                                    this.setState(newState);
                                 }}
                             />
                         </IconWrapper>
@@ -197,11 +204,18 @@ class Registration extends React.Component {
                         <TextField
                             id="duration"
                             floatingLabelText="Duration"
-                            value={this.state.duration}
-                            onChange={(_, duration) => {
-                                this.setState({ duration });
+                            value={
+                                this.state.tmpDuration || this.formatDuration(this.state.duration)
+                            }
+                            onChange={(_, tmpDuration) => {
+                                this.setState({ tmpDuration });
                             }}
-                            onBlur={() => { this.formatDuration(); }}
+                            onBlur={() => {
+                                this.setState({
+                                    duration: parseDuration(this.state.tmpDuration),
+                                    tmpDuration: '',
+                                });
+                            }}
                         />
                     </IconWrapper>
                     : null

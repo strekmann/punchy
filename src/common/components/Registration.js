@@ -5,6 +5,7 @@ import CreateHoursMutation from '../mutations/createHours';
 import Container from './Container';
 import HoursForm from './HoursForm';
 import HoursItem from './HoursItem';
+import Sheet from './Sheet';
 
 class Registration extends React.Component {
     static contextTypes = {
@@ -15,7 +16,6 @@ class Registration extends React.Component {
         site: React.PropTypes.object,
     }
     onCreateHours = (data) => {
-        console.log(data, "DATA");
         this.context.relay.commitUpdate(new CreateHoursMutation({
             viewer: this.props.site.viewer,
             project: data.project,
@@ -65,15 +65,17 @@ class Registration extends React.Component {
         const { viewer } = this.props.site;
         return (
             <Container className="wrapper">
-                <h1>Registrering</h1>
-                <HoursForm site={this.props.site} createHours={this.onCreateHours} />
-                <table>
-                    <tbody>
-                        {viewer.hours.edges.map((edge) => {
-                            return <HoursItem key={edge.node.id} hours={edge.node} />;
-                        })}
-                    </tbody>
-                </table>
+                <Sheet>
+                    <h1>Registrering</h1>
+                    <HoursForm site={this.props.site} createHours={this.onCreateHours} />
+                    <table>
+                        <tbody>
+                            {viewer.hours.edges.map((edge) => {
+                                return <HoursItem key={edge.node.id} hours={edge.node} />;
+                            })}
+                        </tbody>
+                    </table>
+                </Sheet>
             </Container>
         );
     }

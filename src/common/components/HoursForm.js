@@ -44,17 +44,6 @@ class HoursForm extends React.Component {
         tmpDuration: '',
     }
 
-    formatDuration = () => {
-        if (this.state.duration) {
-            return this.state.duration.format('h:mm');
-        }
-        return 0;
-    }
-
-    isChanged = () => {
-        return this.state.start || !this.state.loadedDay.isSame(this.state.date.clone().startOf('day'));
-    }
-
     onCreateHours = () => {
         if (this.isChanged()) {
             const data = {
@@ -71,6 +60,17 @@ class HoursForm extends React.Component {
             }
             this.props.createHours(data);
         }
+    }
+
+    isChanged = () => {
+        return this.state.start || !this.state.loadedDay.isSame(this.state.date.clone().startOf('day'));
+    }
+
+    formatDuration = () => {
+        if (this.state.duration) {
+            return this.state.duration.format('h:mm');
+        }
+        return 0;
     }
 
     render() {

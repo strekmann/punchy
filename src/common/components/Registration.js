@@ -54,7 +54,7 @@ class Registration extends React.Component {
         if (this.isChanged()) {
             const data = {
                 date: this.state.date.clone().startOf('day').toDate(),
-                duration: moment.duration(this.state.duration).asHours(),
+                duration: this.state.duration.asHours(),
             };
             if (this.state.start) {
                 data.start = mergeTime(this.state.date, this.state.start).toDate();

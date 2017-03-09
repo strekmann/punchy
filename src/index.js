@@ -180,6 +180,12 @@ app.get('/auth/google/callback', passport.authenticate('google', { failureRedire
     res.redirect(url);
 });
 
+app.get('/logout', (req, res, next) => {
+    req.logout();
+    req.session.destroy();
+    res.redirect('/');
+});
+
 const universal = (req, res, next) => {
     match({ routes, location: req.url }, (err, redirectLocation, renderProps) => {
         if (err) {

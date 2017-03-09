@@ -4,6 +4,9 @@ export default class HoursItem extends React.Component {
     static propTypes = {
         hours: React.PropTypes.object,
     }
+    state = {
+        editing: false,
+    }
     render() {
         const {
             id,
@@ -13,6 +16,13 @@ export default class HoursItem extends React.Component {
             end,
             duration,
         } = this.props.hours;
+        if (this.state.editing) {
+            return (
+                <form>
+                    TULL
+                </form>
+            );
+        }
         return (
             <tr key={id}>
                 <td>{project.name}</td>

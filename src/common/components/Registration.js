@@ -10,6 +10,7 @@ import Relay from 'react-relay';
 import CreateHoursMutation from '../mutations/createHours';
 import Container from './Container';
 import IconWrapper from './IconWrapper';
+import HoursItem from './HoursItem';
 
 // Util functions
 function mergeTime(date, time) {
@@ -247,23 +248,7 @@ class Registration extends React.Component {
                 <table>
                     <tbody>
                         {viewer.hours.edges.map((edge) => {
-                            const {
-                                id,
-                                project,
-                                date,
-                                start,
-                                end,
-                                duration,
-                            } = edge.node;
-                            return (
-                                <tr key={id}>
-                                    <td>{project.name}</td>
-                                    <td>{date}</td>
-                                    <td>{start}</td>
-                                    <td>{end}</td>
-                                    <td>{duration}</td>
-                                </tr>
-                            );
+                            return <HoursItem key={edge.node.id} hours={edge.node} />;
                         })}
                     </tbody>
                 </table>

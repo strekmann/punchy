@@ -180,7 +180,7 @@ app.get('/auth/google/callback', passport.authenticate('google', { failureRedire
     res.redirect(url);
 });
 
-app.get('/logout', (req, res, next) => {
+app.get('/auth/logout', (req, res, next) => {
     req.logout();
     req.session.destroy();
     res.redirect('/');

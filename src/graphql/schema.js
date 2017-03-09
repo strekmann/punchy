@@ -179,6 +179,9 @@ const siteType = new GraphQLObjectType({
                 type: projectConnection,
                 args: connectionArgs,
                 resolve: (_, args, { viewer }) => {
+                    if (!viewer) {
+                        return null;
+                    }
                     return Organization.find({ users: viewer.id }).exec()
                     .then((organizations) => {
                         return connectionFromMongooseQuery(

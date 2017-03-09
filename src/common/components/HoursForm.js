@@ -29,8 +29,9 @@ function parseDuration(duration) {
 
 class HoursForm extends React.Component {
     static propTypes = {
-        site: React.PropTypes.object,
         createHours: React.PropTypes.func,
+        saveButtonText: React.PropTypes.string,
+        site: React.PropTypes.object,
     }
 
     state = {
@@ -44,7 +45,7 @@ class HoursForm extends React.Component {
         tmpDuration: '',
     }
 
-    onCreateHours = () => {
+    onSave = () => {
         if (this.isChanged()) {
             const data = {
                 comment: this.state.comment,
@@ -188,11 +189,10 @@ class HoursForm extends React.Component {
                 }
                 <div>
                     <RaisedButton
-                        label={this.isChanged() ? 'Save' : 'Start now'}
+                        label={this.isChanged() ? this.props.saveButtonText || 'Save' : 'Start now'}
                         primary
-                        onClick={this.onSave}
                         disabled={!this.state.project}
-                        onTouchTap={this.onCreateHours}
+                        onTouchTap={this.onSave}
                     />
                 </div>
             </div>

@@ -66,7 +66,7 @@ class Registration extends React.Component {
         return (
             <Container className="wrapper">
                 <h1>Registrering</h1>
-                <HoursForm site={this.props.site} createHours={this.onCreateHours} />
+                <HoursForm site={this.props.site} createHours={this.onCreateHours} saveButtonText="Create" />
                 <table>
                     <tbody>
                         {viewer.hours.edges.map((edge) => {

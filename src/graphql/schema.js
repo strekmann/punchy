@@ -13,7 +13,6 @@
 
 // Import graphql stuff
 import {
-    GraphQLBoolean,
     GraphQLID,
     // GraphQLInputObjectType,
     // GraphQLInt,
@@ -24,189 +23,24 @@ import {
     GraphQLSchema,
     GraphQLString,
 } from 'graphql';
-import GraphQLDate from 'graphql-custom-datetype';
-
 // Import relay stuff
 import {
     fromGlobalId,
     // toGlobalId,
-    globalIdField,
     mutationWithClientMutationId,
-    nodeDefinitions,
-    connectionArgs,
-    connectionDefinitions,
 } from 'graphql-relay';
-
 import config from 'config';
-
-import {
-    connectionFromMongooseQuery,
-    offsetToCursor,
-} from './connections/mongoose';
 
 // Import models
 // import User from '../models/user';
-import Project from '../models/project';
-import Organization from '../models/organization';
 import Hours from '../models/hours';
 
-const { nodeInterface, nodeField } = nodeDefinitions(
-    (globalId, { viewer }) => {
-        const { type, id } = fromGlobalId(globalId);
-        if (type === 'User') {
-            if (viewer && viewer.id === id) { return viewer; }
-            return null;
-        }
-        if (type === 'Project') {
-            return Organization.find({ users: viewer.id }).exec()
-            .then((organizations) => {
-                return Project.findById(id).where('organization').in(organizations.map((org) => {
-                    return org._id;
-                }));
-            });
-        }
-        return null;
-    },
-    (obj) => {
-        if (obj.$type === 'User') {
-            return userType;
-        }
-        if (obj.$type === 'Project') {
-            return projectType;
-        }
-        return null;
-    },
-);
-
-/** TYPES **/
-const projectType = new GraphQLObjectType({
-    name: 'Project',
-    fields: () => {
-        return {
-            id: globalIdField('Project'),
-            name: { type: GraphQLString },
-            organization: { type: organizationType },
-        };
-    },
-    interfaces: [nodeInterface],
-});
-
-const organizationType = new GraphQLObjectType({
-    name: 'Organization',
-    description: 'The company or organization that a user works for',
-    fields: () => {
-        return {
-            id: globalIdField('Organization'),
-            name: { type: GraphQLString },
-        };
-    },
-});
-
-const hoursType = new GraphQLObjectType({
-    name: 'Hours',
-    description: 'Hours is the registration object saved to the database. Silly name, I know.',
-    fields: () => {
-        return {
-            id: globalIdField('Hours'),
-            user: {
-                type: userType,
-            },
-            project: {
-                type: projectType,
-            },
-            date: { type: GraphQLDate },
-            start: { type: GraphQLDate },
-            end: { type: GraphQLDate },
-            duration: { type: GraphQLFloat },
-            comment: { type: GraphQLString },
-        };
-    },
-});
-
-const userType = new GraphQLObjectType({
-    name: 'User',
-    description: 'A user',
-    fields: () => {
-        return {
-            id: globalIdField('User'),
-            username: { type: GraphQLString },
-            name: { type: GraphQLString },
-            email: { type: GraphQLString },
-            is_active: { type: GraphQLBoolean },
-            is_admin: { type: GraphQLBoolean },
-            created: { type: GraphQLDate },
-            hours: {
-                type: hoursConnection,
-                args: connectionArgs,
-                resolve: (_, args, { viewer }) => {
-                    return connectionFromMongooseQuery(
-                        Hours.find({ user: viewer.id }).sort('-created'),
-                        args,
-                    );
-                },
-            },
-        };
-    },
-    interfaces: [nodeInterface],
-});
-
-const errorType = new GraphQLObjectType({
-    name: 'ErrorType',
-    description: 'Application error',
-    fields: () => {
-        return {
-            key: { type: GraphQLString },
-            msg: { type: GraphQLString },
-        };
-    },
-});
-
-const siteType = new GraphQLObjectType({
-    name: 'Site',
-    description: 'I R Punchy',
-    fields: () => {
-        return {
-            name: {
-                type: GraphQLString,
-            },
-            viewer: {
-                type: userType,
-                resolve: (_, args, { viewer }) => {
-                    return viewer;
-                },
-            },
-            projects: {
-                type: projectConnection,
-                args: connectionArgs,
-                resolve: (_, args, { viewer }) => {
-                    if (!viewer) {
-                        return null;
-                    }
-                    return Organization.find({ users: viewer.id }).exec()
-                    .then((organizations) => {
-                        return connectionFromMongooseQuery(
-                            Project.find({}).where('organization').in(organizations.map((org) => {
-                                return org._id;
-                            })),
-                            args,
-                        );
-                    });
-                },
-            },
-        };
-    },
-});
-
-/** RELAY CONNECTIONS **/
-const {
-    connectionType: projectConnection,
-    // edgeType: ProjectEdge,
-} = connectionDefinitions({ name: 'Project', nodeType: projectType });
-
-const {
-    connectionType: hoursConnection,
-    edgeType: hoursEdge,
-} = connectionDefinitions({ name: 'Hours', nodeType: hoursType });
+import error from './types/error';
+import hours from './types/hours';
+import site from './types/site';
+import user from './types/user';
+import { offsetToCursor } from './connections/mongoose';
+import { nodeField } from './node';
 
 /** QUERY TYPE **/
 const queryType = new GraphQLObjectType({
@@ -214,7 +48,7 @@ const queryType = new GraphQLObjectType({
     fields: {
         node: nodeField,
         site: {
-            type: siteType,
+            type: site.type,
             resolve: () => {
                 return {
                     name: config.get('graphql.name'),
@@ -237,7 +71,7 @@ const mutationCreateHours = mutationWithClientMutationId({
     },
     outputFields: {
         newHoursEdge: {
-            type: hoursEdge,
+            type: hours.edge,
             resolve: ({ hours }) => {
                 return {
                     cursor: offsetToCursor(0),
@@ -246,13 +80,13 @@ const mutationCreateHours = mutationWithClientMutationId({
             },
         },
         viewer: {
-            type: userType,
+            type: user.type,
             resolve: (_, { viewer }) => {
                 return viewer;
             },
         },
         errors: {
-            type: new GraphQLList(errorType),
+            type: new GraphQLList(error.type),
             resolve: ({ errors }) => {
                 return errors;
             },
@@ -269,12 +103,11 @@ const mutationCreateHours = mutationWithClientMutationId({
             end: hours.end,
             duration: hours.duration,
             comment: hours.comment,
-        }).then((_hours) => {
-            return { hours: _hours, errors: [] };
+        }).then((hours) => {
+            return { hours, errors: [] };
         });
     },
 });
-
 
 /** MUTATION TYPE **/
 const mutationType = new GraphQLObjectType({

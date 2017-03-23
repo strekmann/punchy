@@ -8,9 +8,8 @@ import {
     globalIdField,
 } from 'graphql-relay';
 
+import model from '../../models/user';
 import { connectionFromMongooseQuery } from '../connections/mongoose';
-import Hours from '../../models/hours';
-import User from '../../models/user';
 import { nodeInterface, register } from '../node';
 
 import hours from './hours';
@@ -32,7 +31,7 @@ const type = new GraphQLObjectType({
                 args: hours.args,
                 resolve: (_, args, { viewer }) => {
                     return connectionFromMongooseQuery(
-                        Hours.find({ user: viewer.id }).sort('-created'),
+                        hours.model.find({ user: viewer.id }).sort('-created'),
                         args,
                     );
                 },
@@ -43,9 +42,10 @@ const type = new GraphQLObjectType({
 });
 
 register(type, (id, { viewer }) => {
-    return User.findById(id).exec();
+    return model.findById(id).exec();
 });
 
 export default {
+    model,
     type,
 };

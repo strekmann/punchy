@@ -4,6 +4,8 @@ import {
 } from 'graphql';
 import { globalIdField } from 'graphql-relay';
 
+import model from '../../models/organization';
+
 const type = new GraphQLObjectType({
     name: 'Organization',
     description: 'The company or organization that a user works for',
@@ -16,5 +18,6 @@ const type = new GraphQLObjectType({
 });
 
 export default {
+    model,
     type,
 };

@@ -9,9 +9,8 @@ import {
 import {
     connectionFromMongooseQuery,
 } from '../connections/mongoose';
-import Organization from '../../models/organization';
-import Project from '../../models/project';
 
+import organization from './organization';
 import project from './project';
 import user from './user';
 
@@ -36,10 +35,10 @@ const type = new GraphQLObjectType({
                     if (!viewer) {
                         return null;
                     }
-                    return Organization.find({ users: viewer.id }).exec()
+                    return organization.model.find({ users: viewer.id }).exec()
                     .then((organizations) => {
                         return connectionFromMongooseQuery(
-                            Project.find({}).where('organization').in(organizations.map((org) => {
+                            project.model.find({}).where('organization').in(organizations.map((org) => {
                                 return org._id;
                             })),
                             args,

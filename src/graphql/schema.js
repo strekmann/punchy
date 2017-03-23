@@ -33,14 +33,14 @@ import config from 'config';
 
 // Import models
 // import User from '../models/user';
-import Hours from '../models/hours';
-
 import error from './types/error';
 import hours from './types/hours';
 import site from './types/site';
 import user from './types/user';
 import { offsetToCursor } from './connections/mongoose';
 import { nodeField } from './node';
+
+const Hours = hours.model;
 
 /** QUERY TYPE **/
 const queryType = new GraphQLObjectType({

@@ -10,6 +10,8 @@ import {
     connectionDefinitions,
 } from 'graphql-relay';
 
+import model from '../../models/hours';
+
 import project from './project';
 import user from './user';
 
@@ -39,9 +41,12 @@ const {
     edgeType: edge,
 } = connectionDefinitions({ name: 'Hours', nodeType: type });
 
+const args = connectionArgs;
+
 export default {
-    type,
+    args,
     connection,
     edge,
-    args: connectionArgs,
+    model,
+    type,
 };

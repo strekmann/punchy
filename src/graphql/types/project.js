@@ -7,7 +7,7 @@ import {
     globalIdField,
 } from 'graphql-relay';
 
-import Project from '../../models/project';
+import model from '../../models/project';
 import { nodeInterface, register } from '../node';
 
 import organization from './organization';
@@ -30,10 +30,11 @@ const {
 } = connectionDefinitions({ name: 'Project', nodeType: type });
 
 register(type, (id, { viewer }) => {
-    return Project.findById(id).exec();
+    return model.findById(id).exec();
 });
 
 export default {
-    type,
     connection,
+    model,
+    type,
 };

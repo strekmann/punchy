@@ -27,7 +27,7 @@
     "lint": "eslint src/client \"src/**/*.js\" || :",
     "nodemon": "nodemon src/index.js --exec babel-node | bunyan -o short",
     "start": "NODE_ENV=production node dist/index.js",
-    "test": "mocha test/suite.js src/**/*.spec.js || :"
+    "test": "mocha test/suite.js src/**/*.spec.js"
   },
   "main": "dist/index.js",
   "dependencies": {

@@ -12,7 +12,7 @@ mongoose.Promise = Promise;
 before((done) => {
     if (!mongoose.connection.db) {
         mongoose.connect('mongodb://localhost/test', () => {
-            mongoose.connection.db.dropDatabase(() => {
+            mongoose.connection.dropDatabase(() => {
                 done();
             });
         });

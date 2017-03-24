@@ -26,7 +26,8 @@
     "dist": "rm -rf node_modules && rm -rf dist && mkdir dist && yarn install && cp -r node_modules dist/ && npm run build",
     "lint": "eslint src/client \"src/**/*.js\" || :",
     "nodemon": "nodemon src/index.js --exec babel-node | bunyan -o short",
-    "start": "NODE_ENV=production node dist/index.js"
+    "start": "NODE_ENV=production node dist/index.js",
+    "test": "mocha test/suite.js src/**/*.spec.js || :"
   },
   "main": "dist/index.js",
   "dependencies": {
@@ -73,6 +74,7 @@
     "babel-preset-stage-0": "^6.22.0",
     "babel-relay-plugin": "^0.11.0",
     "babel-relay-plugin-loader": "^0.10.0",
+    "chai": "^3.5.0",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.26.1",
     "eslint": "^3.15.0",
@@ -81,6 +83,7 @@
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.0",
     "extract-text-webpack-plugin": "^1.0.1",
+    "mocha": "^3.2.0",
     "node-sass": "^4.5.0",
     "nodemon": "^1.11.0",
     "postcss-loader": "^1.3.0",

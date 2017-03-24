@@ -2,9 +2,6 @@ import {
     GraphQLObjectType,
     GraphQLString,
 } from 'graphql';
-import {
-    connectionArgs,
-} from 'graphql-relay';
 
 import {
     connectionFromMongooseQuery,
@@ -30,7 +27,7 @@ const type = new GraphQLObjectType({
             },
             projects: {
                 type: project.connection,
-                args: connectionArgs,
+                args: project.args,
                 resolve: (_, args, { viewer }) => {
                     if (!viewer) {
                         return null;

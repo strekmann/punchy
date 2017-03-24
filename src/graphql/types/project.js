@@ -3,6 +3,7 @@ import {
     GraphQLString,
 } from 'graphql';
 import {
+    connectionArgs,
     connectionDefinitions,
     globalIdField,
 } from 'graphql-relay';
@@ -29,11 +30,14 @@ const {
     // edgeType: edge,
 } = connectionDefinitions({ name: 'Project', nodeType: type });
 
+const args = connectionArgs;
+
 register(type, (id, { viewer }) => {
     return model.findById(id).exec();
 });
 
 export default {
+    args,
     connection,
     model,
     type,

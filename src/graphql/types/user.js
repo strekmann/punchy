@@ -23,8 +23,12 @@ const type = new GraphQLObjectType({
             username: { type: GraphQLString },
             name: { type: GraphQLString },
             email: { type: GraphQLString },
-            is_active: { type: GraphQLBoolean },
-            is_admin: { type: GraphQLBoolean },
+            isAdmin: {
+                type: GraphQLBoolean,
+                resolve: (user) => {
+                    return user.is_admin;
+                },
+            },
             created: { type: GraphQLDate },
             hours: {
                 type: hours.connection,

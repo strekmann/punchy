@@ -4,9 +4,12 @@ build:
 	@./node_modules/.bin/grunt
 
 production:
-	npm install
+	yarn install
 	./node_modules/.bin/bower install
 	@./node_modules/.bin/grunt prod
+
+nodemon:
+	./node_modules/.bin/nodemon
 
 watch:
 	@./node_modules/.bin/grunt watch
@@ -30,11 +33,11 @@ test-w:
 		--watch
 
 install:
-	npm install
+	yarn install
 	./node_modules/.bin/bower install
 
 update:
-	npm update
+	yarn update
 	./node_modules/.bin/bower update
 
 clean:

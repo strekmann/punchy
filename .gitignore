@@ -6,3 +6,6 @@
 /public
 *.mo
 dump
+/config
+/src
+/dist

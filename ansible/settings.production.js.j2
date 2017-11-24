@@ -1,0 +1,23 @@
+module.exports = {
+    siteName: 'punchy',
+    uri: 'https://punchy.strekmann.no/',
+    sessionSecret: '{{ sessionSecret }}',
+    trust_proxy: false,
+    auth: {
+        google: {
+            clientId: '{{ auth.google.clientId }}',
+            clientSecret: '{{ auth.google.clientSecret}}',
+            callbackURL: '{{ auth.google.callbackURL }}'
+        }
+    },
+    redis: {
+        host: '127.0.0.1',
+        port: 6379
+    },
+    mongo: {
+        servers: ['mongodb://localhost/{{ project_name }}'],
+        replset: null
+    },
+    locales: ['en', 'nb'],
+    defaultLocale: 'en'
+};

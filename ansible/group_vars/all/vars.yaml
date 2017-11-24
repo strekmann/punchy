@@ -1,0 +1,8 @@
+---
+project_number: 14
+project_name: punchy
+project_home: /srv/{{ project_name }}
+project_user: "{{ project_name }}"
+admin_email: "{{ vault.admin_email }}"
+debian_version: stretch
+monitor_server: 188.113.118.180

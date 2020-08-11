@@ -37,7 +37,7 @@
     "jade": "^1.8.2",
     "libby": "~2.2.2",
     "moment": "^2.8.4",
-    "mongoose": "^4.1.10",
+    "mongoose": "^5.7.5",
     "passport": "^0.3.2",
     "passport-google-oauth": "^1.0.0",
     "redis": "^2.1.0",

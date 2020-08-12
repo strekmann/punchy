@@ -61,7 +61,7 @@
     "grunt-i18n-abide": "",
     "grunt-sass": "*",
     "mocha": "*",
-    "nodemon": "^1.11.0",
+    "nodemon": "^2.0.4",
     "passport-stub": "^1.0.1",
     "retire": "^1.3.3",
     "supertest": "*",
